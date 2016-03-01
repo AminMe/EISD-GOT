@@ -1,0 +1,18 @@
+{{Heraldry
+|image=Lannister banner icon.png
+|link=House Lannister
+}}
+{{Settlement
+| Title=Casterly Rock
+| Image=Casterly Rock.png
+| Location=[[the Westerlands]], [[Westeros]]
+| Type=Castle, built into a natural rock formation, regional capital
+| Population=
+| Rulers=[[House Lannister]]
+| Religion=The [[Faith of the Seven]]
+| Military=The "red cloaks"
+| Institutions=
+| Places=
+| Founding=
+| Age=6,000 years (according to myth)
+| Founder=[[House Casterly]] (according to myth)}}

@@ -1,0 +1,14 @@
+{{Noble house
+| Title=[[House Tully]]
+| Image=House-Tully-Main-Shield.PNG
+| Sigil=A silver trout leaping on a red and blue background.
+| Words='''"Family, Duty, Honor"'''
+| Titles=[[Lord of Riverrun]] (attainted)<br>[[Lord Paramount of the Trident]] (attainted)
+| Seat=[[Riverrun]]
+| Region=[[The Riverlands]]
+| Lord=Lord [[Edmure Tully]] (hostage)<br>Ser [[Brynden Tully]] (de facto)
+| Heir= [[Bran Stark]] (official)<br>[[Sansa Stark]] (assumed due to the alleged deaths of Bran and [[Rickon Stark]])
+| Allegiance=[[House Stark]]
+| Vassals=[[House Bracken]]<br>[[House Frey]]<small>- Turncoat</small><br>[[House Mallister]]<br>[[House Whent]]<br>[[House Blackwood]]<br>[[House Mooton]]<br>[[House Smallwood]]
+| Age=
+| Founder=}}

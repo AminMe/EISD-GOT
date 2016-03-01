@@ -1,0 +1,193 @@
+dark = require("dark")
+
+local main = dark.pipeline() -- pile d'execution
+main:basic();
+main:model("mdl/postag-en")
+
+main:pattern("[#HouseTitle House #w+]")
+main:pattern("[#House 'Title' '=' (#w|#p)+]")
+main:pattern("[#Image 'Image' '=' (#w|#p)+ . PNG]")
+main:pattern("[#Sigil 'Sigil' '=' (#w|#p)+]")
+main:pattern("[#Words 'Words' '=' (#w|#p)+]")
+main:pattern("[#Titles 'Titles' '=' (#w|#p)+]")
+main:pattern("[#Seat 'Seat' '=' (#w|#p)+]")
+main:pattern("[#Region 'Region' '=' (#w|#p)+]")
+main:pattern("[#Lord 'Lord' '=' (#w|#p)+]")
+main:pattern("[#Heir 'Heir' '=' (#w|#p)+]")
+main:pattern("[#Allegiance 'Allegiance' '=' (#w|#p)+]")
+main:pattern("[#Vassals 'Vassals' '=' (#w|#p)+]")
+main:pattern("[#Military 'Military' '=' (#w|#p|#d)+]")
+main:pattern("[#Cadets 'Cadets' '=' (#w|#p)+]")
+main:pattern("[#Age 'Age' '=' (#w|#p|#d)+]")
+main:pattern("[#Founder 'Founder' '=' (#w|#p)+]")
+main:pattern("[#Weapon 'Weapon' '=' (#w|#p)+]")
+
+
+function gettag(seq, tag)
+	local pos = seq[tag]
+	if #pos == 0 then
+		return ""
+	end
+	local deb = pos[1][1]
+	local fin = pos[1][2]
+	local res = {}
+	for i=deb,fin do
+		res[#res + 1] = seq[i].token
+	end
+	return table.concat(res, " ")
+end
+
+function cleantext(string)
+	
+	string = string:gsub("]","")
+	string = string:gsub("%[ ","")
+	string = string:gsub("' ' ' ","")
+	string = string:gsub(" ' ' '","")
+	string = string:gsub("< br / >", ",")
+	string = string:gsub(" < br >",";")
+	string = string:gsub("  < small >","")
+	string = string:gsub(" < / small >","")
+	string = string:gsub("}","")
+
+	return string
+end
+
+local db = {}
+
+local tags = {
+	["#NobleHouse"] = "red",
+	["#House"] = "cyan",
+	["#TitleValue"] = "red",
+	["#Image"] = "yellow",	
+	["#Sigil"] = "magenta",
+	["#Words"] = "green",
+	["#Titles"] = "blue",
+	["#Seat"] = "red",
+	["#Region"] = "cyan",	
+	["#Lord"] = "red",
+	["#Heir"] = "yellow",	
+	["#Allegiance"] = "magenta",
+	["#Vassals"] = "green",
+	["#Military"] = "blue",
+	["#Cadets"] = "cyan",
+	["#Age"] = "yellow",	
+	["#Founder"] = "magenta",
+	["#Weapon"] = "green",
+}
+
+local db = {}
+
+for fichier in os.dir("got/Tableau/") do
+	local house = nil
+	for line in io.lines("got/Tableau/"..fichier) do
+		line = line:gsub("(%p)"," %1 ")
+		local seq = main(line)
+		--seq:dump()
+		print(seq:tostring(tags))	
+		if #seq["#House"] ~= 0 then
+			house = gettag(seq,"#House")
+			house = house:gsub("Title = ","")
+			house = cleantext(house)
+			if not db[house] then
+				db[house] = {}
+			end
+		end
+		if #seq["#Image"] ~= 0 then
+			local image = gettag(seq,"#Image")
+			image = image:gsub("Image =","")
+			image = cleantext(image)
+			db[house]["Image"] = image
+		end
+		if #seq["#Sigil"] ~= 0 then
+			local sigil = gettag(seq,"#Sigil")
+			sigil = sigil:gsub("Sigil =","")
+			sigil = cleantext(sigil)
+			db[house]["Sigil"] = sigil
+		end
+		if #seq["#Words"] ~= 0 then
+			local words = gettag(seq,"#Words")
+			words = words:gsub("Words =", "")
+			words = cleantext(words)
+			db[house]["Words"] = words
+		end
+		if #seq["#Titles"] ~= 0 then
+			local titles = gettag(seq,"#Titles")
+			titles = titles:gsub("Titles = ", "")
+			titles = cleantext(titles)
+			db[house]["Titles"] = titles
+		end
+		if #seq["#Seat"] ~= 0 then
+			local seat = gettag(seq,"#Seat")
+			seat = seat:gsub("Seat = ","")
+			seat = cleantext(seat)
+			db[house]["Seat"] = seat
+		end
+		if #seq["#Region"] ~= 0 then
+			local region = gettag(seq,"#Region")
+			region = region:gsub("Region = ", "")
+			region = cleantext(region)
+			db[house]["Region"] = region
+		end
+		if #seq["#Lord"] ~= 0 then
+			local lord = gettag(seq,"#Lord")
+			lord = lord:gsub("Lord = ", "")
+			lord = cleantext(lord)
+			db[house]["Lord"] = lord
+		end
+		if #seq["#Heir"] ~= 0 then
+			local heir = gettag(seq,"#Heir")
+			heir = heir:gsub("Heir = ", "")
+			heir = cleantext(heir)
+			db[house]["Heir"] = heir
+		end
+		if #seq["#Allegiance"] ~= 0 then
+			local allegiance = gettag(seq,"#Allegiance")
+			allegiance = allegiance:gsub("Allegiance = ", "")
+			allegiance = cleantext(allegiance)
+			db[house]["Allegiance"] = allegiance
+		end
+		if #seq["#Vassals"] ~= 0 then
+			local vassals = gettag(seq,"#Vassals")
+			vassals = vassals:gsub("Vassals = ", "")
+			vassals = cleantext(vassals)
+			db[house]["Vassals"] = vassals
+		end
+		if #seq["#Military"] ~= 0 then
+			local military = gettag(seq,"#Military")
+			military = military:gsub("Military = ", "")
+			military = cleantext(military)
+			db[house]["Military"] = military
+		end
+		if #seq["#Cadets"] ~= 0 then
+			local cadet = gettag(seq,"#Cadets")
+			cadet = cadet:gsub("Cadets = ", "")
+			cadet = cleantext(cadet)
+			db[house]["Cadets"] = cadet
+		end
+		if #seq["#Age"] ~= 0 then
+			local age = gettag(seq,"#Age")
+			age = age:gsub("Age = ", "")
+			age = cleantext(age)
+			db[house]["Age"] = age
+		end
+		if #seq["#Founder"] ~= 0 then
+			local founder = gettag(seq,"#Founder")
+			founder = founder:gsub("Founder = ", "")
+			founder = cleantext(founder)
+			db[house]["Founder"] = founder
+		end
+		if #seq["#Weapon"] ~= 0 then
+			local weapon = gettag(seq,"#Weapon")
+			weapon = weapon:gsub("Weapon = ", "")
+			weapon = cleantext(weapon)
+			db[house]["Weapon"] = weapon
+		end
+	end
+end
+
+local out = io.open("db.txt", "w")
+out:write("return ")
+out:write(serialize(db))
+out:close()
+
+--local db2 = dofile("db.txt")

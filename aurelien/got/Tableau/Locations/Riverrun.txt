@@ -1,0 +1,15 @@
+{{Settlement
+| Title=[[File:Frey.JPG|40px|left|link=House Frey]] Riverrun [[File:Frey.JPG|40px|right|link=House Frey]]
+| Image=Riverrun.png
+| Location=The [[Riverlands]], [[Westeros]]
+| Type=Castle
+| Population=
+| Rulers=[[House Tully]] (de facto)<br>[[House Frey]] (de jure)
+| Religion=The [[Faith of the Seven]]
+| Military= 
+| Institutions=
+| Places=
+| Founding=
+| Age=Over 1,000 years
+| Founder=
+|ImageSize = 250px}}

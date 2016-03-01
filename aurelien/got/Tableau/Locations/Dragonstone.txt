@@ -1,0 +1,17 @@
+::''For the island see [[Dragonstone (island)]]''
+{{Settlement
+| Title=Dragonstone
+| Image=Dragonstone (day).jpg
+| Image size=
+| Location=[[Dragonstone (island)|Dragonstone]], [[Blackwater Bay]]
+| Type=Castle
+| Population=
+| Rulers=[[House Baratheon of Dragonstone]] (formerly)<br>[[House Targaryen]] (formerly)
+| Religion=[[R'hllor|R'hllor, the Lord of Light]] (formerly the [[Faith of the Seven]])
+| Military=
+| Institutions=
+| Places=
+| Founding=
+| Age=More than 500 years
+| Founder=The [[Valyrian Freehold]]
+}}

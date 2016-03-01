@@ -1,0 +1,17 @@
+{{Noble house
+| Title=House Targaryen
+| Image=House-Targaryen-Main-Shield.PNG
+| Sigil=A red three-headed dragon,<br> on a black field.
+| Words='''"Fire and Blood"'''
+| Titles=
+| Seat=[[Meereen]] (unknown)<br>[[Dragonstone]] (former)<br />[[King's Landing]] (former)
+| Region=[[Slaver's Bay]] <br />(formerly [[the Crownlands]])
+| Lord=Queen [[Daenerys Targaryen]]
+| Heir= none
+| Allegiance=
+| Vassals=
+| Cadets=[[House Blackfyre]] (extinct)
+| Age= Rulers of Dragonstone island since 500 years ago. Unknown amount of time beforehand as a noble family of the [[Valyrian Freehold]].
+| Founder=
+| Weapon=[[Blackfyre]] (lost)<br>[[Dark Sister]] (lost)
+|Military = 3 [[dragons]],<br>under 100 [[Dothraki]] cavalry,<br> 8,000 [[Unsullied]] (heavy infantry),<br> 2,000 Second Sons (armored mercenary cavalry)}}

@@ -1,0 +1,15 @@
+{{Noble house
+| Title=[[House Tyrell]]
+| Image=House-Tyrell-Main-Shield.PNG
+| Sigil=A golden rose on a green field
+| Words='''"Growing Strong"'''
+| Titles=[[Lord of Highgarden|Lords of Highgarden]]<br>[[Warden|Wardens]] of the South<br>[[Lord Paramount of the Reach|Lords Paramount of the Reach]]
+| Seat=[[Highgarden]]
+| Region=[[The Reach]]
+| Lord=[[Mace Tyrell]]
+| Heir=[[Loras Tyrell]]
+| Allegiance=[[House Baratheon of King's Landing]]
+| Vassals=[[House Tarly]]<br>[[House Hightower]]<br>[[House Florent]]<br>[[House Fossoway]]<br>[[House Redwyne]]<br>[[House Oakheart]]
+| Military=
+| Age=
+| Founder=}}
