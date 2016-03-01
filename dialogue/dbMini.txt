@@ -1,0 +1,302 @@
+return {
+  stark = {
+    allegiance = "sovereign",
+    lord = "sansa stark",
+    sigil = "a grey direwolf on a white field.",
+    region = "the north",
+    founder = "bran the builder",
+    military = "20000",
+    heir = "prince rickon stark",
+    weapon = "ice",
+    seat = "winterfell",
+    characters = {
+      ["none 1"] = {
+        family = {
+          parent = {
+            [1] = "talisa stark",
+            [2] = "robb stark",
+          },
+        },
+        nom = "none 1",
+      },
+
+      ["jon snow"] = {
+        nom = "jon snow",
+        actor ="kit harington",
+        age = "20 in season 5",
+        appeared = "41 episodes", 
+        culture = "northmen",
+        death = "stabbed repeatedly by night's watch mutineers",
+        first = "winter is coming",
+        last = "mother's mercy",
+        titles ="998th lord commander of the night's watch",
+        aka = {
+          [1]="the bastard of winterfell",
+          [2]="lord snow",
+          [3]="king crow",
+        },
+
+        allegiance={
+          [1]="the night's watch",
+          [2]="house stark",
+        },
+        family = {
+          parent = {
+            [1] = "eddard stark",
+          },
+        },
+        season = {
+            [1] = "first",
+            [2] = "second",
+            [3] = "third",
+            [4] = "fourth",
+            [5] = "fifth",
+            [6] = "sixth",
+        },
+      },
+      ["catelyn stark"] = {
+        family = {
+          daughter = {
+            [1] = {
+              adjectif = "eldest",
+              nom = "sansa stark",
+            },
+            [2] = {
+              adjectif = "youngest",
+              nom = "arya stark",
+            },
+          },
+          husband = {
+            [1] = "eddard stark",
+          },
+          son = {
+            [1] = {
+              adjectif = {
+              },
+              nom = "robb stark",
+            },
+            [2] = {
+              adjectif = "second",
+              nom = "bran stark",
+            },
+            [3] = {
+              adjectif = "youngest",
+              nom = "rickon stark",
+            },
+          },
+        },
+        nom = "catelyn stark",
+      },
+      ["lyanna stark"] = {
+        family = {
+          parent = {
+            [1] = "rickard stark",
+          },
+        },
+        nom = "lyanna stark",
+      },
+      ["benjen stark"] = {
+        family = {
+          parent = {
+            [1] = "rickard stark",
+          },
+        },
+        nom = "benjen stark",
+      },
+      ["talisa stark"] = {
+        family = {
+          husband = {
+            [1] = "robb stark",
+          },
+          child = {
+            [1] = {
+              adjectif = "unborn",
+              nom = "none 1",
+            },
+          },
+        },
+        nom = "talisa stark",
+      },
+      ["robb stark"] = {
+        family = {
+          child = {
+            [1] = {
+              adjectif = "unborn",
+              nom = "none 1",
+            },
+          },
+          parent = {
+            [1] = "catelyn stark",
+            [2] = "eddard stark",
+          },
+          wife = {
+            [1] = {
+              adjectif = {
+              },
+              nom = "talisa stark",
+            },
+          },
+        },
+        nom = "robb stark",
+      },
+      ["arya stark"] = {
+        family = {
+          parent = {
+            [1] = "catelyn stark",
+            [2] = "eddard stark",
+          },
+        },
+        nom = "arya stark",
+      },
+      ["brandon stark"] = {
+        family = {
+          parent = {
+            [1] = "rickard stark",
+          },
+        },
+        nom = "brandon stark",
+      },
+      ["sansa stark"] = {
+        family = {
+          parent = {
+            [1] = "catelyn stark",
+            [2] = "eddard stark",
+          },
+        },
+        nom = "sansa stark",
+      },
+      ["bran stark"] = {
+        family = {
+          parent = {
+            [1] = "catelyn stark",
+            [2] = "eddard stark",
+          },
+        },
+        nom = "bran stark",
+      },
+      ["rickon stark"] = {
+        family = {
+          parent = {
+            [1] = "catelyn stark",
+            [2] = "eddard stark",
+          },
+        },
+        nom = "rickon stark",
+      },
+      ["rickard stark"] = {
+        family = {
+          daughter = {
+            [1] = {
+              adjectif = {
+              },
+              nom = "lyanna stark",
+            },
+          },
+          son = {
+            [1] = {
+              adjectif = "eldest",
+              nom = "brandon stark",
+            },
+            [2] = {
+              adjectif = "second",
+              nom = "eddard stark",
+            },
+            [3] = {
+              adjectif = "youngest",
+              nom = "benjen stark",
+            },
+          },
+        },
+        nom = "rickard stark",
+      },
+      ["eddard stark"] = {
+        family = {
+          daughter = {
+            [1] = {
+              adjectif = "eldest",
+              nom = "sansa stark",
+            },
+            [2] = {
+              adjectif = "youngest",
+              nom = "arya stark",
+            },
+          },
+          son = {
+            [1] = {
+              adjectif = {
+              },
+              nom = "robb stark",
+            },
+            [2] = {
+              adjectif = "second",
+              nom = "bran stark",
+            },
+            [3] = {
+              adjectif = "youngest",
+              nom = "rickon stark",
+            },
+            [4] = {
+              adjectif = "bastard",
+              nom = "jon snow",
+            },
+          },
+          parent = {
+            [1] = "rickard stark",
+          },
+          wife = {
+            [1] = {
+              adjectif = {
+              },
+              nom = "catelyn stark",
+            },
+          },
+        },
+        nom = "eddard stark",
+      },
+    },
+  },
+  
+  lannister = {
+      allegiance = "house baratheon of king ' s landing  ",
+      lord = "queen mother cersei lannister  ",
+      sigil = " a golden lion rampant on a crimson field .",
+      region = "the westerlands  ",
+      cadets = "house lannister of lannisport",
+      founder = "lann the clever",
+      military = "60000",
+
+      heir = "disputed",
+      weapon = "brightroar",
+      seat = "casterly rock",
+      characters ={
+        ["jaime lannister"] = {
+          name = "jaime lannister",
+          actor = "nikolaj coster-waldau",
+          age = "41 in season 5",
+          appearances = "35 episodes",
+          culture = "andals",
+          first = "winter is coming",
+          place = "casterly rock",
+          status = "alive",
+          titles = {
+            [1]="lord commander of the kingsguard",
+            [2]="knighthood",
+          },
+          aka = {
+            [1]="the kingslayer",
+            [2]="oathbreaker",
+            [3]="man without honor",
+          },
+        
+          allegiance={
+            [1]= "kingsguard",
+            [2]= "house lannister",
+          },
+
+      },
+      },
+  },
+
+
+
+}
