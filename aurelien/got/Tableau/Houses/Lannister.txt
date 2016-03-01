@@ -1,0 +1,17 @@
+{{Noble house
+| Title=[[House Lannister]]
+| Image=House-Lannister-Main-Shield.PNG
+| Sigil=A golden lion rampant on a crimson field.
+| Words='''"Hear Me Roar!"''' (official)<br />'''"A Lannister Always Pays His Debts"''' (common saying)
+| Titles=[[Lord of Casterly Rock|Lords of Casterly Rock]]<br>[[Lord Paramount of the Westerlands|Lords Paramount of the Westerlands]]<br>[[Warden|Wardens of the West]]<br>[[King of the Rock|Kings of the Rock]] (pre-Wars of Conquest)
+| Seat=[[Casterly Rock]]
+| Region=[[The Westerlands]]
+| Lord=Queen Mother [[Cersei Lannister]]
+| Heir=(disputed)
+| Allegiance=[[House Baratheon of King's Landing]]
+| Vassals=[[House Clegane]]<br>[[House Swyft]]<br>[[House Crakehall]]<br>[[House Lefford]]<br>[[House Marbrand]]<br>[[House Payne]]<br>[[House Westerling]]<br>[[House Reyne]] (former)
+| Military=60,000 men (so far)
+| Cadets=[[House Lannister of Lannisport]]
+| Age=
+| Founder=[[Lann the Clever]]
+| Weapon=[[Brightroar]] (lost)}}

@@ -1,0 +1,16 @@
+{{Settlement
+| Title=[[File:KL Baratheon mini banner.png|left|40px]] King's Landing [[File:KL Baratheon mini banner.png|right|40px]]
+| Image=King's Landing.jpg
+| Image size=
+| Location=[[The Crownlands]], [[Westeros]]
+| Type=Capital city
+| Population=500,000 (approx.)<ref>"[[The Bear and the Maiden Fair (episode)|The Bear and the Maiden Fair]]"</ref>
+| Rulers=The [[King of the Andals and the First Men]]<br>[[House Baratheon of King's Landing]] (puppets of [[House Lannister]])
+| Religion=[[Faith of the Seven]] (also a small number of foreign traders and sailors practicing [[Religion|other religions]]).  
+| Military=The [[City Watch]] (2,000 men)<br>[[House Lannister]] Guard
+| Institutions=The [[Iron Throne]]<br>[[Faith of the Seven]]<br>[[Alchemist's Guild]]
+| Places=The [[Red Keep]]<br>The [[Great Sept of Baelor]]<br>The [[Guildhall of the Alchemists]]
+| Founding=1 AL
+| Age=300 years (approx.)
+| Founder=[[Aegon I Targaryen]]
+}}

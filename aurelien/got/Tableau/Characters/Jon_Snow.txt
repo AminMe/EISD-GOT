@@ -1,0 +1,19 @@
+{{Character
+| Title = Jon Snow
+| Image = Jon_Snow_(S05E05).jpg
+| Season = [[Season 1|1]], [[Season 2|2]], [[Season 3|3]], [[Season 4|4]], [[Season 5|5]], [[Season 6|6]]
+| First = "[[Winter is Coming (episode)|Winter is Coming]]"
+| Last ="[[Mother's Mercy]]" 
+| Appearances = 41 episodes <small>[[#Appearances|(see below)]]</small>
+| Aka = Lord Snow<br>The Bastard of Winterfell<br>King Crow
+| Status = [[:Category:Status: Dead|Deceased]]
+| Death = Stabbed repeatedly by Night's Watch mutineers
+| Titles = 998th [[Lord Commander of the Night's Watch]]
+| Place = [[Winterfell]]
+| Allegiance = The [[Night's Watch]]<br>[[House Stark]]
+| Family = {[[Eddard Stark]]} - father<br>[[Wylla]] - mother<br>{[[Rickard Stark]]} - paternal grandfather<br>{[[Brandon Stark (Son of Rickard)|Brandon Stark]]} - paternal uncle<br>{[[Lyanna Stark]]} - paternal aunt<br>[[Benjen Stark]] - paternal uncle<br>{[[Robb Stark]]} - half-brother<br>[[Sansa Stark]] - half-sister<br>[[Arya Stark]] - half-sister<br>[[Bran Stark]] - half-brother<br>[[Rickon Stark]] - half-brother<br>{[[Talisa Maegyr]]} - sister-in-law<br>[[Tyrion Lannister]] - half-brother-in-law<br>[[Ramsay Bolton]] - half-brother-in-law<br>{[[Ygritte]]} - lover
+| Religion = [[Old Gods of the Forest]]
+| Culture = [[Northmen]]
+| Actor = [[Kit Harington]]|DeathEp ="[[Mother's Mercy]]" 
+| Age = 20 in Season 5<ref>Jon is roughly the same age as Robb, and they were both born near the end of Robert's Rebellion - which in the novels was 15 years before the beginning of the narrative, and they were both 14.  In the TV version the rebellion was 17 years ago, making Jon and Robb 16 in Season 1.  Four years pass in the TV series by Season 5.</ref>}}
+{{Quote|I’m not asking [[Karsi|you]] to forget your dead. I’ll never forget mine. I lost fifty brothers the night that [[Mance Rayder|Mance]] [[Battle of Castle Black|attacked]] the Wall. But I’m asking you to think about your children now. They’ll never have children of their own if we don’t band together. The [[The Long Night|Long Night]] is coming and the [[Wights|dead]] come with it. No clan can stop them. The [[Free Folk]] can’t stop them, the [[Night’s Watch]] can’t stop them and all the southern kings can’t stop them! Only together. All of us. And even then it may not be enough, but at least we give the [[White Walkers|fuckers]] a fight.|'''Jon Snow'''|Hardhome (episode)}}

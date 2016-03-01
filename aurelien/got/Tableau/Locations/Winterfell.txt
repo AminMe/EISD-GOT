@@ -1,0 +1,18 @@
+{{Heraldry
+|image=Bolton banner icon.png
+|link=House Bolton
+}}
+{{Settlement
+| Title=Winterfell
+| Image=Winterfell Exterior.jpg
+| Location=[[The North]], [[Westeros]]
+| Type=Castle, regional capital
+| Population=
+| Rulers=[[House Bolton]]<br>[[House Greyjoy]] (formerly)<br>[[House Stark]] (formerly)
+| Religion=The [[Old Gods of the Forest]]
+| Military=
+| Institutions=
+| Places=The Great Keep<br>The First Keep<br>The [[Godswood]]<br>The Great Hall<br>The crypts<br>Bell Tower<br>Broken Tower<br>Library Tower<br>The Sept<br>Maester's Turret<br>Hunter's Gate<br>East Gate<br>The winter town
+| Founding=
+| Age=8,000 years (according to myth)
+| Founder=[[Bran the Builder]] (according to myth)}}

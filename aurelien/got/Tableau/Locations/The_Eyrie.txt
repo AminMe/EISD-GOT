@@ -1,0 +1,16 @@
+{{Settlement
+| Title=[[File:Arryn.JPG|40px|left]]  The Eyrie [[File:Arryn.JPG|40px|right]]
+| Image= Eyrie_S4.jpg
+| Image size=
+| Location=[[Mountains of the Moon]], [[Vale of Arryn]], [[Westeros]]
+| Type=Castle, regional capital
+| Population=
+| Rulers=[[House Arryn]] (currently ruled by [[Petyr Baelish]])
+| Religion=The [[Faith of the Seven]]
+| Military=
+| Institutions=
+| Places=The High Hall of the Arryns<br />The Sky Cells
+| Founding=
+| Age=6,000 years (very approx. and according to myth)
+| Founder=The [[Mountain King]]s
+}}

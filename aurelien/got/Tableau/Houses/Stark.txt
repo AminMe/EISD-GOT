@@ -1,0 +1,19 @@
+{{Noble house
+| Title='''House Stark'''
+| Image=House-Stark-Main-Shield.PNG
+| Sigil=A grey direwolf on a white field.
+| Words='''"Winter is Coming"'''
+| Titles=[[King in the North]] (formerly)<br>[[Lord of Winterfell]] (formerly)<br>[[Warden|Wardens of the North]] (pre-secession)<br>[[Lord Paramount of the North]] (pre-secession)
+| Seat=Currently in exile <br>(formerly [[Winterfell]])
+| Region=Currently in exile <br>(formerly [[The North]])
+| Lord=Prince [[Bran Stark]] (rightful)<br>Princess [[Sansa Stark]] (official)
+| Heir=Prince [[Rickon Stark]] (rightful)<br> None (official)
+| Allegiance=Sovereign
+| Vassals= [[House Bolton]]<small>- Turncoat</small><br>[[House Glover]]<br>[[House Hornwood]]<br>[[House Karstark]] (formerly) <br>[[House Mormont]]<br>[[House Reed]]<br>[[House Tallhart]]<br>[[House Umber]]<br>[[House Cerwyn]]<br>[[House Dustin]] (formerly)<br>[[House Ryswell]]<br>[[House Cassel]]<br>[[House Poole]]<br>[[House Mollen]]<br>[[House Manderly]]
+| Military=Unknown
+| Cadets=[[House Karstark]]
+| Religion=[[Old Gods of the Forest]]
+| Age=More than 8,000 years (according to legend)
+| Founder=[[Bran the Builder]]
+| Weapon=[[Ice]] (destroyed by [[Tywin Lannister]])
+}}

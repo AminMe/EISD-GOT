@@ -1,0 +1,17 @@
+{{Character
+| Title = Jaime Lannister
+| Image = Jaime_Lannister_(S05E02).jpg
+| ImageSize = 250px
+| Season = [[Season 1|1]], [[Season 2|2]], [[Season 3|3]], [[Season 4|4]], [[Season 5|5]], [[Season 6|6]]
+| First = "[[Winter is Coming]]"
+| Appearances = 35 episodes <small>[[#Appearances|(see below)]]</small>
+| Titles = [[Lord Commander of the Kingsguard]]<br>[[Knighthood|Ser]]
+| Aka = The Kingslayer<br>Oathbreaker<br>Man without Honor
+| Status = [[:Category:Status: Alive|Alive]]
+| Place = [[Casterly Rock]]
+| Allegiance=[[Kingsguard]]<br>[[House Lannister]]
+| Family= {[[Tywin Lannister]]} - father/first cousin once removed<br>{[[Joanna Lannister]]} - mother/first cousin once removed<br>{[[Tytos Lannister]]} - paternal grandfather<br>[[Cersei Lannister]] - twin sister/second cousin/ex-lover<br>[[Tyrion Lannister]] - brother/second cousin<br>[[Kevan Lannister]] - uncle<br>[[Dorna Lannister]] - aunt<br>[[Lancel Lannister]] - first cousin<br>{[[Martyn Lannister]]} - first cousin<br>{[[Willem Lannister]]} - first cousin <br>{[[Joffrey Baratheon]]} - nephew/son/first cousin once removed<br>[[Tommen Baratheon]] - nephew/son/first cousin once removed<br>{[[Myrcella Baratheon]]} - niece/daughter/first cousin once removed<br>{[[Robert Baratheon]]} - brother-in-law<br>{[[Cersei's black-haired son]]} - trueborn nephew<br>[[Sansa Stark]] - sister-in-law<br>[[Margaery Tyrell]] - daughter-in-law
+| Actor = [[Nikolaj Coster-Waldau]]
+| Age = Approx. 41 in Season 5<ref>Jaime is Cersei's twin, and thus the same age as her.  Tyrion stated in "[[The Prince of Winterfell]]" that Cersei became Queen when she was 19, at the end of Robert's Rebellion, and 17 years passed between the end of the war and Season 1.  This makes Cersei 36 in Season 1 and 39 in Season 4.  In the Season 4 premiere, Jaime is said to be "40", but characters might have been rounding.  Some contradictory statements have been made about Cersei's age:  see [[Timeline#Differences from the books|here]] for more information.</ref>
+|Culture = [[Andals|Andal]]
+}}

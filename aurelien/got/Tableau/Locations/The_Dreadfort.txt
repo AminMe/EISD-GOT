@@ -1,0 +1,21 @@
+{{Heraldry
+|image=Bolton banner icon.png
+|link=House Bolton
+}}
+
+{{Settlement
+| Title=The Dreadfort
+| Image=Dreadfort.jpg
+| Image size=
+| Location=[[The North]], [[Westeros]]
+| Type=Castle, temporary regional capital
+| Population=
+| Rulers=[[House Bolton]]
+| Religion=The [[Old Gods of the Forest]]
+| Military=
+| Institutions=
+| Places=
+| Founding=
+| Age=
+| Founder=
+}}
