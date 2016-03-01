@@ -16,11 +16,6 @@ function gettag(seq, tag)
 
 	return table.concat(res, " ")
 end
- 
- 
-
-
-
 
 function getMultiple(seq,tag)
 	local pos = seq[tag]
@@ -41,9 +36,6 @@ function getMultiple(seq,tag)
 	return tab
 end
 
-
-
-
 function getNom(tabNom , suj)
 
 	local i=1
@@ -59,13 +51,6 @@ end
 
 
 
-
-
-
-
- 
-
-
 --   #################################   debut des lexicon et pattern    #####################################
 
 
@@ -78,11 +63,6 @@ main:lexicon("#actor", {"performed", "performs","perform","performing","play","p
 main:lexicon("#lieu", {"live", "lived", "lives", "shack", "living", "shackes", "shacking", "shacked","dwell", "inhabit", "inhabited", "inhabits","lodge","lodges","lodged", "tenant", "tenants", "tenanted","located", "located","locating"})
 main:lexicon("#family", {"parent", "daughter", "sister", "wife", "husband", "father","mother","son","marry","married", "wedded", "couple","grandfather","grandmother","brother"})
 main:lexicon("#house",{"allegiance","lord","sigil","region","founder","military","heir","weapon","seat"})-- a complèter par des mots equivalence
-
-
-
-
-
 
 main:lexicon("#I",{"I", "my", "me"})
 main:lexicon("#he", {"he", "his", "hiself"})
@@ -115,6 +95,9 @@ main:lexicon("#adjPerso", {"quality", ""})-- a remplir pour detecter les questio
 main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","sansa","brandon","benjen","lyanna","rickon","rickard","bran","eddard","arya","talisa" })
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
+
+local doc = dark.lexicon("#noblehouses", "noble_houses.txt")
+print("doc"..doc);
  
 main:model("mdl/postag-en")
 
