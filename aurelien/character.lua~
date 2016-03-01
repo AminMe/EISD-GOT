@@ -71,8 +71,8 @@ for fichier in os.dir("corpus/Characters/") do
 		--print(seq:tostring(tags))	
 		if #seq["#Character"] ~= 0 then
 			charact = gettag(seq,"#Character")
-			charact = charact:gsub("Title = ","")
-			charact = charact:gsub("title = ","")
+			charact = house:gsub("Title = ","")
+			charact = house:gsub("title = ","")
 			charact = string.lower(charact)
 			charact = cleantext(charact)
 			out:write(charact..'\n')
