@@ -88,9 +88,8 @@ local tags = {
 
 local db = {}
 local out = io.open("lexique_houses.txt", "w")
-local location = io.open("lexique_locations.txt", "w")
 
---[[for fichier in os.dir("corpus/Noble_houses/") do
+for fichier in os.dir("corpus/Noble_houses/") do
 	local house = nil
 	for line in io.lines("corpus/Noble_houses/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
@@ -108,26 +107,4 @@ local location = io.open("lexique_locations.txt", "w")
 	end
 end
 
-out:close()]]--
-
---[[for fichier in os.dir("corpus/Locations/") do
-	local locTitle = nil
-	for line in io.lines("corpus/Locations/"..fichier) do
-		line = line:gsub("(%p)"," %1 ")
-		local seq = main(line)
-		--seq:dump()
-		--print(seq:tostring(tags))	
-		if #seq["#LocationTitle"] ~= 0 then
-			locTitle = gettag(seq,"#LocationTitle")
-			locTitle = locTitle:gsub("Title = ","")
-			locTitle = locTitle:gsub("title = ","")
-			locTitle = string.lower(locTitle)
-			locTitle = cleantext(locTitle)
-			location:write(locTitle..'\n')
-		end
-	end
-end
-
-location:close()]]--
-
---local db2 = dofile("db.txt")
+out:close()

@@ -28,19 +28,19 @@ main:pattern("[#Weapon 'Weapon' '=' .*(\n)]")]]--
 
 main:pattern("[#Pronom (/^[Tt]he/|/^[Tt]heir/|/^[Hh]is/|/^[Hh]er/)]")
 
-main:pattern("[#Sigil (#Pronom)?/^[Ss]igil/ is .*?('.')]")
-main:pattern("[#Words (#Pronom)?(/^[Ww]ords/ are | /^[Mm]otto/ (is | are)) .*?('.')]")
-main:pattern("[#Seat (The head of the house is | (#Pronom)?/^[Ss]eat/ is) .*?('.')]")
+main:pattern("[#Sigil (#Pronom)/^[Ss]igil/ is .*?('.')]")
+main:pattern("[#Words (#Pronom)(/^[Ww]ords/ are | /^[Mm]otto/ (is | are)) .*?('.')]")
+main:pattern("[#Seat (#Pronom)/^[Ss]eat/ is .*?('.')]")
 main:pattern("[#Region (#Pronom)?/^[Rr]egion/ is .*?('.')]")
-main:pattern("[#Lord (#Pronom)?/^[Ll]ord/ is .*?('.')]")
+main:pattern("[#Lord (((#Pronom)/^[Ll]ord/ is | (#Pronom)head of the /^[Hh]ouse/ is)| (#POS=NNP is the head of)) .*?('.')]")
 main:pattern("[#Allegiance /^[Aa]llegiance[s]/ (is|are) .*?('.')]")
 main:pattern("[#Vassals (#Pronom)?/^[Vv]assal[s]/ (is|are) .*?('.')]")
 main:pattern("[#Military (#Pronom)?/^[Mm]ilitary[s]/ (is|are) .*?('.')]")
 main:pattern("[#Cadets (#Pronom)?/^[Cc]adet[s]/ (is|are) .*?('.')]")
 main:pattern("[#Age (#Pronom)?/^[Aa]ge[s]/ (is|are) .*?('.')]")
 --/^[Tt]he/|/^[Tt]heir/)? ((/^[Ff]ounder[s]/ (is|are))|
---main:pattern("[#Founder (/^[Hh]ouse[s]/)? (#w)? (was|is) founded by) .*?('.')]")
-main:pattern("[#Weapon (#Pronom)?/^[Ww]eapon[s]/ (is|are) .*?('.')]")
+main:pattern("[#Founder ((#Pronom)/^[Ff]ounder[s]/ (is|are)| (/^[Hh]ouse/) (#w) (is|was) founded by) .*?('.')]")
+main:pattern("[#Weapon (#Pronom)/^[Ww]eapon[s]/ (is|are) .*?('.')]")
 
 function gettag(seq, tag)
 	local pos = seq[tag]

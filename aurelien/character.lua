@@ -9,7 +9,7 @@ main:model("mdl/postag-en")
 
 -- Pour Houses structure
 main:pattern("[#HouseTitle House #w+]")
-main:pattern("[#House (Title|title) '=' .*(\n)]")
+main:pattern("[#Character (Title|title) '=' .*(\n)]")
 main:pattern("[#Image 'Image' '=' .*(\n)]")
 main:pattern("[#Sigil 'Sigil' '=' .*(\n)]")
 main:pattern("[#Words 'Words' '=' .*(\n)]")
@@ -87,47 +87,24 @@ local tags = {
 }
 
 local db = {}
-local out = io.open("lexique_houses.txt", "w")
-local location = io.open("lexique_locations.txt", "w")
+local out = io.open("lexique_character.txt", "w")
 
---[[for fichier in os.dir("corpus/Noble_houses/") do
-	local house = nil
-	for line in io.lines("corpus/Noble_houses/"..fichier) do
+for fichier in os.dir("corpus/Characters/") do
+	local charact = nil
+	for line in io.lines("corpus/Characters/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
 		--print(seq:tostring(tags))	
 		if #seq["#House"] ~= 0 then
-			house = gettag(seq,"#House")
-			house = house:gsub("Title = ","")
-			house = house:gsub("title = ","")
-			house = string.lower(house)
-			house = cleantext(house)
-			out:write(house..'\n')
+			charact = gettag(seq,"#Character")
+			charact = house:gsub("Title = ","")
+			charact = house:gsub("title = ","")
+			charact = string.lower(charact)
+			charact = cleantext(charact)
+			out:write(charact..'\n')
 		end
 	end
 end
 
-out:close()]]--
-
---[[for fichier in os.dir("corpus/Locations/") do
-	local locTitle = nil
-	for line in io.lines("corpus/Locations/"..fichier) do
-		line = line:gsub("(%p)"," %1 ")
-		local seq = main(line)
-		--seq:dump()
-		--print(seq:tostring(tags))	
-		if #seq["#LocationTitle"] ~= 0 then
-			locTitle = gettag(seq,"#LocationTitle")
-			locTitle = locTitle:gsub("Title = ","")
-			locTitle = locTitle:gsub("title = ","")
-			locTitle = string.lower(locTitle)
-			locTitle = cleantext(locTitle)
-			location:write(locTitle..'\n')
-		end
-	end
-end
-
-location:close()]]--
-
---local db2 = dofile("db.txt")
+out:close()
