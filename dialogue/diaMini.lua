@@ -354,14 +354,26 @@ if(QNormal~="") then
  				
 		elseif (rep == "daughter" or rep == "son" or rep == "wife") then
 			local i =1
-  			if(db2[contextTest]['characters'][sujtetQs]['family'][rep]~=nil)then
+							print("i0")
 
-				while db2[contextTest]['characters'][sujtetQs]['family'][rep][i] ~= nil do 
-				 	print( db2[contextTest]['characters'][sujtetQs]['family'][rep][i]['nom'].."\n") -- on affiche les resultats lié au question
-					i=i+1
-					notFound = true
-				end
-	 		end
+			if(db2[contextTest]~=nil )then
+				print("i1")
+				if(db2[contextTest]['characters'][sujtetQs]~=nil )then
+									print("i2")
+
+  					if(db2[contextTest]['characters'][sujtetQs]['family'][rep]~=nil)then
+				print("i3")
+
+						while db2[contextTest]['characters'][sujtetQs]['family'][rep][i] ~= nil do 
+											print("i4")
+
+						 	print( db2[contextTest]['characters'][sujtetQs]['family'][rep][i]['nom'].."\n") -- on affiche les resultats lié au question
+							i=i+1
+							notFound = true
+						end
+	 				end
+	 			end
+			 end
 
 			if(notFound==false)then -- si il y a pas de reponse  
 				print("Sorry "..sujtetQs.." doesn't have "..rep..".")
