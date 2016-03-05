@@ -96,8 +96,8 @@ main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
 
-local houselexique = dark.lexicon("#noblehouses", "lexique_houses.txt")
-print(serialize(houselexique));
+local houselexique = dark.lexicon("#noblehouses", "lexiques/lexique_houses.txt")
+
  
 main:model("mdl/postag-en")
 
