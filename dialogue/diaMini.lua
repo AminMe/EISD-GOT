@@ -115,16 +115,70 @@ main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
 
+
 listHouseLexique = {}
-local cptList = 1
+lexiconHouseLexique = {}
 for line in io.lines("lexiques/lexique_houses.txt") do
-	listHouseLexique[cptList] = line
-	cptList = cptList + 1
+	listHouseLexique[line] = {}
+	listHouseLexique[line][line] = line
+	listHouseLexique[line][string.gsub(line,".-%s","")] = string.gsub(line,".-%s","")
+	lexiconHouseLexique[#lexiconHouseLexique+1] = line
 end
 
-print(serialize(listHouseLexique))
+dark.lexicon("#house", lexiconHouseLexique)
 
-local houselexique = dark.lexicon("#noblehouses", listHouseLexique)
+-- tester si nil
+
+--print(serialize(listHouseLexique))
+
+
+function sizegmatch(line)
+	cpt = 0
+	matches = {}
+	for w in line:gmatch("%w+") do 
+		cpt=cpt+1 
+		matches[cpt] = w
+	end
+	return cpt, matches
+end
+
+listCharacterLexique = {}
+lexiconCharacterLexique = {}
+for line in io.lines("lexiques/lexique_character.txt") do
+	listCharacterLexique[line] = {}
+	listCharacterLexique[line][line] = line
+	size, matches = sizegmatch(line)
+	if(size==2) then
+		prenom = matches[1]
+		listCharacterLexique[line][prenom] = prenom
+		nom = matches[2]
+		pNom = prenom:sub(1,1).." "..nom
+		listCharacterLexique[line][pNom] = pNom
+		prenomN = prenom.." "..nom:sub(1,1)
+		listCharacterLexique[line][prenomN] = prenomN
+		pNomPoint = prenom:sub(1,1)..". "..nom
+		listCharacterLexique[line][pNomPoint] = pNomPoint
+		prenomNPoint = prenom..". "..nom:sub(1,1)
+		listCharacterLexique[line][prenomNPoint] = prenomNPoint
+	end
+	lexiconCharacterLexique[#lexiconCharacterLexique+1] = line
+end
+dark.lexicon("#character", lexiconCharacterLexique)
+
+print(serialize(listCharacterLexique))
+
+
+listLocationLexique = {}
+lexiconLocationLexique = {}
+for line in io.lines("lexiques/lexique_locations.txt") do
+	listLocationLexique[line] = line
+	lexiconLocationLexique[#lexiconLocationLexique+1] = line
+end
+
+--print(serialize(listLocationLexique))
+
+
+dark.lexicon("#house", lexiconHouseLexique)
 
 main:model("mdl/postag-en")
 
