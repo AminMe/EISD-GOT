@@ -115,6 +115,8 @@ main:lexicon("#adjPerso", {"quality", ""})-- a remplir pour detecter les questio
 main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","sansa","brandon","benjen","lyanna","rickon","rickard","bran","eddard","arya","talisa" })
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
+
+local houselexique = dark.lexicon("#noblehouses", "lexiques/lexique_houses.txt")
  
 main:model("mdl/postag-en")
 
