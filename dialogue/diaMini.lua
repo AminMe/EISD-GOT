@@ -16,6 +16,11 @@ function gettag(seq, tag)
 
 	return table.concat(res, " ")
 end
+ 
+ 
+
+
+
 
 function getMultiple(seq,tag)
 	local pos = seq[tag]
@@ -36,6 +41,9 @@ function getMultiple(seq,tag)
 	return tab
 end
 
+
+
+
 function getNom(tabNom , suj)
 
 	local i=1
@@ -51,6 +59,13 @@ end
 
 
 
+
+
+
+
+ 
+
+
 --   #################################   debut des lexicon et pattern    #####################################
 
 
@@ -63,6 +78,11 @@ main:lexicon("#actor", {"performed", "performs","perform","performing","play","p
 main:lexicon("#lieu", {"live", "lived", "lives", "shack", "living", "shackes", "shacking", "shacked","dwell", "inhabit", "inhabited", "inhabits","lodge","lodges","lodged", "tenant", "tenants", "tenanted","located", "located","locating"})
 main:lexicon("#family", {"parent", "daughter", "sister", "wife", "husband", "father","mother","son","marry","married", "wedded", "couple","grandfather","grandmother","brother"})
 main:lexicon("#house",{"allegiance","lord","sigil","region","founder","military","heir","weapon","seat"})-- a complèter par des mots equivalence
+
+
+
+
+
 
 main:lexicon("#I",{"I", "my", "me"})
 main:lexicon("#he", {"he", "his", "hiself"})
@@ -95,9 +115,6 @@ main:lexicon("#adjPerso", {"quality", ""})-- a remplir pour detecter les questio
 main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","sansa","brandon","benjen","lyanna","rickon","rickard","bran","eddard","arya","talisa" })
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
-
-local houselexique = dark.lexicon("#noblehouses", "lexique_houses.txt")
-print(serialize(houselexique));
  
 main:model("mdl/postag-en")
 
@@ -136,7 +153,7 @@ main:pattern([[
  		|<(#Auxiliaire|#be )(#he |#she |#it |#we |#I |#you | (#POS=NNP | #POS=NNC)+ | #nomPerso #prenomPerso| #nomPerso | #prenomPerso #nomPerso | #prenomPerso ) 
  		|#appartenance
  		| <( #POS=NNC #prepoOf ) (#POS=NNC | #POS=NNP |  #nomPerso #prenomPerso| #nomPerso | #prenomPerso #nomPerso | #prenomPerso )+
-
+ 		|
 
  		
 	]
@@ -180,6 +197,19 @@ main:pattern([[
 	]
 	]])
 
+main:pattern([[
+	[#sujetLieu 
+		<(#POS=VRB | #lieu) (#perso ) >(#inte)
+
+	]
+	]])
+
+main:pattern([[
+	[#aRepondreLieu
+		( #POS=VRB | #lieu) >(#sujetLieu)
+	]
+
+	]])
  
 
 local tags = {
@@ -198,6 +228,8 @@ local tags = {
 		["#questionYesNo"] = "red",
 		["#aRepondre"] = "white",
 		["#name"] = "blue",
+		["#sujetLieu"] = "blue",
+		["#aRepondreLieu"] = "white",
 
 		["#sujet"] ="blue"
 } 
@@ -209,7 +241,7 @@ local tags = {
 
 
 
-
+finBoucle =1
 --main
 local db = {}
 context =""
@@ -217,20 +249,19 @@ contextTest="" -- a changer par le sujet de la question ou faire un lexicon de t
 contextN2 =""
 question =""
 local db2 = dofile("dbMini.txt")
-for line in io.lines("quMini.txt") do
+--for line in io.lines("quMini.txt") do
+	print("Hello I'm Ozad. Can I help you ? \n\n")
+
+while finBoucle ==1 do
 	--os.execute("clear")
-	--print("Hello I'm Ozad. Can I help you ? \n\n")
-	--io.write("\n> ") 
-	--line = io.read()
+	io.write("\n> ") 
+	line = io.read()
 	line =line:gsub("([\',?!:;.()])", " %1 ")
 	if string.find("//", line) == nil then
 		line = string.lower(line)
-
-
  		local seq = main(line)
 		question = gettag(seq, "#question")
 		
-		local tmp
 		
 
 		--[[ étape  a finaliser après les questions simple
@@ -281,7 +312,7 @@ QYN = gettag(seq, "#questionYesNo")
 QNormal = gettag(seq,"#question")
 
  
-seq:dump()
+--seq:dump()
 
 -- #############   question simple pas de changement de contexte #################################
 		
@@ -297,31 +328,25 @@ if(QNormal~="") then
 	notFound = false
 	typeHouse  = gettag(seq,"#house")
 
-	--todo faire une fct qui recupère le nom de famille
-
-
-	-- context
-	--[[
-	if(sujtetQs~="")then
-		if((contextTest=="") or (contextTest~=sujtetQs))then
-			contextTest = sujtetQs
-		end
-
-	end]]--
+ 
+ 
 
 
  	if(string.find(rep, typefamily)~=nil and typefamily~="") then-- reponse pour une question de type famille et perso => 'characters'
 
 		if(rep=="parent")then-- reponse si la question concerne les parent
 			local i =1
-			if( db2[contextTest]['characters'][sujtetQs]['family'][rep]~=nil) then-- faire une fct qui teste si "[contextTest]['characters'][sujtetQs]['family'][rep]" existe pour éviter un null pointer
-		 		while db2[contextTest]['characters'][sujtetQs]['family'][rep][i] ~= nil do 
-					print(db2[contextTest]['characters'][sujtetQs]['family'][rep][i].."\n")	 -- on affiche les parent lié au question		
-					i=i+1
-					notFound = true
+			if( db2[contextTest]~=nil)then
+				if( db2[contextTest]['characters'][sujtetQs]~=nil)then
+					if( db2[contextTest]['characters'][sujtetQs]['family'][rep]~=nil) then-- faire une fct qui teste si "[contextTest]['characters'][sujtetQs]['family'][rep]" existe pour éviter un null pointer
+				 		while db2[contextTest]['characters'][sujtetQs]['family'][rep][i] ~= nil do 
+							print(db2[contextTest]['characters'][sujtetQs]['family'][rep][i].."\n")	 -- on affiche les parent lié au question		
+							i=i+1
+							notFound = true
+						end
+					end
 				end
 			end
-
 
 			if(notFound==false)then-- si il y a pas de reponse lié aux parent
 				print("Sorry I don't find what you want")
@@ -396,60 +421,43 @@ elseif(QYN~="") then
 	if(newContext=="snow")then
 		newContext="stark"
 	end
-	print("newContext "..newContext)
+	print("newContext "..newContext.." Y/N")
 
  	if(string.find(verif, typefamily)~=nil and typefamily~="") then
 
-
-
-
-
-
 	--debut recherche context 
-	if(newContext~="")then-- recherche le context principal ici c'est le nom de famille
-		if((contextTest=="") or (contextTest~=newContext))then
-			contextTest = newContext
+		if(newContext~="")then-- recherche le context principal ici c'est le nom de famille
+			if((contextTest=="") or (contextTest~=newContext))then
+				contextTest = newContext
+			end
 		end
 
-	end
-
-
-	if(sujetYN~="")then --on stocke le sujet n°2 ici c'est le nom et prenom (perso ) du contexte
+		if(sujetYN~="")then --on stocke le sujet n°2 ici c'est le nom et prenom (perso ) du contexte
 		
-		local testPronomM = ""
-		local testPronomF = ""
+			local testPronomM = ""
+			local testPronomF = ""
 
-		local pronM = getMultiple(seq,"#he")
-		local pronF = getMultiple(seq,"#she")
- 
-		testPronomM = getNom(pronM,sujetYN)
-		testPronomF = getNom(pronF,sujetYN)
-		if(contextN2~="")then
-			--print("====> "..contextN2)
-			if((testPronomM~="")or(testPronomF~=""))then-- todo faire une comparaison du sexe du perso dans contexteN2 avec le type du pronom
-				sujetYN = contextN2-- on remplace "il" ou "elle" (qui sont des sujet de la question ) par le sujet du contexte
-			 
+			local pronM = getMultiple(seq,"#he")
+			local pronF = getMultiple(seq,"#she")
+	 
+			testPronomM = getNom(pronM,sujetYN)
+			testPronomF = getNom(pronF,sujetYN)
+			if(contextN2~="")then
+	 			if((testPronomM~="")or(testPronomF~=""))then-- todo faire une comparaison du sexe du perso dans contexteN2 avec le type du pronom
+					sujetYN = contextN2-- on remplace "il" ou "elle" (qui sont des sujet de la question ) par le sujet du contexte
+				else
+					contextN2 = sujetYN
+				end
 			else
 				contextN2 = sujetYN
 			end
-		
 		else
-							contextN2 = sujetYN
-
+			print("I don't understand your question because there isn't the subjet, can you repeat again please ?")
 		end
 
-
-	else
-			print("I don't understand your question because there isn't the subjet, can you repeat again please ?")
-	end
-
-	print("context nom : "..contextTest)
-	print("\ncontexte sujet : "..contextN2)
+		print("context nom : "..contextTest.." Y/N")
+		print("\ncontexte sujet : "..contextN2.." Y/N")
 	--fin context
-
-
-
-
 
 
 			--print("family ------------"..typefamily)
@@ -462,44 +470,60 @@ elseif(QYN~="") then
 			end
 			
 		elseif (typefamily == "daughter" or typefamily == "son" or typefamily == "wife") then
+    			 	local b =false
+
+  			if(db2[contextTest] ~= nil)then
+				if(db2[contextTest]['characters'][sujetYN] ~= nil)then
+ 					if(db2[contextTest]['characters'][sujetYN]['family'] ~= nil) then
+    					if (db2[contextTest]['characters'][sujetYN]['family'][typefamily] ~= nil  ) then
+   			 				local i =1
  
- 				if(db2[contextTest]['characters'][sujetYN]['family'] ~= nil) then
-    			if (db2[contextTest]['characters'][sujetYN]['family'][typefamily] ~= nil  ) then
-   			 	local i =1
- 
-   			 	local b =false
-   				 	 ---print(typefamily.." "..sujetYN.." "..aRepSujet)
-   			 	while db2[contextTest]['characters'][sujetYN]['family'][typefamily][i] ~= nil do
-	 					--print(db2[contextTest]['characters'][sujetYN]['family'][typefamily][i]['nom']..i)
-	 				if(db2[contextTest]['characters'][sujetYN]['family'][typefamily][i]['nom']==aRepSujet) then
-	 						 
-	 					b= true		 				
-	 				end
-	 				i=i+1
-				end
-end
-				if(b==true) then
-					print("oui\n")
-	 			else
-	 				print("non\n")
-	 			end
- 			else
- 				print("non\n")
+    			 				while db2[contextTest]['characters'][sujetYN]['family'][typefamily][i] ~= nil do
+ 	 								if(db2[contextTest]['characters'][sujetYN]['family'][typefamily][i]['nom']==aRepSujet) then
+ 	 									b= true		 				
+	 								end
+	 								i=i+1
+								end
+						end
+					end
 			end
-		else
-			print("Coming soon ;)\n")  				
-		end
+
+		if(b==true) then
+ 			print("############ yes "..aRepSujet.." is "..typefamily.." of "..sujetYN.."\n")
+ 	 	else
+	 		print("############ no "..aRepSujet.." is not "..typefamily.." of "..sujetYN.."\n")
+	 	end
+ 	else
+ 		print("########## no "..aRepSujet.." is not "..typefamily.." of "..sujetYN.."\n")
+	end
+	else
+		print("########## Coming soon Y/N  ;)\n")  				
+	end
 
 
 	elseif(string.find(verif, typeLieu)~=nil ) then
-		print("Coming soon ;)\n")
+		print("########## Coming soon Y/N ;)\n")
 
 	elseif(string.find(verif, typeActor)~=nil ) then
-		print("Coming soon ;)\n")
+		print("########## Coming soon Y/N ;)\n")
 
+	else
+		print("########## I don't understand, can you repeat please. Y/N")
 	end
 
+
+else if(line=="bye") then
+	finBoucle =0
+else
+
+	print("It's not a question, I don't understand, can you repeat please.")
+
 end
+
+
+	b=false
+
+
 
  -- #############################  fin question simple ################################
 
@@ -512,7 +536,8 @@ end
 		--print(seq:tostring(tags))
 		
 	end
+--end
+
 end
-
-
+end
 
