@@ -10,7 +10,6 @@ function gettag(seq, tag)
 	local res = {}
 	for i = deb, fin do
 		res[#res + 1] = seq[i].token
-		 
 	end	
 	 
 
@@ -116,8 +115,17 @@ main:lexicon("#prenomPerso", {"tyrion","catelyn","jaime", "robb", "john","jon","
 main:lexicon("#nomPerso", {"lannister", "snow", "stark"})
 main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess"})
 
-local houselexique = dark.lexicon("#noblehouses", "lexiques/lexique_houses.txt")
- 
+listHouseLexique = {}
+local cptList = 1
+for line in io.lines("lexiques/lexique_houses.txt") do
+	listHouseLexique[cptList] = line
+	cptList = cptList + 1
+end
+
+print(serialize(listHouseLexique))
+
+local houselexique = dark.lexicon("#noblehouses", listHouseLexique)
+
 main:model("mdl/postag-en")
 
 main:pattern([[
@@ -251,13 +259,13 @@ contextTest="" -- a changer par le sujet de la question ou faire un lexicon de t
 contextN2 =""
 question =""
 local db2 = dofile("dbMini.txt")
---for line in io.lines("quMini.txt") do
-	print("Hello I'm Ozad. Can I help you ? \n\n")
+for line in io.lines("quMini.txt") do
+	--print("Hello I'm Ozad. Can I help you ? \n\n")
 
-while finBoucle ==1 do
+--while finBoucle ==1 do
 	--os.execute("clear")
-	io.write("\n> ") 
-	line = io.read()
+	--io.write("\n> ") 
+	--line = io.read()
 	line =line:gsub("([\',?!:;.()])", " %1 ")
 	if string.find("//", line) == nil then
 		line = string.lower(line)
