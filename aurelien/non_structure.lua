@@ -70,6 +70,10 @@ main:pattern("[#Family /^[Ff]amily/ '=' .*(\n)]")
 main:pattern("[#Actor /^[Aa]ctor/ '=' .*(\n)]")
 main:pattern("[#Culture /^[Cc]ulture/ '=' .*(\n)]")
 
+-- Pour Perso non structure
+main:pattern("[#House_NS House Stark]")
+main:pattern("[#NightSwatch /^[Nn]ight's/ /^[Ww]atch/ .*?('.')]")
+
 function gettag(seq, tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -90,6 +94,7 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 		if (variable == nil) then
 			variable = gettag(seq,tag)
 			local case = tag:gsub("#","")
+			case = case:lower()
 			if (variable:lower() ~= case:lower() .. " =") then
 				variable = variable:gsub(expression,"")
 				variable = cleantext(variable)
@@ -107,6 +112,7 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 
 	local result = {}
 
+	title = title:lower()
 	if #seq[tag] ~= 0 then
 		if (variable == nil) then
 			variable = gettag(seq,tag)
@@ -124,6 +130,28 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 	db[title]["MilitarySize"] = somme
 
 	return variable
+end
+
+--[[ Fonction qui ajoute un personnage et ces information dans la maison à laquelle il appartient ]]--
+function addCharacterHouse(db, house, character, tabCharacter)
+
+	if (character ~= nil) then
+		character = character:lower()
+		if (house ~= nil) then
+			house = house:lower()
+			if not db[house] then
+				db[house] = {}
+			end
+
+			if not db[house]["characters"] then
+				db[house]["characters"] = {}
+			end
+			
+			db[house]["characters"][character] = tabCharacter[character]
+		else
+			db[character] = tabCharacter[character]
+		end
+	end
 end
 
 --[[ Fonction qui retire les virgule des grands nombres ]]--
@@ -188,6 +216,7 @@ function cleantext(string)
 	string = string:gsub("%[ ","")
 	string = string:gsub("' ' '","")
 	--string = string:gsub(" ' ' '","")
+	string = string:gsub("' ","")
 	string = string:gsub("< br / >", ",")
 	string = string:gsub("/", "")
 	string = string:gsub(" < br >",";")
@@ -197,6 +226,7 @@ function cleantext(string)
 	string = string:gsub("<ref>","")
 	string = string:gsub("\\ u2022",";")
 	string = string:gsub("\\",";")
+	string = string:lower()
 
 	return string
 end
@@ -207,7 +237,7 @@ local tags = {
 
 local db = {}
 
-for fichier in os.dir("corpus/Noble_houses/") do	
+for fichier in os.dir("corpus/Tampon_Noble_houses/") do	
 	local title = nil
 	local sigil = nil	
 	local words = nil
@@ -223,7 +253,7 @@ for fichier in os.dir("corpus/Noble_houses/") do
 	local founder = nil
 	local weapon = nil
 
-	for line in io.lines("corpus/Noble_houses/"..fichier) do
+	for line in io.lines("corpus/Tampon_Noble_houses/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
@@ -320,7 +350,7 @@ for fichier in os.dir("corpus/Noble_houses/") do
 	end
 end
 
-for fichier in os.dir("corpus/Locations/") do	
+--[[for fichier in os.dir("corpus/Locations/") do	
 	local title = nil
 	local population = nil	
 	local rulers = nil
@@ -390,10 +420,11 @@ for fichier in os.dir("corpus/Locations/") do
 			end
 		end		
 	end
-end
+end--]]
 
-for fichier in os.dir("corpus/Characters/") do
+for fichier in os.dir("corpus/Tampon_perso/") do
 
+	local tabCharacter = {}
 	local title = nil	
 	local season = nil
 	local first = nil	
@@ -410,8 +441,10 @@ for fichier in os.dir("corpus/Characters/") do
 	local family = nil
 	local actor = nil	
 	local culture = nil
+	local house_ns = nil
+	local night_ns = nil
 
-	for line in io.lines("corpus/Characters/"..fichier) do
+	for line in io.lines("corpus/Tampon_perso/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
@@ -420,62 +453,77 @@ for fichier in os.dir("corpus/Characters/") do
 			title = gettag(seq,"#Title")
 			title = title:gsub("[Tt]itle = ","")
 			title = cleantext(title)
-			if not db[title] then
-				db[title] = {}
+			if not tabCharacter[title] then
+				tabCharacter[title] = {}
 			end
 		end
 		if (title ~= nil) then
 			if #seq["#Season"] ~= 0 then
-				season = remplirTabStructure(db, seq, "#Season", season, title, "[Ss]eason = ")
+				season = remplirTabStructure(tabCharacter, seq, "#Season", season, title, "[Ss]eason = ")
 			end
 			if #seq["#First"] ~= 0 then
-				first = remplirTabStructure(db, seq, "#First", first, title, "[Ff]irst = ")
+				first = remplirTabStructure(tabCharacter, seq, "#First", first, title, "[Ff]irst = ")
 			end
 			if #seq["#Last"] ~= 0 then
-				last = remplirTabStructure(db, seq, "#Last", last, title, "[Ll]ast = ")
+				last = remplirTabStructure(tabCharacter, seq, "#Last", last, title, "[Ll]ast = ")
 			end		
 			if #seq["#Mentionned"] ~= 0 then
-				mentionned = remplirTabStructure(db, seq, "#Mentionned", mentionned, title, "[Mm]entionned = ")
+				mentionned = remplirTabStructure(tabCharacter, seq, "#Mentionned", mentionned, title, "[Mm]entionned = ")
 			end
 			if #seq["#Appearances"] ~= 0 then
-				appearances = remplirTabStructure(db, seq, "#Appearances", appearances, title, "[Aa]ppearances = ")
+				appearances = remplirTabStructure(tabCharacter, seq, "#Appearances", appearances, title, "[Aa]ppearances = ")
 			end
 			if #seq["#Titles"] ~= 0 then
-				titles = remplirTabStructure(db, seq, "#Titles", titles, title, "[Tt]itles = ")
+				titles = remplirTabStructure(tabCharacter, seq, "#Titles", titles, title, "[Tt]itles = ")
 			end
 			if #seq["#Aka"] ~= 0 then
-				aka = remplirTabStructure(db, seq, "#Aka", aka, title, "[Aa]ka = ")
+				aka = remplirTabStructure(tabCharacter, seq, "#Aka", aka, title, "[Aa]ka = ")
 			end	
 			if #seq["#Age"] ~= 0 then
-				age = remplirTabStructure(db, seq, "#Age", age, title, "[Aa]ge = ")
+				age = remplirTabStructure(tabCharacter, seq, "#Age", age, title, "[Aa]ge = ")
 			end	
 			if #seq["#Status"] ~= 0 then
-				status = remplirTabStructure(db, seq, "#Status", status, title, "[Ss]tatus = ")
+				status = remplirTabStructure(tabCharacter, seq, "#Status", status, title, "[Ss]tatus = ")
 			end	
 			if #seq["#Death"] ~= 0 then
-				death = remplirTabStructure(db, seq, "#Death", death, title, "[Dd]eath = ")
+				death = remplirTabStructure(tabCharacter, seq, "#Death", death, title, "[Dd]eath = ")
 			end	
 			if #seq["#Place"] ~= 0 then
-				place = remplirTabStructure(db, seq, "#Place", place, title, "[Pp]lace = ")
+				place = remplirTabStructure(tabCharacter, seq, "#Place", place, title, "[Pp]lace = ")
 			end	
 			if #seq["#Allegiance"] ~= 0 then
-				allegiance = remplirTabStructure(db, seq, "#Allegiance", allegiance, title, "[Aa]llegiance = ")
+				allegiance = remplirTabStructure(tabCharacter, seq, "#Allegiance", allegiance, title, "[Aa]llegiance = ")
 			end
 			if #seq["#Family"] ~= 0 then
-				family = remplirTabStructure(db, seq, "#Family", family, title, "[Ff]amily = ")
+				family = remplirTabStructure(tabCharacter, seq, "#Family", family, title, "[Ff]amily = ")
 			end
 			if #seq["#Actor"] ~= 0 then
-				actor = remplirTabStructure(db, seq, "#Actor", actor, title, "[Aa]ctor = ")
+				actor = remplirTabStructure(tabCharacter, seq, "#Actor", actor, title, "[Aa]ctor = ")
 			end
 			if #seq["#Culture"] ~= 0 then
-				culture = remplirTabStructure(db, seq, "#Culture", culture, title, "[Cc]ulture = ")
+				culture = remplirTabStructure(tabCharacter, seq, "#Culture", culture, title, "[Cc]ulture = ")
 			end
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
-				db[title]["Castle_NS"] = castle_ns
+				tabCharacter[title]["Castle_NS"] = castle_ns
+			end
+			
+			if #seq["#NightSwatch"] ~= 0 then
+				night_ns = "true"
+				tabCharacter[title]["NightSwatch"] = night_ns
+			end
+			if #seq["#House_NS"] ~= 0 then
+				if (house_ns == nil) then					
+					house_ns = gettag(seq,"#House_NS")
+					house_ns = house_ns:lower()
+					tabCharacter[title]["house_NS"] = house_ns
+				end
 			end
 		end		
-	end
+	end		
+	
+	addCharacterHouse(db, house_ns, title, tabCharacter)
+	print(serialize(tabCharacter))
 end
 
 local out = io.open("db.txt", "w")
