@@ -19,9 +19,9 @@ title= 'house stark
 * Lord Rickard Stark, the previous Warden of the North and Lord of Winterfell, burned alive on the orders of Mad King Aerys .
 ** His eldest son, Brandon Stark, once betrothed to Catelyn Tully, killed on the orders of the Mad King, alongside his father.
 ** His second son, Lord Eddard Stark, called Ned, the former head of the family. Lord Paramount of the North, Warden of the North, Lord of Winterfell, and Hand of the King to Robert I. Executed under a false charge of treason by Joffrey Baratheon.
-*** His wife, Lady Catelyn, of House Tully. Murdered by Black Walder Frey during the Red Wedding
+*** His wife, Lady Catelyn Stark, of House Tully. Murdered by Black Walder Frey during the Red Wedding
 **** King Robb Stark, called the Young Wolf and the King Who Lost the North, Lord of Winterfell and King in the North. Eldest son of Eddard and Catelyn. Betrayed and murdered by Roose Bolton during the Red Wedding.
-***** Robb's wife, Queen Talisa, of the Free City of Volantis. Stabbed by Lothar Frey during the Red Wedding.
+***** Robb's wife, Queen Talisa Stark, of the Free City of Volantis. Stabbed by Lothar Frey during the Red Wedding.
 ****** Their unborn child, killed when Lothar Frey stabs Talisa.
 **** Their eldest daughter, Princess Sansa Stark, former wife of the fugitive Tyrion Lannister, married to Ramsay Bolton, heir to Roose Bolton and Warden of the North. Believed to be the last of the Starks and held as the lawful Lady of Winterfell or considered Queen of the North
 **** Their youngest daughter, Princess Arya Stark, now training with the Faceless Men. Publicly believed dead.
@@ -30,6 +30,7 @@ title= 'house stark
 *** Eddard's bastard son by an unknown mother, Jon Snow. Volunteered to join the Night's Watch, and later elected as the new Lord Commander of the entire order. Stabbed to death by Alliser Thorne, several other Black Brothers and Olly.
 ** His daughter, Lyanna Stark, once betrothed to Robert Baratheon, said to be abducted by Rhaegar Targaryen, died during Robert's Rebellion.
 ** His youngest son, Benjen Stark, First Ranger of the Night's Watch, missing in action.
+
 
 
 
