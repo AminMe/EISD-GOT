@@ -93,12 +93,92 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 			if (variable:lower() ~= case:lower() .. " =") then
 				variable = variable:gsub(expression,"")
 				variable = cleantext(variable)
+				variable = cleannumber(variable)
 				db[title][case] = variable
 			end
 		end
 	end
 
 	return variable
+end
+
+--[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
+function remplirTabStructure_military(db, seq, tag, variable, title, expression)
+
+	local result = {}
+
+	if #seq[tag] ~= 0 then
+		if (variable == nil) then
+			variable = gettag(seq,tag)
+			local case = tag:gsub("#","")
+			if (variable:lower() ~= case:lower() .. " =") then
+				variable = variable:gsub(expression,"")
+				variable = cleantext(variable)
+				variable = cleannumber(variable)
+				result,somme = splitvirgule(variable)
+				db[title][case] = result
+			end
+		end
+	end
+
+	db[title]["MilitarySize"] = somme
+
+	return variable
+end
+
+--[[ Fonction qui retire les virgule des grands nombres ]]--
+function cleannumber(texte)
+	local old = {}
+	local value = {}
+	local i = 1
+
+	for word in string.gmatch(texte, '(%d+ , %d+)') do
+    		old[i] = word
+		word = word:gsub(" , ", "")
+		value[i] =  word
+		i = i + 1
+	end
+
+	for i = 1, #old do 
+		texte = texte:gsub(old[i], value[i])
+	end
+	
+	return texte
+end
+
+--[[ Fonction qui sépare les info séparé par des virgules (notament pour military) ]]--
+function splitvirgule(texte)
+
+	local table = {}
+	local result = {}
+	local i = 1
+	local key, value
+	local somme = 0
+	texte = texte:gsub(", ", ",")
+	for word in string.gmatch(texte, '([^,]+)') do
+		word = word:gsub("%( (.-) %)","")
+    		table[i] = word
+		i = i + 1
+	end
+
+	for i = 1, #table do
+		for word in string.gmatch(table[i], '(%d+ [^%d]+)', 1) do			
+			for nombre in word.gmatch(word, '(%d+)', 1) do
+				value = nombre
+				somme = somme + tonumber(value)
+			end			
+			for cle in word.gmatch(word, ' ([^%d]+)') do
+				key = cle
+			end
+		end
+		if (key ~= nil) then
+			result[key] = value
+		else
+			result["Military"] = value
+		end
+	end
+
+	return result,somme
 end
 
 function cleantext(string)
@@ -127,7 +207,7 @@ local tags = {
 
 local db = {}
 
-for fichier in os.dir("corpus/Test/") do	
+for fichier in os.dir("corpus/Noble_houses/") do	
 	local title = nil
 	local sigil = nil	
 	local words = nil
@@ -143,7 +223,7 @@ for fichier in os.dir("corpus/Test/") do
 	local founder = nil
 	local weapon = nil
 
-	for line in io.lines("corpus/Test/"..fichier) do
+	for line in io.lines("corpus/Noble_houses/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
@@ -209,10 +289,7 @@ for fichier in os.dir("corpus/Test/") do
 				vassals = remplirTabStructure(db, seq, "#Vassals", vassals, title, "[Vv]assals = ")
 			end
 			if #seq["#Military"] ~= 0 then
-				military = remplirTabStructure(db, seq, "#Military", military, title, "[Mm]ilitary = ")
-				if (military ~= nil) then
-					print(seq[1])
-				end
+				military = remplirTabStructure_military(db, seq, "#Military", military, title, "[Mm]ilitary = ")
 			end	
 			if #seq["#Age"] ~= 0 then
 				age = remplirTabStructure(db, seq, "#Age", age, title, "[Aa]ge = ")
@@ -243,8 +320,19 @@ for fichier in os.dir("corpus/Test/") do
 	end
 end
 
---[[for fichier in os.dir("corpus/Locations/") do	
+for fichier in os.dir("corpus/Locations/") do	
 	local title = nil
+	local population = nil	
+	local rulers = nil
+	local religion = nil	
+	local institutions = nil
+	local places = nil	
+	local founding = nil
+	local age = nil	
+	local castle = nil
+	local military = nil	
+	local placesOfNote = nil
+
 	for line in io.lines("corpus/Locations/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
@@ -265,89 +353,64 @@ end
 					tipe = tipe:gsub("[Tt]ype = ","")
 					db[title]["Type"] = tipe
 				end
-			end-
+			end
 			if #seq["#Population"] ~= 0 then
-				local population = gettag(seq,"#Population")
-				if (population:lower() ~= "population =") then
-					population = population:gsub("[Pp]opulation = ","")
-					db[title]["Population"] = population
-				end
+				population = remplirTabStructure(db, seq, "#Population", population, title, "[Pp]opulation = ")
 			end
 			if #seq["#Rulers"] ~= 0 then
-				local rulers = gettag(seq,"#Rulers")
-				if (rulers:lower() ~= "rulers =") then
-					rulers = rulers:gsub("[Rr]ulers = ","")
-					db[title]["Rulers"] = rulers
-				end
+				rulers = remplirTabStructure(db, seq, "#Rulers", rulers, title, "[Rr]ulers = ")
 			end
 			if #seq["#Religion"] ~= 0 then
-				local religion = gettag(seq,"#Religion")
-				if (religion:lower() ~= "religion =") then
-					religion = religion:gsub("[Rr]eligion = ","")
-					db[title]["Religion"] = religion
-				end
+				religion = remplirTabStructure(db, seq, "#Religion", religion, title, "[Rr]eligion = ")
 			end		
 			if #seq["#Institutions"] ~= 0 then
-				local institutions = gettag(seq,"#Institutions")
-				if (institutions:lower() ~= "institutions =") then
-					institutions = institutions:gsub("[Ii]nstitutions = ","")
-					db[title]["Institutions"] = institutions
-				end
+				institutions = remplirTabStructure(db, seq, "#Institutions", institutions, title, "[Ii]nstitutions = ")
 			end	
 			if #seq["#Places"] ~= 0 then
-				local places = gettag(seq,"#Places")
-				if (places:lower() ~= "places =") then
-					places = places:gsub("[Pp]laces = ","")
-					db[title]["Places"] = places
-				end
+				places = remplirTabStructure(db, seq, "#Places", places, title, "[Pp]laces = ")
 			end
 			if #seq["#Founding"] ~= 0 then
-				local founding = gettag(seq,"#Founding")
-				if (founding:lower() ~= "founding =") then
-					founding = founding:gsub("[Ff]ounding = ","")
-					db[title]["Founding"] = founding
-				end
+				founding = remplirTabStructure(db, seq, "#Founding", founding, title, "[Ff]ounding = ")
 			end	
 			if #seq["#Age"] ~= 0 then
-				local age = gettag(seq,"#Age")
-				if (age:lower() ~= "age =") then
-					age = age:gsub("[Aa]ge = ","")
-					db[title]["Age"] = age
-				end
+				age = remplirTabStructure(db, seq, "#Age", age, title, "[Aa]ge = ")
 			end	
 			if #seq["#Castle"] ~= 0 then
-				local castle = gettag(seq,"#Castle")
-				if (castle:lower() ~= "castle =") then
-					castle = castle:gsub("[Cc]astle = ","")
-					db[title]["Castle"] = castle
-				end
+				castle = remplirTabStructure(db, seq, "#Castle", castle, title, "[Cc]astle = ")
 			end	
 			if #seq["#Military"] ~= 0 then
-				local military = gettag(seq,"#Military")
-				if (military:lower() ~= "military =") then
-					military = military:gsub("[Mm]ilitary = ","")
-					military = cleantext(military)			
-					db[title]["Military"] = military
-				end
+				military = remplirTabStructure_military(db, seq, "#Military", military, title, "[Mm]ilitary = ")
 			end	
 			if #seq["#PlacesOfNote"] ~= 0 then
-				local placesOfNote = gettag(seq,"#PlacesOfNote")
-				if (placesOfNote:lower() ~= "places of note =") then
-					placesOfNote = placesOfNote:gsub("[Pp]laces of note = ","")
-					placesOfNote = cleantext(placesOfNote)					
-					db[title]["PlacesOfNote"] = placesOfNote
-				end
+				placesOfNote = remplirTabStructure(db, seq, "#PlacesOfNote", placesOfNote, title, "[Pp]laces of note = ")
 			end
-			--[[if #seq["#Castle_NS"] ~= 0 then
+			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["Castle_NS"] = castle_ns
 			end
 		end		
 	end
-end--]]
+end
 
---[[for fichier in os.dir("corpus/Characters/") do	
-	local title = nil
+for fichier in os.dir("corpus/Characters/") do
+
+	local title = nil	
+	local season = nil
+	local first = nil	
+	local last = nil
+	local mentionned = nil	
+	local appearances = nil
+	local titles = nil	
+	local aka = nil
+	local age = nil	
+	local status = nil
+	local death = nil	
+	local place = nil
+	local allegiance = nil	
+	local family = nil
+	local actor = nil	
+	local culture = nil
+
 	for line in io.lines("corpus/Characters/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
@@ -363,132 +426,57 @@ end--]]
 		end
 		if (title ~= nil) then
 			if #seq["#Season"] ~= 0 then
-				local season = gettag(seq,"#Season")
-				if (season:lower() ~= "season =") then
-					season = season:gsub("[Ss]eason = ","")
-					season = cleantext(season)		
-					db[title]["Season"] = season
-				end
+				season = remplirTabStructure(db, seq, "#Season", season, title, "[Ss]eason = ")
 			end
 			if #seq["#First"] ~= 0 then
-				local first = gettag(seq,"#First")
-				if (first:lower() ~= "first =") then
-					first = first:gsub("[Ff]irst = ","")
-					first = cleantext(first)		
-					db[title]["First"] = first
-				end
+				first = remplirTabStructure(db, seq, "#First", first, title, "[Ff]irst = ")
 			end
 			if #seq["#Last"] ~= 0 then
-				local last = gettag(seq,"#Last")
-				if (last:lower() ~= "last =") then
-					last = last:gsub("[Ll]ast = ","")
-					last = cleantext(last)		
-					db[title]["Last"] = last
-				end
+				last = remplirTabStructure(db, seq, "#Last", last, title, "[Ll]ast = ")
 			end		
 			if #seq["#Mentionned"] ~= 0 then
-				local mentionned = gettag(seq,"#Mentionned")
-				if (mentionned:lower() ~= "mentionned =") then
-					mentionned = mentionned:gsub("[Mm]entionned = ","")
-					mentionned = cleantext(mentionned)		
-					db[title]["Mentionned"] = mentionned
-				end
+				mentionned = remplirTabStructure(db, seq, "#Mentionned", mentionned, title, "[Mm]entionned = ")
 			end
 			if #seq["#Appearances"] ~= 0 then
-				local appearances = gettag(seq,"#Appearances")
-				if (appearances:lower() ~= "appearances =") then
-					appearances = appearances:gsub("[Aa]ppearances = ","")
-					appearances = cleantext(appearances)		
-					db[title]["Appearances"] = appearances
-				end
+				appearances = remplirTabStructure(db, seq, "#Appearances", appearances, title, "[Aa]ppearances = ")
 			end
 			if #seq["#Titles"] ~= 0 then
-				local titles = gettag(seq,"#Titles")
-				if (titles:lower() ~= "titles =") then
-					titles = titles:gsub("[Tt]itles = ","")
-					titles = cleantext(titles)		
-					db[title]["Titles"] = titles
-				end
+				titles = remplirTabStructure(db, seq, "#Titles", titles, title, "[Tt]itles = ")
 			end
 			if #seq["#Aka"] ~= 0 then
-				local aka = gettag(seq,"#Aka")
-				if (aka:lower() ~= "aka =") then
-					aka = aka:gsub("[Aa]ka = ","")
-					aka = cleantext(aka)		
-					db[title]["Aka"] = aka
-				end
+				aka = remplirTabStructure(db, seq, "#Aka", aka, title, "[Aa]ka = ")
 			end	
 			if #seq["#Age"] ~= 0 then
-				local age = gettag(seq,"#Age")
-				if (age:lower() ~= "age =") then
-					age = age:gsub("[Aa]ge = ","")
-					age = cleantext(age)		
-					db[title]["Age"] = age
-				end
+				age = remplirTabStructure(db, seq, "#Age", age, title, "[Aa]ge = ")
 			end	
 			if #seq["#Status"] ~= 0 then
-				local status = gettag(seq,"#Status")
-				if (status:lower() ~= "status =") then
-					status = status:gsub("[Ss]tatus = ","")
-					status = cleantext(status)		
-					db[title]["Status"] = status
-				end
+				status = remplirTabStructure(db, seq, "#Status", status, title, "[Ss]tatus = ")
 			end	
 			if #seq["#Death"] ~= 0 then
-				local death = gettag(seq,"#Death")
-				if (death:lower() ~= "death =") then
-					death = death:gsub("[Dd]eath = ","")	
-					death = cleantext(death)			
-					db[title]["Death"] = death
-				end
+				death = remplirTabStructure(db, seq, "#Death", death, title, "[Dd]eath = ")
 			end	
 			if #seq["#Place"] ~= 0 then
-				local place = gettag(seq,"#Place")
-				if (place:lower() ~= "place =") then
-					place = place:gsub("[Pp]lace = ","")	
-					place = cleantext(place)			
-					db[title]["Place"] = place
-				end
+				place = remplirTabStructure(db, seq, "#Place", place, title, "[Pp]lace = ")
 			end	
 			if #seq["#Allegiance"] ~= 0 then
-				local allegiance = gettag(seq,"#Allegiance")
-				if (allegiance:lower() ~= "allegiance =") then
-					allegiance = allegiance:gsub("[Aa]llegiance = ","")
-					allegiance = cleantext(allegiance)		
-					db[title]["Allegiance"] = allegiance
-				end
+				allegiance = remplirTabStructure(db, seq, "#Allegiance", allegiance, title, "[Aa]llegiance = ")
 			end
 			if #seq["#Family"] ~= 0 then
-				local family = gettag(seq,"#Family")
-				if (family:lower() ~= "family =") then
-					family = family:gsub("[Ff]amily = ","")
-					family = cleantext(family)					
-					db[title]["Family"] = family
-				end
+				family = remplirTabStructure(db, seq, "#Family", family, title, "[Ff]amily = ")
 			end
 			if #seq["#Actor"] ~= 0 then
-				local actor = gettag(seq,"#Actor")
-				if (actor:lower() ~= "actor =") then
-					actor = actor:gsub("[Aa]ctor = ","")	
-					actor = cleantext(actor)						
-					db[title]["Actor"] = actor
-				end
+				actor = remplirTabStructure(db, seq, "#Actor", actor, title, "[Aa]ctor = ")
 			end
 			if #seq["#Culture"] ~= 0 then
-				local culture = gettag(seq,"#Culture")
-				if (culture:lower() ~= "culture =") then
-					culture = culture:gsub("[Cc]ulture = ","")
-					culture = cleantext(culture)							
-					db[title]["Culture"] = culture
-				end
+				culture = remplirTabStructure(db, seq, "#Culture", culture, title, "[Cc]ulture = ")
 			end
-			--[[if #seq["#Castle_NS"] ~= 0 then
+			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["Castle_NS"] = castle_ns
 			end
 		end		
 	end
-end--]]
+end
 
 local out = io.open("db.txt", "w")
 out:write(serialize(db))
