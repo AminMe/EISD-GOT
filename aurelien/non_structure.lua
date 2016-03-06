@@ -383,7 +383,7 @@ end
 					tipe = tipe:gsub("[Tt]ype = ","")
 					db[title]["Type"] = tipe
 				end
-			end
+			end]]--
 			if #seq["#Population"] ~= 0 then
 				population = remplirTabStructure(db, seq, "#Population", population, title, "[Pp]opulation = ")
 			end

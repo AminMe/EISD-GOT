@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   ["marya seaworth"] = {
     status = "alive",
@@ -153,3 +154,5 @@
     lord = "extinct",
   },
 }
+=======
+>>>>>>> 10e203302bad66b3303155a8e2b14b406c83e4f4
