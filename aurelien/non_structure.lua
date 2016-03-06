@@ -121,8 +121,6 @@ function cleantext(string)
 	return string
 end
 
-local db = {}
-
 local tags = {
 	["#Military"] = "magenta",
 }

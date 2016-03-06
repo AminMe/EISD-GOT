@@ -12,7 +12,7 @@ yronwood
 winter town
 haystack hall
 saltshore
-clegane ' s keep
+clegane's keep
 new ghis
 tumbleton
 tyria
@@ -30,7 +30,7 @@ bitterbridge
 the twins
 the nightfort
 the arbor
-mummer ' s ford
+mummer's ford
 valysar
 braavos
 mistwood
@@ -41,15 +41,15 @@ moat cailin
 iron islands
 salt rock
 guildhall of the alchemists
-crow ' s nest
+crow's nest
 duskendale
 ramsgate
 water gardens
 the crownlands
-littlefinger ' s brothel
+littlefinger's brothel
 bear island
-mole ' s town
-cave of the three - eyed raven
+mole's town
+cave of the three eyed raven
 saltpans
 inn at the crossroads
 wickendon
@@ -59,7 +59,7 @@ asshai
 white tree
 white harbor
 skirling pass
-eastwatch - by - the - sea
+eastwatch by the sea
 casterly rock
 wolfswood
 the stormlands
@@ -70,7 +70,7 @@ deepwood motte
 beyond the wall
 lhazar
 sar mell
-flint ' s finger
+flint's finger
 frostfangs
 nightsong
 godsgrace
@@ -87,12 +87,12 @@ bronzegate
 gulltown
 crakehall
 long bridge of volantis
-storm ' s end
+storm's end
 winterfell
 long table
 maidenpool
 ashford
-craster ' s keep
+craster's keep
 the hightower
 deep den
 great sept of baelor
@@ -107,7 +107,7 @@ the neck
 pennytree
 the free cities
 wendish town
-vulture ' s roost
+vulture's roost
 sandstone
 hollow hill
 cider hall
@@ -125,14 +125,14 @@ stoney sept
 tolos
 pyke
 ny sar
-sow ' s horn
+sow's horn
 honeyholt
 driftmark
 the north
 baelish keep
 fairmarket
 evenfall hall
-slaver ' s bay
+slaver's bay
 deep lake
 sun house
 qarth
@@ -155,14 +155,14 @@ stone hedge
 hornwood
 bandallon
 disputed lands
-rook ' s rest
+rook's rest
 the vale of arryn
 house of black and white
-torrhen ' s square
+torrhen's square
 the wall
 hellholt
 goldengrove
-griffin ' s roost
+griffin's roost
 stone mill
 uplands
 barrowton
@@ -170,7 +170,7 @@ sarsfield
 pentos
 the north grove
 castle cerwyn
-king ' s landing
+king's landing
 ten towers
 norvos
 last hearth
@@ -186,7 +186,7 @@ highgarden
 ghost hill
 bloody gate
 pinkmaiden
-widow ' s watch
+widow's watch
 house of the undying
 the wall
 volantis

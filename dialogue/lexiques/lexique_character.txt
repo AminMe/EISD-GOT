@@ -1,4 +1,4 @@
-king ' s landing urchin
+king's landing urchin
 karlon stark
 elyo grivas
 amaya
@@ -6,7 +6,8 @@ denner frostfinger
 jason mallister
 child of the forest
 selyse baratheon
-unsullied 1
+selyse baratheon
+unsullied
 endrew tarth
 baelor i targaryen
 polliver
@@ -41,7 +42,7 @@ asher forrester
 roslin tully
 gregor forrester
 mirelle
-street tough 1
+street tough
 margaery tyrell
 salladhor saan
 unella
@@ -69,7 +70,6 @@ horned lord
 ebbert whitehill
 echiel
 erryk cargyll
-yunkai ' i whore
 willis wode
 edric baratheon
 elder slave
@@ -77,7 +77,7 @@ shiera seastar
 mern ix gardener
 gelmarr
 durran
-dwarf 5
+dwarf
 great master
 stark officer
 frey guard
@@ -85,7 +85,7 @@ simon toyne
 luke
 bruni
 gendel
-unsullied 1
+unsullied
 merry frey
 cregan stark
 talia branfield
@@ -110,7 +110,7 @@ obella sand
 billy
 yezzan zo qaggaz
 howland reed
-frey soldier 1
+frey soldier
 violet
 bethany bracken
 dontos hollard
@@ -125,7 +125,7 @@ sissy
 chella
 cohollo
 meryn trant
-olly ' s mother
+olly's mother
 lady
 shagga
 joss
@@ -140,18 +140,18 @@ talbot
 olly
 qhorin
 knight of house lynderly
-night ' s king
+night's king
 the high septon
 robar royce
 ternesio terys
-mole ' s town madam
+mole's town madam
 lann
 malko
 cedric forrester
 florian
 tywin lannister
-night ' s watch archer
-dwarf 3
+night's watch archer
+dwarf
 tyrion lannister
 stark officer
 rhaella targaryen
@@ -175,11 +175,11 @@ daena targaryen
 septon
 drummer
 tortured slave
-craster ' s younger wife
+craster's younger wife
 bezzaq
 maege mormont
 petyr baelish
-lannister bannerman 2
+lannister bannerman
 biter
 stark soldier
 lyman lannister
@@ -202,18 +202,18 @@ harrion karstark
 mago
 mord
 rennick
-king ' s landing baker
+king's landing baker
 the high septon
 maelys blackfyre
 falyse stokeworth
 rylene florent
-the night ' s queen
+the night's queen
 vaull
 dothraki pit fighter
 rhaegar targaryen
 anguy
 fruit vendor
-frey soldier 2
+frey soldier
 gregor clegane
 braavosi captain
 walda bolton
@@ -241,33 +241,32 @@ bolton soldier
 josera snow
 marianne frey
 croft
-king ' s landing rioter 1
+king's landing rioter
 aegon blackfyre
 masha heddle
 amory lorch
-street tough 2
+street tough
 silk king
 quaithe
 mully
-brothel child 2
+brothel child
 artys arryn
-dwarf 4
+dwarf
 tom
-whore ( the stranger )
 marei
 maynard
 munkun
 mance rayder
 othor
 anya waynwood
-captain ' s daughter
+captain's daughter
 aegor rivers
-night ' s watch officer
+night's watch officer
 osha
 vorkoy
 hothor umber
 jory cassel
-high priest of r ' hllor
+high priest of rhllor
 laurence karstark
 balon swann
 rhaegel targaryen
@@ -287,13 +286,12 @@ bowen
 bowen
 pyat pree
 garibald tarwick
-dwarf hunter 1
+dwarf hunter
 rast
 loboda
 euron greyjoy
-margaery ' s handmaiden
+margaery's handmaiden
 tytos lannister
-whore
 myk
 rhaenyra targaryen
 smitty
@@ -331,7 +329,6 @@ bloodsong
 goldcloak
 wounded lannister
 inn waitress
-whore
 tommy
 great master
 protestor
@@ -342,7 +339,7 @@ viserys i targaryen
 boat commander
 monica baratheon
 dorren stark
-dwarf 2
+dwarf
 great master
 lordsport dockhand
 elboneno
@@ -383,16 +380,15 @@ captain of the archers
 catelyn stark
 stonesnake
 duncan targaryen
-whore
 steffon
 rickard stark
-night ' s watch messenger
+night's watch messenger
 jafer flowers
 maron greyjoy
 pycelle
 hodor
 sorcerer
-cersei ' s black - haired son
+cersei's black - haired son
 stark guard
 foreign merchant
 melara hethersoon
@@ -413,14 +409,14 @@ cleon
 brandon stark
 oznak zo pahl
 mason
-night ' s watch officer
+night's watch officer
 aegon ii targaryen
 unidentified warlock
 gwayne gaunt
 emmon cuy
 penn
 willem wylde
-whitehill soldier 1
+whitehill soldier
 prendahl na ghezn
 terrence toyne
 arys oakheart
@@ -473,9 +469,9 @@ duff
 rodrik cassel
 olyvar frey
 bryan
-yunkai ' i slave 6
+yunkai ' i slave
 syrio forel
-morgan ' s friend
+morgan's friend
 willem lannister
 rodrik forrester
 nissa nissa
@@ -483,7 +479,7 @@ mag mar tun doh weg
 the rat cook
 freya frey
 lowell
-musician 2
+musician
 victarion greyjoy
 orell
 melessa tarly
@@ -493,7 +489,7 @@ gerhard forrester
 tommen ii lannister
 yunkai ' i slave
 jon karstark
-faith militant 1
+faith militant
 rodrik greyjoy
 gunthor
 kinvara
@@ -506,7 +502,7 @@ boros blount
 areo hotah
 azor ahai
 cotter
-musician 1
+musician
 harys swyft
 nan
 jaehaerys i targaryen
@@ -539,7 +535,7 @@ loren i lannister
 alerie tyrell
 farlen
 daemon ii blackfyre
-dwarf hunter 2
+dwarf hunter
 will
 kevan lannister
 tobho mott
@@ -568,16 +564,15 @@ karstark soldier
 lannister soldier
 smalljon umber
 edmure tully
-craster ' s last son
+craster's last son
 valyrian slave
 morag umber
 vayon poole
 qyburn
 arya stark
-craster ' s wife
+craster's wife
 rossart
 eddison tollett
-whore ( the smith )
 willem frey
 varys
 drowned priest
@@ -614,7 +609,7 @@ brothel guard
 borcas
 drogon
 white rat
-peddler ' s wife
+peddler's wife
 gyles rosby
 rickard karstark
 brienne of tarth
@@ -622,7 +617,7 @@ goatherd
 guymon
 sally
 kurleket
-lannister bannerman 3
+lannister bannerman
 nail
 clydas
 lyonel tyrell
@@ -633,7 +628,7 @@ daemon sand
 master torturer
 willem darry
 neyela frey
-craster ' s wife
+craster's wife
 baelor targaryen
 goldcloak
 cassana baratheon
@@ -641,7 +636,7 @@ renly i baratheon
 paxter redwyne
 meghan
 old woman
-innkeeper ' s daughter
+innkeeper's daughter
 fighting pit announcer
 little bird
 niko
@@ -650,16 +645,16 @@ joffrey i baratheon
 lead kingsguard
 edgar yronwood
 talla tarly
-night ' s watchman
+night's watchman
 copper king
 hizdahr zo loraq
 beric dondarrion
-king ' s landing tailor
-night ' s watchman
+king's landing tailor
+night's watchman
 first king
 winterfell shepherd
 stark messenger
-king ' s landing rioter 2
+king's landing rioter
 viserion
 winterfell worker
 daeron targaryen
@@ -706,7 +701,7 @@ damon marbrand
 helliweg
 marlon
 fury gunnery officer
-brothel child 1
+brothel child
 lannister guardsman
 duncan
 thorren forrester
@@ -714,7 +709,7 @@ young bravo
 orphan kid
 olenna tyrell
 elsera snow
-musician 2
+musician
 dongo
 bathhouse prostitute
 ryon forrester
@@ -745,7 +740,7 @@ lobor
 talisa stark
 missandei
 dareon
-craster ' s wife
+craster's wife
 old woman prisoner
 jacks
 corlys wells
@@ -755,7 +750,7 @@ rhogar
 styr
 elenei
 oberyn martell
-dwarf 1
+dwarf
 tansy
 arthur dayne
 stokeworth
@@ -783,18 +778,16 @@ stableboy
 serra frey
 eon hunter
 dothraki crone
-whore ( the mother )
-whore ( the crone )
 petyr baratheon
 rhaena targaryen
-orphan kid 2
+orphan kid
 petyr karstark
 cersei lannister
 aemon blackfyre
 eldrick sarsfield
-lannister bannerman 1
+lannister bannerman
 ludd whitehill
-king ' s landing whore
+king's landing whore
 jonos bracken
 drennan
 lannister scout
@@ -812,7 +805,6 @@ wallen
 royal steward
 kaeth
 thenn warg
-whore ( the maiden )
 luwin
 harkon umber
 first mate
@@ -833,12 +825,12 @@ ironborn in skiff
 daenerys targaryen
 gordo
 lucan
-johnna ' s sister
+johnna's sister
 caulfield
 argalia baratheon
 urzen
 aerys ii targaryen
-mole ' s town whore
+mole's town whore
 damien
 jojen reed
 adrack humble
@@ -850,12 +842,12 @@ genna
 gilly
 wineseller
 bronn
-king ' s landing rioter 3
+king's landing rioter
 walder frey
 arnolf karstark
 despondent man
 erik
-theon ' s master of hounds
+theon's master of hounds
 hog farmer
 gryff whitehill
 great master
