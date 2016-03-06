@@ -39,11 +39,7 @@ The next day, Arya is practicing her water dancingbeside a river. Sandor, predic
 (ATTENTION)
 Ser Barristan is not killed by Sons of the Harpy and in fact survives
 (Borba)
-He was killed by strangulation by the Mad King when he protested 
-
-(A voir : 2 choix 1 booleen pour dire [alive] ou [dead] ou savoir comment il est mort)
-He died
-She died
+He was killed by strangulation by the Mad King when he protested
 
 
 
@@ -117,7 +113,7 @@ is pronounced TAH-min Buh-RATH-ee-un, as opposed to Tom-men,
 
 [[[[[[[[[[===========Maison===========]]]]]]]]]]
 
-------------- Great/Vassal etc ... House -------------
+------------- Great/Vassal/Minor etc ... House -------------
 House Casterly is an extinct Great House of Westeros 
 House Greyjoy is one of the Great Houses of Westeros
 House Lannister is one of the Great Houses of Westeros
@@ -129,4 +125,6 @@ Pareille que Personnage je pense
 
 [[[[[[[[[[===========Lieux===========]]]]]]]]]]
 
-
+------------- In a song (s'applique aussi au perso/house) [prendre tout jusqu'au point]-------------
+In the A Song of Ice and Fire novels, Bandallon is the seat of House Blackbar.
+In the A Song of Ice and Fire novels, the Barrowlands are so-called for the number of tombs and barrows in the area, extending over a vast territory and dating back to the days of the First Men.
