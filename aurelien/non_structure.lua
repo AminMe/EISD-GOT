@@ -4,9 +4,18 @@ local main = dark.pipeline() -- pile d'execution
 main:basic();
 main:model("mdl/postag-en")
 
+main:lexicon("#NomHouses", "lexique_houses.txt")
+main:lexicon("#NomCharacters", "lexiques/lexique_character.txt")
+main:lexicon("#NomLocations", "lexiques/lexique_locations.txt")
+main:lexicon("#debut", {"debuts","debuting"})
+main:lexicon("#de",{"du","de","des","d"})
+main:lexicon("#apostrophe",{"'"})
+main:lexicon("#title", {"Lord","Lady","King","Queen","Prince","Princess","Ser","Commander"})
+
 main:pattern("[#Pronom (/^[Tt]he/|/^[Tt]heir/|/^[Hh]is/|/^[Hh]er/)]")
 main:pattern("[#Be (is|are|was|were|will be)]")
 main:pattern("[#House (/^[Hh]ouse/|/^[Hh]ouses/)]")
+main:pattern("[#Child (/^[Ss]on/|/^[Dd]aughter/|/^[Cc]hild/|/^[Cc]hildren/)]")
 
 -- Pour Houses structure
 main:pattern("[#Title (Title|title) '=' .*(\n)]")
@@ -40,7 +49,9 @@ main:pattern("[#Founder_NS ((#Pronom)(Founder|founder|Founders|founders) #Be| #H
 main:pattern("[#Weapon_NS (#Pronom)/^[Ww]eapon[s]/ #Be .*?('.')]")
 main:pattern("[#GreatHouse_NS #House (#w)+ #Be (#w)+ /^[Gg]reat/ #House .*?('.')]")
 main:pattern("[#VassalHouse_NS #House (#w)+ #Be (#w)+ vassal #House .*?('.')]")
+main:pattern("[#MinorHouse_NS #House (#w)+ #Be (#w)+ minor #House .*?('.')]")
 main:pattern("[#Castle_NS /^[Tt]heir/ castle #Be .*?('.')]")
+main:pattern("[#Heir_NS (#Pronom)/^[Hh]eir/ #Be .*?('.')]")
 
 -- Pour Location structure
 main:pattern("[#LocationTitle (Title|title) '=' .*(\n)]")
@@ -71,8 +82,55 @@ main:pattern("[#Actor /^[Aa]ctor/ '=' .*(\n)]")
 main:pattern("[#Culture /^[Cc]ulture/ '=' .*(\n)]")
 
 -- Pour Perso non structure
-main:pattern("[#House_NS House Stark]")
-main:pattern("[#NightSwatch /^[Nn]ight's/ /^[Ww]atch/ .*?('.')]")
+--main:pattern("[#House_NS #NomHouses]")
+main:pattern("[#NightSwatch /^[Nn]ight/ '%'' s /^[Ww]atch/]")
+main:pattern("[#Prononciation #Be pronounced .*?('.')]")
+main:pattern("[#Bastard #Be (#Pronom)? bastard #Child of .*?('.')]")
+main:pattern("[#Killed #Be killed by .*?('.')]")
+
+-- A METTRE
+main:pattern([[
+	[#infoCharacter
+		'is' ('a'|'an') 
+		[#type
+			(#w+)
+		]
+		'character' 
+		(#POS=VRB? #POS=ADP #POS=DET
+			(
+			[#season
+				#w 
+			]
+			(',' #POS=CON | ',' | #POS=CON)?)+ >('seasons' | 'season'))?
+	]		
+]])
+
+-- A METTRE
+main:pattern([[
+	[#Actor
+		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
+	]
+]])
+
+-- A METTRE
+main:pattern([[
+		[#relationName 
+			#title? 
+				[#name
+				(#W (#POS=DET | '-' | #de #apostrophe?)?) {1,}
+				]
+		]
+]])
+
+-- A METTRE
+main:pattern([[
+	[#firstSeen
+		#debut (#POS=ADP #POS=DET|#POS=ADP) 
+		[#episodeName
+			(#w|#d|#POS=NNC)+
+		]
+	]
+]])
 
 function gettag(seq, tag)
 	local pos = seq[tag]
@@ -117,6 +175,7 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 		if (variable == nil) then
 			variable = gettag(seq,tag)
 			local case = tag:gsub("#","")
+			case = case:lower()
 			if (variable:lower() ~= case:lower() .. " =") then
 				variable = variable:gsub(expression,"")
 				variable = cleantext(variable)
@@ -127,7 +186,7 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 		end
 	end
 
-	db[title]["MilitarySize"] = somme
+	db[title]["militarySize"] = somme
 
 	return variable
 end
@@ -202,7 +261,7 @@ function splitvirgule(texte)
 		if (key ~= nil) then
 			result[key] = value
 		else
-			result["Military"] = value
+			result["military"] = value
 		end
 	end
 
@@ -231,13 +290,36 @@ function cleantext(string)
 	return string
 end
 
+function getSeason(seq)
+	local pos = seq["#infoCharacter"]
+	if #pos == 0 then
+		return ""
+	end
+	local major = seq["#season"]
+	local number = #major
+	if(number == 0) then 
+		return ""
+	end	
+	local tab = {}
+	for j=1, number do
+		local res = {}
+		local deb = major[j][1]
+		local fin = major[j][2]
+	for i = deb, fin do
+		res[#res + 1] = seq[i].token
+	end
+		tab[#tab + 1] = table.concat(res, " ")
+	end
+	return tab
+end
+
 local tags = {
 	["#Military"] = "magenta",
 }
 
 local db = {}
 
-for fichier in os.dir("corpus/Tampon_Noble_houses/") do	
+for fichier in os.dir("corpus/Noble_houses/") do	
 	local title = nil
 	local sigil = nil	
 	local words = nil
@@ -252,8 +334,9 @@ for fichier in os.dir("corpus/Tampon_Noble_houses/") do
 	local age = nil	
 	local founder = nil
 	local weapon = nil
+	local typeHouse = nil
 
-	for line in io.lines("corpus/Tampon_Noble_houses/"..fichier) do
+	for line in io.lines("corpus/Noble_houses/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
@@ -272,14 +355,14 @@ for fichier in os.dir("corpus/Tampon_Noble_houses/") do
 			end
 			if #seq["#Sigil_NS"] ~= 0 then
 				local sigil_ns = gettag(seq,"#Sigil_NS")
-				db[title]["Sigil_NS"] = sigil_ns
+				db[title]["sigil_NS"] = sigil_ns
 			end
 			if #seq["#Words"] ~= 0 then	
 				words = remplirTabStructure(db, seq, "#Words", words, title, "[Ww]ords = ")
 			end
 			if #seq["#Words_NS"] ~= 0 then		
 				local words_ns = gettag(seq,"#Words_NS")
-				db[title]["Words_NS"] = words_ns
+				db[title]["words_NS"] = words_ns
 			end
 			if #seq["#Titles"] ~= 0 then
 				titles = remplirTabStructure(db, seq, "#Titles", titles, title, "[Tt]itles = ")
@@ -289,29 +372,29 @@ for fichier in os.dir("corpus/Tampon_Noble_houses/") do
 			end
 			if #seq["#Seat_NS"] ~= 0 then
 				local seat_ns = gettag(seq,"#Seat_NS")
-				db[title]["Seat_NS"] = seat_ns
+				db[title]["seat_NS"] = seat_ns
 			end
 			if #seq["#Region"] ~= 0 then
 				region = remplirTabStructure(db, seq, "#Region", region, title, "[Rr]egion = ")
 			end
 			if #seq["#Region_NS"] ~= 0 then
 				local region_ns = gettag(seq,"#Region_NS")
-				db[title]["Region_NS"] = region_ns
+				db[title]["region_NS"] = region_ns
 			end		
 			if #seq["#Lord"] ~= 0 then
 				lord = remplirTabStructure(db, seq, "#Lord", lord, title, "[Ll]ord = ")
 			end		
 			if #seq["#Lord_NS"] ~= 0 then
 				local lord_ns = gettag(seq,"#Lord_NS")
-				db[title]["Lord_NS"] = lord_ns
+				db[title]["lord_NS"] = lord_ns
 			end		
 			if #seq["#Heir"] ~= 0 then
 				heir = remplirTabStructure(db, seq, "#Heir", heir, title, "[Hh]eir = ")
 			end		
 			if #seq["#Heir_NS"] ~= 0 then
 				local heir_ns = gettag(seq,"#Heir_NS")
-				db[title]["Heir_NS"] = heir_ns
-			end	
+				db[title]["heir_NS"] = heir_ns
+			end
 			if #seq["#Allegiance"] ~= 0 then
 				allegiance = remplirTabStructure(db, seq, "#Allegiance", allegiance, title, "[Aa]llegiance = ")
 			end	
@@ -329,28 +412,43 @@ for fichier in os.dir("corpus/Tampon_Noble_houses/") do
 			end
 			if #seq["#Founder_NS"] ~= 0 then
 				local founder_ns = gettag(seq,"#Founder_NS")
-				db[title]["Founder_NS"] = founder_ns
+				db[title]["founder_NS"] = founder_ns
 			end
 			if #seq["#Weapon"] ~= 0 then
 				weapon = remplirTabStructure(db, seq, "#Weapon", weapon, title, "[Ww]eapon = ")
 			end
 			if #seq["#GreatHouse_NS"] ~= 0 then
-				local greatHouse_ns = gettag(seq,"#GreatHouse_NS")
-				db[title]["GreatHouse_NS"] = greatHouse_ns
+				if (typeHouse == nil) then
+					typeHouse = gettag(seq,"#GreatHouse_NS")
+					db[title]["type_house"] = typeHouse
+				end
 			end
 			if #seq["#VassalHouse_NS"] ~= 0 then
-				local vassalHouse_ns = gettag(seq,"#VassalHouse_NS")
-				db[title]["VassalHouse_NS"] = vassalHouse_ns
+				if (typeHouse == nil) then
+					typeHouse = gettag(seq,"#VassalHouse_NS")
+					db[title]["type_house"] = typeHouse
+				end
+			end
+			if #seq["#MinorHouse_NS"] ~= 0 then
+				if (typeHouse == nil) then
+					typeHouse = gettag(seq,"#MinorHouse_NS")
+					db[title]["type_house"] = typeHouse
+				end
 			end
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
-				db[title]["Castle_NS"] = castle_ns
+				db[title]["castle_NS"] = castle_ns
+			end
+			if #seq["#Prononciation"] ~= 0 then
+				local prononciation = gettag(seq,"#Prononciation")
+				prononciation = prononciation:gsub("is pronounced ", "")
+				db[title]["prononciation"] = prononciation
 			end
 		end		
 	end
 end
 
---[[for fichier in os.dir("corpus/Locations/") do	
+for fichier in os.dir("corpus/Locations/") do	
 	local title = nil
 	local population = nil	
 	local rulers = nil
@@ -377,13 +475,6 @@ end
 			end
 		end
 		if (title ~= nil) then
-			--[[if #seq["#Type"] ~= 0 then		
-				local tipe = gettag(seq,"#Type")
-				if (tipe:lower() ~= "type =") then
-					tipe = tipe:gsub("[Tt]ype = ","")
-					db[title]["Type"] = tipe
-				end
-			end]]--
 			if #seq["#Population"] ~= 0 then
 				population = remplirTabStructure(db, seq, "#Population", population, title, "[Pp]opulation = ")
 			end
@@ -414,15 +505,20 @@ end
 			if #seq["#PlacesOfNote"] ~= 0 then
 				placesOfNote = remplirTabStructure(db, seq, "#PlacesOfNote", placesOfNote, title, "[Pp]laces of note = ")
 			end
+			if #seq["#Prononciation"] ~= 0 then
+				local prononciation = gettag(seq,"#Prononciation")
+				prononciation = prononciation:gsub("is pronounced ", "")
+				db[title]["prononciation"] = prononciation
+			end
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["Castle_NS"] = castle_ns
 			end
 		end		
 	end
-end--]]
+end
 
-for fichier in os.dir("corpus/Tampon_perso/") do
+for fichier in os.dir("corpus/Characters/") do
 
 	local tabCharacter = {}
 	local title = nil	
@@ -441,10 +537,15 @@ for fichier in os.dir("corpus/Tampon_perso/") do
 	local family = nil
 	local actor = nil	
 	local culture = nil
-	local house_ns = nil
+	local nom_house = nil
 	local night_ns = nil
+	local bastard = nil
+	local killed = nil
+	local actor = nil
+	local firstSeen = nil
+	local typeCharacter = nil
 
-	for line in io.lines("corpus/Tampon_perso/"..fichier) do
+	for line in io.lines("corpus/Characters/"..fichier) do
 		line = line:gsub("(%p)"," %1 ")
 		local seq = main(line)
 		--seq:dump()
@@ -505,25 +606,74 @@ for fichier in os.dir("corpus/Tampon_perso/") do
 			end
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
-				tabCharacter[title]["Castle_NS"] = castle_ns
+				tabCharacter[title]["castle_NS"] = castle_ns
 			end
-			
+			if #seq["#Bastard"] ~= 0 then
+				if (bastard == nil) then
+					bastard = gettag(seq,"#Bastard")
+					tabCharacter[title]["bastard"] = bastard
+				end
+			end
+			if #seq["#Killed"] ~= 0 then
+				if (killed == nil) then
+					killed = gettag(seq,"#Killed")
+					tabCharacter[title]["killed"] = killed
+				end
+			end
+			if #seq["#Prononciation"] ~= 0 then
+				local prononciation = gettag(seq,"#Prononciation")
+				prononciation = prononciation:gsub("is pronounced ", "")
+				tabCharacter[title]["prononciation"] = prononciation
+			end
 			if #seq["#NightSwatch"] ~= 0 then
 				night_ns = "true"
-				tabCharacter[title]["NightSwatch"] = night_ns
+				tabCharacter[title]["night"] = night_ns
 			end
-			if #seq["#House_NS"] ~= 0 then
-				if (house_ns == nil) then					
-					house_ns = gettag(seq,"#House_NS")
-					house_ns = house_ns:lower()
-					tabCharacter[title]["house_NS"] = house_ns
+			if #seq["#NomHouses"] ~= 0 then
+				if (nom_house == nil) then
+					nom_house = gettag(seq,"#NomHouses")
+					nom_house = nom_house:lower()
+					tabCharacter[title]["house"] = nom_house
+				end
+			end
+			if #seq["#Actor"] ~= 0 then
+				if (actor == nil) then
+					actor = gettag(seq,"#Actor")
+					actor = actor:lower()
+					tabCharacter[title]["actor"] = actor
+				end
+			end
+			if #seq["#firstSeen"] ~= 0 then
+				if (firstSeen == nil) then
+					firstSeen = gettag(seq,"#firstSeen")
+					firstSeen = firstSeen:lower()
+					tabCharacter[title]["firstSeen"] = firstSeen
+				end
+			end
+			if #seq["#type"] ~= 0 then
+				if (typeCharacter == nil) then
+					typeCharacter = gettag(seq,"#type")
+					typeCharacter = typeCharacter:lower()
+					tabCharacter[title]["type"] = typeCharacter
+				end
+			end
+			if getSeason(seq) ~='' then
+				--Add season to te tab
+				local tab = getSeason(seq)
+				-- A CHANGER LE db[name][season] par le vrai chemin  
+				if not tabCharacter[title]['season'] then
+					tabCharacter[title]['season'] = {}
+					for k,v in pairs(tab) do 
+						--print(k,v) 
+						tabCharacter[title]['season'][k] = v
+					end	
 				end
 			end
 		end		
-	end		
+	end
+		
+	addCharacterHouse(db, nom_house, title, tabCharacter)
 	
-	addCharacterHouse(db, house_ns, title, tabCharacter)
-	print(serialize(tabCharacter))
 end
 
 local out = io.open("db.txt", "w")
