@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   asshai = {
     religion = "lord lightother mixed religions",
@@ -11457,4 +11458,7 @@
     rulers = "house mooton",
     militarySize = 0,
   },
+=======
+return {
+>>>>>>> 7ecfabb0ca43a6f4d32091220106f8f9e3d2f74b
 }

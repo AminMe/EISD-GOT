@@ -703,5 +703,6 @@ for fichier in os.dir("corpus/Characters/") do
 end
 
 local out = io.open("db.txt", "w")
+out:write("return ")
 out:write(serialize(db))
 out:close()
