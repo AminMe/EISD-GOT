@@ -103,8 +103,16 @@ main:lexicon("#die",{"die", "died", "kill", "killed","death"})
 -- apartenance
 main:lexicon("#apartenance", {" ' s"," ‘ s", " ’ s","‘s"})
 
+country, district, division, expanse, land, locality, part, patch, 
 
-
+main:lexicon("#region", {"region", "country", "district", "division", "expanse", "land", "locality", "part", "patch"})
+main:lexicon("#founder", {"founder","beginner","initiator"})
+main:lexicon("#military", {"military", "armed forces", "army", "forces", "services"})
+main:lexicon("#heir", {"heir","beneficiary","heiress","next in line", "scion", "successor"})
+main:lexicon("#weapon", {"secret weapon","weapon"})
+main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
+main:lexicon("#words", {"words","word", "lyrics", "text"})
+main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
 
 --chargement du lexicon : maison, lieu, et perso
 
