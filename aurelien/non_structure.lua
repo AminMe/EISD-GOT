@@ -67,6 +67,9 @@ main:pattern("[#Castle /^[Cc]astle/ '=' .*(\n)]")
 main:pattern("[#PlacesOfNote /^[Pp]laces/ of note '=' .*(\n)]")
 main:pattern("[#LocMilitary /^[Mm]ilitary/ '=' .*?(\n)]")
 
+-- Pour Location non structure
+main:pattern("[#Visit (#W (#POS=DET | '-' | #de #apostrophe?)?){1,} >(visits|visit|visited|has visited)]")
+
 -- Pour Perso structure
 main:pattern("[#Season /^[Ss]ilitary/ '=' .*(\n)]")
 main:pattern("[#First /^[Ff]irst/ '=' .*(\n)]")
@@ -128,6 +131,7 @@ main:pattern([[
 	]
 ]])
 
+
 function gettag(seq, tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -185,6 +189,18 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 	db[title]["militarySize"] = somme
 
 	return variable
+end
+
+--[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
+function getVisit(db, location, variable)
+
+	if not db[location]["visit"] then
+		db[location]["visit"] = {}
+	end
+
+	variable = variable:gsub("When ", "")
+	db[location]["visit"][#db[location]["visit"] + 1] = variable
+
 end
 
 --[[ Fonction qui ajoute un personnage et ces information dans la maison à laquelle il appartient ]]--
@@ -517,6 +533,10 @@ for fichier in os.dir("corpus/Locations/") do
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["Castle_NS"] = castle_ns
+			end
+			if #seq["#Visit"] ~= 0 then
+				local visit = gettag(seq,"#Visit")
+				getVisit(db, title, visit)
 			end
 		end		
 	end
