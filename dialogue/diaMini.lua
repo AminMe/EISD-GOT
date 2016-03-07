@@ -24,7 +24,35 @@ end
 
 
 
+function getMultiple(seq,tag)
+	local pos = seq[tag]
+	if #pos == 0 then
+		return ""
+	end
+	local number = #pos
+	local tab = {}
+	for j=1, number do
+		local res = {}
+		local deb = pos[j][1]
+		local fin = pos[j][2]
+		for i = deb, fin do
+			res[#res + 1] = seq[i].token
+		end
+		tab[#tab + 1] = table.concat(res, " ")
+	end
+	return tab
+end
 
+
+function estDans( tab, string )
+	
+	for key =1,  #tab do
+		if(tab[key]==string)then
+			return true
+		end
+	end
+	return false
+end
 
 
 
@@ -111,8 +139,7 @@ main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"
 -- apartenance
 main:lexicon("#apartenance", {" ' s"," ‘ s", " ’ s","‘s"})
 
-country, district, division, expanse, land, locality, part, patch, 
-
+ 
 main:lexicon("#region", {"region", "country", "district", "division", "expanse", "land", "locality", "part", "patch"})
 main:lexicon("#founder", {"founder","beginner","initiator"})
 main:lexicon("#military", {"military", "armed forces", "army", "forces", "services"})
@@ -121,6 +148,10 @@ main:lexicon("#weapon", {"secret weapon","weapon"})
 main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
 main:lexicon("#words", {"words","word", "lyrics", "text"})
 main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
+
+
+
+
 
 --chargement du lexicon : maison, lieu, et perso
 
@@ -166,14 +197,14 @@ for line in io.lines("lexiques/lexique_character.txt") do
 		listCharacterLexique[line][prenomN] = prenomN
 		pNomPoint = prenom:sub(1,1)..". "..nom
 		listCharacterLexique[line][pNomPoint] = pNomPoint
-		prenomNPoint = prenom..". "..nom:sub(1,1)
+		prenomNPoint = prenom.." "..nom:sub(1,1).."."
 		listCharacterLexique[line][prenomNPoint] = prenomNPoint
 	end
 	lexiconCharacterLexique[#lexiconCharacterLexique+1] = line
 end
 main:lexicon("#perso", lexiconCharacterLexique)
 
---print(serialize(listCharacterLexique))
+print(serialize(listCharacterLexique))
 
 
 listLocationLexique = {}
@@ -201,6 +232,22 @@ main:lexicon("#lieu", lexiconLocationLexique)
 main:model("mdl/postag-en")
 
 main:pattern([[
+	[#niveauMaison 
+		#seat|#age|#allegiance|#founder|#lord|#region |#military |#heir |#weapon |#vassals |#words |#prononciation
+	]
+
+	]])
+
+main:pattern([[
+	[#niveauPerso 
+		#visite|#prononciation|#nom|#actor|	
+
+	]
+
+	]])
+
+
+main:pattern([[
 	[#VB 
 		#be|#apparaitre|#actor
 	]
@@ -209,7 +256,9 @@ main:pattern([[
 
 
 main:pattern([[
-	[#attributeBD #seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
+	[#attributeBD 
+		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
+		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#die|#first
 
 	]
 	]])
@@ -258,7 +307,7 @@ main:pattern([[
 		(#attributeBD) >(#apartenance (#POS=ADJ | #POS=CON #POS=ADJ)*  (#w)* #prepoOf (#w)* #sujet )
 		|(#attributeBD) >(#prepoOf #prepo* (#POS=NNC | #POS=NNP | #sujet)  #prepoOf )
 		| (#attributeBD) >((#w)* (#prepoOf |#prepo)* (#w)* #sujet #VB?)
-		| <(#sujet #apartenance (#POS=ADJ | #POS=CON #POS=ADJ)* ) (#attributeBD)
+		| <(#sujet #apartenance (#POS=ADJ | #POS=CON #POS=ADJ )* ) (#attributeBD)
 		| #age 
 		|(#vrbLieu ) >(#sujet)
 		|#actor
@@ -327,8 +376,10 @@ local tags = {
 -- todo fct army
 -- faire synonyme
  
+context ="" 
+local db2 = dofile("db.txt")
 
-for line in io.lines("debug.txt") do
+for line in io.lines("quMiniHouse.txt") do
 	line=line:gsub("‘s","'s")			
 	line=line:gsub("’s","'s")
 	line =line:gsub("([\',?!:;.()])", " %1 ")
@@ -339,6 +390,85 @@ for line in io.lines("debug.txt") do
 		line =line:gsub("do you know the information that","is")
 		line =line:gsub("do you know which","what is")
  		local seq = main(line)
+
+
+ 		qYN = gettag(seq,"#qNormal")
+ 		qYesNoAnswer = gettag(seq,"#qYesNo")
+ 		qNormal =gettag(seq,"#qYesNoAnswer")
+
+ 		boolFindSujet = true
+ 		boolFinArep = true
+
+ 		boolMaison =false
+ 		boolLieu =false
+ 		boolPerso = false
+
+ --######################### Connexion avec la bd ############################
+
+
+ 		if(qNormal~="")then-- gestion des questions normaux
+ 			
+
+
+ 			--########### recherche de sujet ##################
+ 			sujet = gettag(seq,"#sujet")
+ 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
+ 				sujet=gettag(seq,"#sujetYN")
+ 				boolFindSujet =false
+ 			end
+ 			--########### fin recherche de sujet ##################
+
+
+
+
+ 			--########### recherche de aRepondre ##################
+ 			aRep = gettag(seq, "#aRepondre")
+ 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 				aRep=gettag(sujet,"aVerifier")
+ 				boolFinArep=false
+ 			end
+ 			--########### fin recherche de aRepondre ##################
+
+ 			
+
+
+ 			--########### recherche le type du sujet ###################
+ 		
+
+
+
+ 			--########### fin recherche le type du sujet ###################
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 		else if (qYN ~="") then -- gestion des question yes no et yes no + answer
+ 			if(qYesNoAnswer~="")then -- gestion des question yes no + anwser
+ 			
+
+ 			else -- gestion des question yes no
+ 			
+ 			end
+ 		end
+
+ 		end
+
+
+
+
+
+
+ --######################### fin Connexion avec la bd ############################
+
 
  		print(seq:tostring(tags))
 
