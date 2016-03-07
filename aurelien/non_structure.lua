@@ -67,6 +67,9 @@ main:pattern("[#Castle /^[Cc]astle/ '=' .*(\n)]")
 main:pattern("[#PlacesOfNote /^[Pp]laces/ of note '=' .*(\n)]")
 main:pattern("[#LocMilitary /^[Mm]ilitary/ '=' .*?(\n)]")
 
+-- Pour Location non structure
+main:pattern("[#Visit (#W (#POS=DET | '-' | #de #apostrophe?)?){1,} >(visits|visit|visited|has visited)]")
+
 -- Pour Perso structure
 main:pattern("[#Season /^[Ss]ilitary/ '=' .*(\n)]")
 main:pattern("[#First /^[Ff]irst/ '=' .*(\n)]")
@@ -88,7 +91,6 @@ main:pattern("[#Prononciation #Be pronounced .*?('.')]")
 main:pattern("[#Bastard #Be (#Pronom)? bastard #Child of .*?('.')]")
 main:pattern("[#Killed #Be killed by .*?('.')]")
 
--- A METTRE
 main:pattern([[
 	[#infoCharacter
 		'is' ('a'|'an') 
@@ -105,14 +107,12 @@ main:pattern([[
 	]		
 ]])
 
--- A METTRE
 main:pattern([[
 	[#Actor
 		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
 	]
 ]])
 
--- A METTRE
 main:pattern([[
 		[#relationName 
 			#title? 
@@ -122,7 +122,6 @@ main:pattern([[
 		]
 ]])
 
--- A METTRE
 main:pattern([[
 	[#firstSeen
 		#debut (#POS=ADP #POS=DET|#POS=ADP) 
@@ -131,6 +130,7 @@ main:pattern([[
 		]
 	]
 ]])
+
 
 function gettag(seq, tag)
 	local pos = seq[tag]
@@ -191,6 +191,18 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 	return variable
 end
 
+--[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
+function getVisit(db, location, variable)
+
+	if not db[location]["visit"] then
+		db[location]["visit"] = {}
+	end
+
+	variable = variable:gsub("When ", "")
+	db[location]["visit"][#db[location]["visit"] + 1] = variable
+
+end
+
 --[[ Fonction qui ajoute un personnage et ces information dans la maison à laquelle il appartient ]]--
 function addCharacterHouse(db, house, character, tabCharacter)
 
@@ -207,8 +219,16 @@ function addCharacterHouse(db, house, character, tabCharacter)
 			end
 			
 			db[house]["characters"][character] = tabCharacter[character]
-		else
-			db[character] = tabCharacter[character]
+		else			
+			if not db["unknown"] then
+				db["unknown"] = {}
+			end
+
+			if not db["unknown"]["characters"] then
+				db["unknown"]["characters"] = {}
+			end
+
+			db["unknown"]["characters"][character] = tabCharacter[character]
 		end
 	end
 end
@@ -514,6 +534,10 @@ for fichier in os.dir("corpus/Locations/") do
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["Castle_NS"] = castle_ns
 			end
+			if #seq["#Visit"] ~= 0 then
+				local visit = gettag(seq,"#Visit")
+				getVisit(db, title, visit)
+			end
 		end		
 	end
 end
@@ -615,9 +639,11 @@ for fichier in os.dir("corpus/Characters/") do
 				end
 			end
 			if #seq["#Killed"] ~= 0 then
-				if (killed == nil) then
-					killed = gettag(seq,"#Killed")
-					tabCharacter[title]["killed"] = killed
+				if (status ~= nil and killed == nil) then
+					if (status:lower() ~= "alive") then
+						killed = gettag(seq,"#Killed")
+						tabCharacter[title]["killed"] = killed
+					end
 				end
 			end
 			if #seq["#Prononciation"] ~= 0 then
@@ -677,5 +703,6 @@ for fichier in os.dir("corpus/Characters/") do
 end
 
 local out = io.open("db.txt", "w")
+out:write("return ")
 out:write(serialize(db))
 out:close()
