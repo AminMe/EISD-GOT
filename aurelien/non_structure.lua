@@ -88,7 +88,6 @@ main:pattern("[#Prononciation #Be pronounced .*?('.')]")
 main:pattern("[#Bastard #Be (#Pronom)? bastard #Child of .*?('.')]")
 main:pattern("[#Killed #Be killed by .*?('.')]")
 
--- A METTRE
 main:pattern([[
 	[#infoCharacter
 		'is' ('a'|'an') 
@@ -105,14 +104,12 @@ main:pattern([[
 	]		
 ]])
 
--- A METTRE
 main:pattern([[
 	[#Actor
 		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
 	]
 ]])
 
--- A METTRE
 main:pattern([[
 		[#relationName 
 			#title? 
@@ -122,7 +119,6 @@ main:pattern([[
 		]
 ]])
 
--- A METTRE
 main:pattern([[
 	[#firstSeen
 		#debut (#POS=ADP #POS=DET|#POS=ADP) 
@@ -207,8 +203,16 @@ function addCharacterHouse(db, house, character, tabCharacter)
 			end
 			
 			db[house]["characters"][character] = tabCharacter[character]
-		else
-			db[character] = tabCharacter[character]
+		else			
+			if not db["unknown"] then
+				db["unknown"] = {}
+			end
+
+			if not db["unknown"]["characters"] then
+				db["unknown"]["characters"] = {}
+			end
+
+			db["unknown"]["characters"][character] = tabCharacter[character]
 		end
 	end
 end
@@ -615,9 +619,11 @@ for fichier in os.dir("corpus/Characters/") do
 				end
 			end
 			if #seq["#Killed"] ~= 0 then
-				if (killed == nil) then
-					killed = gettag(seq,"#Killed")
-					tabCharacter[title]["killed"] = killed
+				if (status ~= nil and killed == nil) then
+					if (status:lower() ~= "alive") then
+						killed = gettag(seq,"#Killed")
+						tabCharacter[title]["killed"] = killed
+					end
 				end
 			end
 			if #seq["#Prononciation"] ~= 0 then
