@@ -73,25 +73,24 @@ main:lexicon("#founder",{"founder", "creator","leader"})
 main:lexicon("#enTeteYN",{ "do you know the information that","is" , "do you know if","do you know " ,"do you think"})
 
 --lexicon seat :
-main:lexicon("#seat", {"base", "seat"})
-main:lexicon("#allegiance", {"allegiance"})
-main:lexicon("#army", {"army"})
-main:lexicon("#sovereign" ,{"sovereign"})
-main:lexicon("#aka", {"aka", "as known as"})
+main:lexicon("#seat", {"base", "seat","throne","centre"})
+main:lexicon("#allegiance", {"allegiance","adherence","constancy","fidelity","obedience","obligation","loyalty"})
+main:lexicon("#sovereign" ,{"sovereign","chief","emperor","empress","king","monarch"})
+main:lexicon("#aka", {"aka", "as known as","nickname"})
 
 
 --lexicon verbe :
 main:lexicon("#Auxiliaire",{"do", "does", "could", "would", "should"})
 main:lexicon("#be", {"be","is","Is","Are", "are", "were", "was", "had been", "has been"})
-main:lexicon("#apparaitre",{"appears", "appear",""})
+main:lexicon("#apparaitre",{"appears", "appear","appeared","arise","arised","show","showed","attend","attended"})
 
 --lexicon de preposition :
 main:lexicon("#prepoOf",{"of","from"})
 main:lexicon("#prepo",{"the","a","an", "in"})
 
 
---lexicon de status :
-main:lexicon("#status", {"lord"})
+--lexicon de lord :
+main:lexicon("#lord", {"lord","commander","governor","king","leader"})
 
 --lexicon de personnage: 
 main:lexicon("#people" , {"people","part"})
@@ -100,6 +99,15 @@ main:lexicon("#culture", {"culture","ceremonie"})
 
 main:lexicon("#first", { "first time", "first seen", "first apparition", "first appearance","first"})
 main:lexicon("#die",{"die", "died", "kill", "killed","death"})
+main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
+main:lexicon("#titles",{"titles","appellation","privilege"})
+main:lexicon("#place",{"place","area","location","locus","point","position","site","station"})
+main:lexicon("#night",{"night watches","night guardian","guardian","night","darkness"})
+main:lexicon("#bastard",{"bastard","by-blow","illegitimate child","whoreson"})
+main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"})
+
+
+
 -- apartenance
 main:lexicon("#apartenance", {" ' s"," ‘ s", " ’ s","‘s"})
 
@@ -193,7 +201,7 @@ main:pattern([[
 
 
 main:pattern([[
-	[#attributeBD #seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#status|#people|#serie|#culture|#actorSyno|#aka|#first
+	[#attributeBD #seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
 
 	]
 	]])
