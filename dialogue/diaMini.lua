@@ -45,7 +45,7 @@ end
 
 
 function transform(str,lseq)
-	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#family","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed"}
+	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#family","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed","#religion"}
 	
 
 	for key,val in pairs(bdTags) do
@@ -211,31 +211,39 @@ function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, r
     elseif (verif == 1 and questionType == 1) then 
         generateYesNoResponse(verif)       
     elseif (numberResponse == 0) then
-        generateNoResponse(sujet,tag)
+        generateNoResponse(sujet,aRepondre)
     elseif (numberResponse == 1) then
         -- Test questionType 
         if (questionType == 3) then 
-            generateNormalResponse(sujet,tag,reponse) 
+            generateNormalResponse(sujet,aRepondre,reponse) 
+        	print("eeeee")
 
-        elseif (quesionType == 2) then
-            generateYesNoAnswerResponse(sujet,tag,reponse)
+        elseif (questionType == 2) then
+        	
+        	print("ggggg" .. sujet)
+        	print(aRepondre)
+        	print(reponse)
+            generateYesNoAnswerResponse(sujet,aRepondre,reponse)
         end        
     elseif(numberResponse ~= 1) then 
         if (questionType == 3 ) then
-             generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)  
+             generateNormalMultipleResponse(sujet,aRepondre,reponse,numberResponse)  
         end
     end  
 end
 
 function generateYesNoResponse(val)
+	math.randomseed(os.time())
     if val == 0 then
+
         local response =
         {
             [1] = "No it's not correct",
             [2] = "Sorry for you but your answer is wrong",
             [3] = "No your information is not correct",
         }
-        local idex = math.random(#response)
+        local index = math.random(#response)
+        print(index)
         print(response[index])
     else 
         local response =
@@ -245,13 +253,13 @@ function generateYesNoResponse(val)
             [3] = "It's correct",
             [3] = "You are right",
         }
-        local idex = math.random(#response)
+        local index = math.random(#response)
         print(response[index])
     end    
 end    
 
 function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
-    
+    math.randomseed(os.time())
     local resultVar
     local tmp  
     for key,val in pairs(reponse) do 
@@ -265,12 +273,12 @@ function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
         [1] = "There are " .. numberResponse .. " : " .. resultVar, 
         [2] = "All answer are : " ..resultVar,
     }
-    local idex = math.random(#response)
+    local index = math.random(#response)
     print(response[index])
 end    
 
 function generateNoResponse(sujet,tag)
-    
+    math.randomseed(os.time())
     if sujet == "" then 
         local response =
         {
@@ -279,7 +287,8 @@ function generateNoResponse(sujet,tag)
             [3] = "Please excuse me, but I don't know the response,",
             [4] = "So sorry, but i don't know ",
         }
-        local idex = math.random(#response)
+
+        local index = math.random(#response)
         print(response[index])
     elseif tag == "" then
         local response =
@@ -289,33 +298,37 @@ function generateNoResponse(sujet,tag)
             [3] = "I am sorry but i can't give you an answer to your request",
             [4] = "I don't understand what you are talking about",
         }
-        local idex = math.random(#response)
+        local index = math.random(#response)
         print(response[index]) 
     end
 end
 
 function generateNormalResponse(sujet,tag,reponse) 
+	math.randomseed(os.time())
+
+	print(tag)
     local response =
         {
-            [1] = response .. " is the " .. tag .. " of " .. reponse,
-            [3] = "the answer is " .. response,
+            [1] = reponse .. " is the " .. tag .. " of " .. sujet,
+            [3] = "the answer is " .. reponse,
             [4] = "It's " .. reponse,
             [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse,
         }
-        local idex = math.random(#response)
+        local index = math.random(#response)
         print(response[index]) 
 end    
 
 
 function generateYesNoAnswerResponse(sujet,tag,reponse) 
+	math.randomseed(os.time())
     local response =
         {
-            [1] = "Yes" .. response .. " is the " .. tag .. " of " .. reponse,
-            [3] = "You are right " .. "the answer is " .. response,
+            [1] = "Yes " .. reponse .. " is the " .. tag .. " of " .. sujet,
+            [3] = "You are right " .. "the answer is " .. reponse,
             [4] = "It's " .. reponse .. ", well done",
             [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse .."it's correct",
         }
-        local idex = math.random(#response)
+        local index = math.random(#response)
         print(response[index]) 
 end 
 
@@ -377,6 +390,11 @@ main:lexicon("#qNumerique", { "how many", "how much", "how often"})
 main:lexicon("#qInfoS", { "what's"  , "what is",   "who", "who's" , "give me one","give me","give me a", "give me an", "how", "which's", "which is","which","what"})
 main:lexicon("#qInfoP", { "what're" , "what are", "who", "who're", "who are","give me all","give me", "give me some" ,"which are", "which're"})
 main:lexicon("#qLieu",{"where", "where's", "where're", "where are", "where is"})
+main:lexicon("#qTemp",{ "when do you see","when's", "when're", "when are", "when is","when"})
+
+
+
+
 main:lexicon("#age",{"age", "old"})
 main:lexicon("#founder",{"founder", "creator","leader"})
 
@@ -431,7 +449,7 @@ main:lexicon("#weapon", {"secret weapon","weapon"})
 main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
 main:lexicon("#words", {"words","word", "lyrics", "text"})
 main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
-
+main:lexicon("#religion",{"beliefs","belief","religions","religion"})
 
 
 
@@ -528,7 +546,7 @@ main:pattern([[
 main:pattern([[
 	[#attributeBD 
 		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
-		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#die|#first
+		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#die|#first|#religion
 
 	]
 	]])
@@ -536,7 +554,7 @@ main:pattern([[
 --patterne question normal
 main:pattern([[
 	[#qNormal
-		(#qNumerique | #qLieu |#qInfoP |#qInfoS) .*
+		(#qNumerique | #qLieu |#qInfoP |#qInfoS |#qTemp) .*
 	]
 ]])
 
@@ -567,7 +585,7 @@ main:pattern([[
 
  main:pattern([[
  	[#sujet
- 		  (#perso | #maison | #lieu | #pronom|#actorSyno | #POS=NNC? #POS=NNP? | #POS=NNP? #POS=NNC? )
+ 		  (#perso | #maison | #lieu | #pronom|#actorSyno |  #POS=NNP* )
 	]
  	]])
 
@@ -705,8 +723,8 @@ for line in io.lines("quMini.txt") do
  			 boolYNAnswer= true
  		end
 
- 		print("qNormal = "..qNormal)
- 		print("qYN "..qYN)
+ 		--print("qNormal = "..qNormal)
+ 		--print("qYN "..qYN)
 
 
 
@@ -718,7 +736,7 @@ for line in io.lines("quMini.txt") do
  --###########################################################################################################################################################
 
 
- 		if (qYN ~="") then -- gestion des question yes no  
+ 		if (qYN ~="" and qYesNoAnswer=="" and qNormal=="") then -- gestion des question yes no  
  			 
  		
  	--###################### recherche de sujet #####################
@@ -734,8 +752,7 @@ for line in io.lines("quMini.txt") do
 
 
 
-print("oyuuuuu")
-
+ 
  	--###################### recherche du context ###########################################################################
  			if(context=="")then
 				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
@@ -762,7 +779,7 @@ print("oyuuuuu")
 
  			
 
- 			print("context = "..context)
+ 			--print("context = "..context)
  	--###################### recherche du context ###########################################################################
 
 
@@ -778,7 +795,7 @@ print("oyuuuuu")
 
  			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
  			aRep=ret
- 			print("tag de aRepondre est : "..aRep)
+ 		--	print("tag de aRepondre est : "..aRep)
 
  	--################### fin recherche de aRepondre ##################
 
@@ -804,22 +821,29 @@ print("oyuuuuu")
  			 if(result==nil)then 			 
  			 	print("result est null")
  			 else
-	 			if(result=="")then
-	 			 		print("Non")
 
+	 			if(result=="")then
+	 			 		print("Non result est vide")
+	 			 		generation(compt,1,sujet,aRep,valBD,result,0)	
 	 				
 	 			else
 
+	 				--print("valbd = "..valBD.." et result de la bd : "..result)
 	 				--print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
 	 				if(string.find(result, valBD)~=nil)then
 
 	 					print("Oui")
+	 					generation(compt,1,sujet,aRep,valBD,result,1)	
 
 	 				elseif(string.find(valBD,result)~=nil)then
 	 					print("Oui")
+	 					generation(compt,1,valBD,aRep,sujet,result,1)	
+
 
 	 				else
 	 					print("Non")
+	 					generation(compt,1,sujet,aRep,valBD,result,0)	
+
 	 				end
 
 	 			end
@@ -876,7 +900,7 @@ print("oyuuuuu")
  			tabSujet = getMultiple(seq,"#sujet")
  			sujet =dernier(tabSujet)
  			--sujet = gettag(seq,"#sujet")
-
+ 			--print("sujet : "..sujet)
  			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
  				sujet=gettag(seq,"#sujetYN")
  				boolFindSujet =false
@@ -935,21 +959,30 @@ print("oyuuuuu")
  			--print("sujet : "..sujet.." , aRepondre = "..aRep)
  			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
  			-- result = rep2param(sujet,aRep)
-
  			 if(result==nil)then 			 
  			 	print("result est null")
  			 else
 	 			if(result=="")then
 	 				if(boolYNAnswer==true)then
-	 			 		print("Non, nous n'avons pas trouvé la réponse à votre question. ")
+	 			 		--print("Non, nous n'avons pas trouvé la réponse à votre question. ")
+	 			 		generation(compt,2,sujet,aRep,"",result,0)	
+
 	 				else
-	 			 		print(" nous n'avons pas trouvé la réponse à votre question. ")
+	 			 	--	print(" nous n'avons pas trouvé la réponse à votre question. ")
+	 			 		generation(compt,3,sujet,aRep,"",result,0)	
+
 	 			 	end
 	 			else
 	 				if(boolYNAnswer==true)then
-	 					print("Oui je sais et la response est : "..result.." et compteur = "..compt)
+	 					print(result)
+	 					print(compt)
+	 					--print("Oui je sais et la response est : "..result.." et compteur = "..compt)
+	 					generation(compt,2,sujet,aRep,"",result,1)	
+
 	 				else
-	 			 		print("la response est : "..result.." et compteur = "..compt)
+	 			 		--print("la response est : "..result.." et compteur = "..compt)
+	 			 		generation(compt,3,sujet,aRep,"",result,1)	
+
 	 			 	end
 
 	 			end
@@ -970,13 +1003,14 @@ print("oyuuuuu")
  --############################################################# FIN Question normal ####################################################################################################
  --###########################################################################################################################################################
 
-		seq:dump()
+		
 
  		else
  		print("icici")
 
 	
  end
+ seq:dump()
 end
 
 
