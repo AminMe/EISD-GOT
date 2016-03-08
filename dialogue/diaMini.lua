@@ -58,7 +58,13 @@ function transform(str,lseq)
 			for key2,val2 in pairs(tab)  do
 
 				if(string.find(tab[key2],str)~=nil)then
-					return string.gsub(val,"#","") 
+					
+					resTran = string.gsub(val,"#","") 
+					if(resTran=="military")then
+						return "militarySize"
+					else
+						return resTran
+					end
 				end
 			end
 		end
@@ -213,7 +219,7 @@ main:lexicon("#it", {"it", "its","itself"})
 main:lexicon("#family", {"parent", "daughter", "sister", "wife", "husband", "father","mother","son","marry","married", "wedded", "couple","grandfather","grandmother","brother"})
 
 --lexicon actor :
-main:lexicon("#actor", {"performed", "performs","perform","performing","play","plays", "played", "playing","represent","represents","representing","represented", "interpret", "interpreted", "interpreteding", "interprets"})
+main:lexicon("#actor", {"comedian","actor","performed", "performs","perform","performing","play","plays", "played", "playing","represent","represents","representing","represented", "interpret", "interpreted", "interpreteding", "interprets"})
 main:lexicon("#serie",{"season", "episode"})
 main:lexicon("#actorSyno" , {"actor","comedian"})
 
@@ -545,14 +551,15 @@ for line in io.lines("quMini.txt") do
  		if(qYesNoAnswer~="")then
  			 boolYNAnswer= true
  		end
- --######################### Connexion avec la bd ############################
-
- 
- 		if(qNormal~="" or qYesNoAnswer~="")then-- gestion des questions normaux
 
 
+ --############################################################# Question normal ##################################################################################
+ --###########################################################################################################################################################
 
- 	--###################### recherche de sujet #####################
+
+ 		if(qNormal~="" or qYesNoAnswer~="")then
+
+ 	--###################### recherche de sujet ###########################################################################
  			tabSujet = getMultiple(seq,"#sujet")
  			sujet =dernier(tabSujet)
  			--sujet = gettag(seq,"#sujet")
@@ -561,18 +568,21 @@ for line in io.lines("quMini.txt") do
  				sujet=gettag(seq,"#sujetYN")
  				boolFindSujet =false
  			end
- 	--#################### fin recherche de sujet ##################
+ 	--#################### fin recherche de sujet ########################################################################
 
  			
 
- 	--###################### recherche du context #####################
+ 	--###################### recherche du context ###########################################################################
  			if(context=="")then
-
- 				context=sujet
- 				boolContextVide=true
+				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
+ 				
+ 				else
+ 					context=sujet
+ 					boolContextVide=true
+ 				end
  			else
 
- 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it") )then
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
  					sujet =context
  				else if (context~=sujet)then
  					context =sujet
@@ -583,27 +593,25 @@ for line in io.lines("quMini.txt") do
  			end
 
  			print("context = "..context)
- 	--###################### recherche du context #####################
+ 	--###################### recherche du context ###########################################################################
 
 
 
-
-
- 	--################### recherche de aRepondre ##################
+ 	--################### recherche de aRepondre ########################################################################
  			aRep = gettag(seq, "#aRepondre")
  			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
  				aRep=gettag(seq,"#aVerifier")
  				boolFindArep=false
  			end
 
- 			test ="army"
- 			ret = transform(test,seq)
- 			print("tag de plays est : "..ret)
+ 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 			aRep=ret
+ 			print("tag de aRepondre est : "..aRep)
+ 	--################### fin recherche de aRepondre ########################################################################
 
- 	--################### fin recherche de aRepondre ##################
 
 
- 	--################## accès bd ##################
+ 	--################## accès bd ##############################################################################################################################
  			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
  			--print("sujet : "..sujet.." , aRepondre = "..aRep)
  			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
@@ -627,21 +635,21 @@ for line in io.lines("quMini.txt") do
 
 	 			end
  			 end
- 	--################### fin accès bd ##################
+ 	--################### fin accès bd ##############################################################################################################################
 
 
- 	--################### sauvegarde du context , type de la question et la question  ##################
-
+ 	--################### sauvegarde du context , type de la question et la question  ########################################################################
  		historique.motAdemander=motNotFind
  		historique.contextHis =context
  		historique.type="Normal"
  		historique.question =line
  		table.insert( tabHistorique, historique)
- 		print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+ 		--print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+ 	--################### Fin sauvegarde du context , type de la question et la question  ########################################################################
 
- 	--################### Fin sauvegarde du context , type de la question et la question  ##################
 
-
+ --############################################################# FIN Question normal ####################################################################################################
+ --###########################################################################################################################################################
 
 
 
@@ -738,10 +746,10 @@ for line in io.lines("quMini.txt") do
  		historique.type="YN"
  		historique.question =line
  		table.insert( tabHistorique, historique)
- 		print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+ 	--	print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
 	--################### Fin sauvegarde du context , type de la question et la question  ##################
 
- 		seq:dump()
+ 		--seq:dump()
 
  	else
  		print("icici")
