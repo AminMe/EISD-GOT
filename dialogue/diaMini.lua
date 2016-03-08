@@ -2,6 +2,8 @@ dark = require("dark")
 
 
 
+
+
 function gettag(seq, tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -41,6 +43,7 @@ function getMultiple(seq,tag)
 	return tab
 end
 
+
 function transform(str,lseq)
 	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#family","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed"}
 	
@@ -48,18 +51,144 @@ function transform(str,lseq)
 	for key,val in pairs(bdTags) do
 		--print("-----> "..key.." -> " .. val)
 		--print("lseq = "..lseq:tostring(ltags))
-		print("bdTags[key] = "..bdTags[key])
+		--print("bdTags[key] = "..bdTags[key])
 		tab=getMultiple(lseq,bdTags[key])
 
-		if(tab~=nil)then
-			for key2 in #tab  do
+		if(tab~="")then
+			for key2,val2 in pairs(tab)  do
+
 				if(string.find(tab[key2],str)~=nil)then
 					return string.gsub(val,"#","") 
 				end
 			end
 		end
 	end
+	return ""
 end
+
+
+
+
+
+
+function dernier( tab ) --tab = un tableau de 1 dimension 
+	res2 =""
+	for key =1,  #tab do
+		 res2=tab[key] 
+		-- print("res = "..res2)
+	end
+	return res2
+end
+
+
+
+
+function rep2param(sujetV, aRepVar)
+
+	local db2Var = dofile("db-1.txt")
+	res =""
+	if( db2Var[sujetV]~=nil)then
+		--print("sujet : "..sujetV.." et arep = "..aRepVar)
+
+		if( db2Var[sujetV][aRepVar]~=nil)then
+ 			res=db2Var[sujetV][aRepVar]
+		end
+	end
+	return res
+
+end
+
+
+
+function rechercheBD(sujetV, aRepVar, tabHouse)
+
+	local db2Var = dofile("db-1.txt")
+	tmp=""
+	resultVar=""
+	maison =""
+	compt=0
+
+	for key =1, #tabHouse do
+
+		maison = tabHouse[key]
+		maison = maison:gsub(",","")
+		if( db2Var[maison]~=nil)then
+
+			if( db2Var[maison]["characters"]~=nil)then
+					  --print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
+
+				if( db2Var[maison]['characters'][sujetV]~=nil)then
+					print("maison : "..maison)
+			   		--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
+
+
+					if( db2Var[maison]['characters'][sujetV]['family'] ~=nil)then
+
+						-- a améliorer 
+						if( aRepVar=="husband" or aRepVar == "daughter" or aRepVar == "son" or aRepVar == "wife" or aRepVar == "father"or aRepVar == "mother"or aRepVar == "brother"or aRepVar =="sister" or aRepVar == "uncle by marriage" 
+							or aRepVar =="paternal aunt" or aRepVar == "bastard" or aRepVar =="paternal uncle" or aRepVar =="maternal grandfather" or aRepVar =="maternal grandmother" or aRepVar =="maternal uncle" 
+							or aRepVar =="maternal aunt" or aRepVar =="maternal great - uncle" or aRepVar =="maternal great - aunt" or aRepVar == "brother - in - law") then
+					 		
+
+
+
+
+					 		if(db2Var[maison]['characters'][sujetV]['family'] ~= nil) then
+
+
+					    		if (db2Var[maison]['characters'][sujetV]['family'][aRepVar] ~= nil  ) then
+					   			
+					   				local i =1
+
+
+		    		 				while db2Var[maison]['characters'][sujetV]['family'][aRepVar][i] ~= nil do
+					   					--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
+
+					   				 
+				 	 						tmp = resultVar.." "..db2Var[maison]['characters'][sujetV]['family'][aRepVar][i].."  "
+				 	 						resultVar =tmp
+				 	 						tmp=""
+				 	 						compt=compt+1
+
+			 							
+			 							i=i+1
+									end
+									return resultVar,compt
+								end
+							end
+						else
+							return db2Var[maison]['characters'][sujetV][aRepVar],1
+						end
+
+					end
+				end
+			end
+		end
+ 	end
+
+
+
+
+
+ 	resultVar =""
+	if( db2Var[sujetV]~=nil)then
+		--print("sujet : "..sujetV.." et arep = "..aRepVar)
+
+		if( db2Var[sujetV][aRepVar]~=nil)then
+ 			resultVar=db2Var[sujetV][aRepVar] 
+ 			compt=1
+		end
+	end
+ 
+
+
+
+
+	return resultVar,compt
+
+end
+
+
 
 local main = dark.pipeline()
 
@@ -95,8 +224,8 @@ main:lexicon("#type", {"type"})
 --lexicon type de question : 
 
 main:lexicon("#qNumerique", { "how many", "how much", "how often"})
-main:lexicon("#qInfoS", {"what", "what's"  , "what is",   "who", "who's" , "give me one","give me","give me a", "give me an", "how"})
-main:lexicon("#qInfoP", {"what", "what're" , "what are", "who", "who're", "who are","give me all","give me", "give me some" })
+main:lexicon("#qInfoS", { "what's"  , "what is",   "who", "who's" , "give me one","give me","give me a", "give me an", "how", "which's", "which is","which","what"})
+main:lexicon("#qInfoP", { "what're" , "what are", "who", "who're", "who are","give me all","give me", "give me some" ,"which are", "which're"})
 main:lexicon("#qLieu",{"where", "where's", "where're", "where are", "where is"})
 main:lexicon("#age",{"age", "old"})
 main:lexicon("#founder",{"founder", "creator","leader"})
@@ -125,12 +254,12 @@ main:lexicon("#prepo",{"the","a","an", "in"})
 main:lexicon("#lord", {"lord","commander","governor","king","leader"})
 
 --lexicon de personnage: 
-main:lexicon("#people" , {"people","part"})
+main:lexicon("#people" , {"part"})
 
 main:lexicon("#culture", {"culture","ceremonie"})
 
 main:lexicon("#first", { "first time", "first seen", "first apparition", "first appearance","first"})
-main:lexicon("#death",{"die", "died", "kill", "killed","death"})
+main:lexicon("#die",{"die", "died", "kill", "killed","death"})
 main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
 main:lexicon("#titles",{"titles","appellation","privilege"})
 main:lexicon("#place",{"place","area","location","locus","point","position","site","station"})
@@ -152,6 +281,9 @@ main:lexicon("#weapon", {"secret weapon","weapon"})
 main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
 main:lexicon("#words", {"words","word", "lyrics", "text"})
 main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
+
+
+
 
 
 --chargement du lexicon : maison, lieu, et perso
@@ -205,7 +337,6 @@ for line in io.lines("lexiques/lexique_character.txt") do
 end
 main:lexicon("#perso", lexiconCharacterLexique)
 
---estDans(listCharacterLexique,"")
 --print(serialize(listCharacterLexique))
 
 
@@ -233,20 +364,7 @@ main:lexicon("#lieu", lexiconLocationLexique)
 -- debut des pattern
 main:model("mdl/postag-en")
 
-main:pattern([[
-	[#niveauMaison 
-		#seat|#age|#allegiance|#founder|#lord|#region |#military |#heir |#weapon |#vassals |#words |#prononciation
-	]
 
-	]])
-
-main:pattern([[
-	[#niveauPerso 
-		#visite|#prononciation|#nom|#actor|	
-
-	]
-
-	]])
 
 
 main:pattern([[
@@ -259,8 +377,8 @@ main:pattern([[
 
 main:pattern([[
 	[#attributeBD 
-		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
-		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#death
+		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
+		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#die|#first
 
 	]
 	]])
@@ -314,7 +432,7 @@ main:pattern([[
 		|(#vrbLieu ) >(#sujet)
 		|#actor
 		|#first
-		|#death
+		|#die
 
 	]
 	]])
@@ -378,10 +496,22 @@ local tags = {
 -- todo fct army
 -- faire synonyme
  
+result =""
 context ="" 
-local db2 = dofile("db.txt")
+motNotFind=""
+test=""
+ret=""
+historique ={
+	motAdemander="",
+	contextHis="",
+	type="",
+	question,
+}
+tabHistorique={}
 
-for line in io.lines("quMiniHouse.txt") do
+local db2 = dofile("db-1.txt")
+
+for line in io.lines("debug.txt") do
 	line=line:gsub("‘s","'s")			
 	line=line:gsub("’s","'s")
 	line =line:gsub("([\',?!:;.()])", " %1 ")
@@ -392,90 +522,229 @@ for line in io.lines("quMiniHouse.txt") do
 		line =line:gsub("do you know the information that","is")
 		line =line:gsub("do you know which","what is")
  		local seq = main(line)
+ 		print(seq:tostring(tags))
 
 
- 		qYN = gettag(seq,"#qNormal")
- 		qYesNoAnswer = gettag(seq,"#qYesNo")
- 		qNormal =gettag(seq,"#qYesNoAnswer")
+ 		qYN = gettag(seq,"#qYesNo")
+ 		qYesNoAnswer = gettag(seq,"#qYesNoAnswer")
+ 		qNormal =gettag(seq,"#qNormal")
 
  		boolFindSujet = true
- 		boolFinArep = true
+ 		boolFindArep = true
 
  		boolMaison =false
  		boolLieu =false
  		boolPerso = false
+ 		boolYNAnswer =false
+ 		boolValBD=false
+ 		boolContextVide=false
 
+
+ 		compt=0
+
+ 		if(qYesNoAnswer~="")then
+ 			 boolYNAnswer= true
+ 		end
  --######################### Connexion avec la bd ############################
 
+ 
+ 		if(qNormal~="" or qYesNoAnswer~="")then-- gestion des questions normaux
 
- 		if(qNormal~="")then-- gestion des questions normales
- 			
 
 
- 			--########### recherche de sujet ##################
- 			sujet = gettag(seq,"#sujet")
+ 	--###################### recherche de sujet #####################
+ 			tabSujet = getMultiple(seq,"#sujet")
+ 			sujet =dernier(tabSujet)
+ 			--sujet = gettag(seq,"#sujet")
 
  			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
  				sujet=gettag(seq,"#sujetYN")
  				boolFindSujet =false
  			end
- 			--########### fin recherche de sujet ##################
+ 	--#################### fin recherche de sujet ##################
+
+ 			
+
+ 	--###################### recherche du context #####################
+ 			if(context=="")then
+
+ 				context=sujet
+ 				boolContextVide=true
+ 			else
+
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it") )then
+ 					sujet =context
+ 				else if (context~=sujet)then
+ 					context =sujet
+ 				end
+
+ 			end
+
+ 			end
+
+ 			print("context = "..context)
+ 	--###################### recherche du context #####################
 
 
 
 
- 			--########### recherche de aRepondre ##################
+
+ 	--################### recherche de aRepondre ##################
  			aRep = gettag(seq, "#aRepondre")
  			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
- 				aRep=gettag(sujet,"aVerifier")
- 				boolFinArep=false
+ 				aRep=gettag(seq,"#aVerifier")
+ 				boolFindArep=false
  			end
- 			--########### fin recherche de aRepondre ##################
 
- 			
+ 			test ="army"
+ 			ret = transform(test,seq)
+ 			print("tag de plays est : "..ret)
+
+ 	--################### fin recherche de aRepondre ##################
 
 
- 			--########### recherche le type du sujet ###################
+ 	--################## accès bd ##################
+ 			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
+ 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
+ 			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
+ 			-- result = rep2param(sujet,aRep)
+
+ 			 if(result==nil)then 			 
+ 			 	print("result est null")
+ 			 else
+	 			if(result=="")then
+	 				if(boolYNAnswer==true)then
+	 			 		print("Non, nous n'avons pas trouvé la réponse à votre question. ")
+	 				else
+	 			 		print(" nous n'avons pas trouvé la réponse à votre question. ")
+	 			 	end
+	 			else
+	 				if(boolYNAnswer==true)then
+	 					print("Oui je sais et la response est : "..result.." et compteur = "..compt)
+	 				else
+	 			 		print("la response est : "..result.." et compteur = "..compt)
+	 			 	end
+
+	 			end
+ 			 end
+ 	--################### fin accès bd ##################
+
+
+ 	--################### sauvegarde du context , type de la question et la question  ##################
+
+ 		historique.motAdemander=motNotFind
+ 		historique.contextHis =context
+ 		historique.type="Normal"
+ 		historique.question =line
+ 		table.insert( tabHistorique, historique)
+ 		print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+
+ 	--################### Fin sauvegarde du context , type de la question et la question  ##################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 		else if (qYN ~="") then -- gestion des question yes no  
+ 			 
  		
+ 	--###################### recherche de sujet #####################
+ 			tabSujet = getMultiple(seq,"#sujetYN")
+ 			sujet =dernier(tabSujet)
+ 			--sujet = gettag(seq,"#sujet")
 
-
-
- 			--########### fin recherche le type du sujet ###################
-
-
-
-
-
-
-
-
-
-
-
-
-
- 		else if (qYN ~="") then -- gestion des question yes no et yes no + answer
- 			if(qYesNoAnswer~="")then -- gestion des question yes no + anwser
- 			
-
- 			else -- gestion des question yes no
- 			
+ 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
+ 				sujet=gettag(seq,"#sujet")
+ 				boolFindSujet =false
  			end
+ 	--#################### fin recherche de sujet ##################
+
+
+ 	--################### recherche de aRepondre ##################
+ 			aRep = gettag(seq, "#aVerifier")
+ 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 				aRep=gettag(seq,"#aRepondre")
+ 				boolFindArep=false
+ 			end
+ 	--################### fin recherche de aRepondre ##################
+
+
+ 	--################### recherche de valeur du BD proposé par l'utilisateur ##################
+			valBD = gettag(seq, "#valeurBd")
+ 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 				aRep=gettag(seq,"#aRepondre")-- le cas ou la valeur du bd est identique que le aRepondre
+ 				boolFindArep=false
+ 			end
+
+
+ 	--################### fin recherche de valeur du BD proposé par l'utilisateur ##################
+
+
+
+ 	--################## accès bd ##################
+ 			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
+ 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
+ 			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
+ 			-- result = rep2param(sujet,aRep)
+
+ 			 if(result==nil)then 			 
+ 			 	print("result est null")
+ 			 else
+	 			if(result=="")then
+	 			 		print("Non")
+	 				
+	 			else
+
+	 				print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
+	 				if(string.find(result, valBD)~=nil)then
+
+	 					print("Oui")
+
+	 				else if(string.find(valBD,result)~=nil)then
+	 					print("Oui")
+
+	 				else
+	 					print("Non")
+	 				end
+
+	 			end
+	 		end
+ 			 end
+ 	--################### fin accès bd ##################
+ 
  		end
+ 
 
- 		end
-
-
-
-
-
-
- --######################### fin Connexion avec la bd ############################
+ 	end
+ 
+ 	--######################### fin Connexion avec la bd ############################
 
 
- 		print(seq:tostring(tags))
+
+
+	--################### sauvegarde du context , type de la question et la question  ##################
+		historique.motAdemander=motNotFind
+ 		historique.contextHis =context
+ 		historique.type="YN"
+ 		historique.question =line
+ 		table.insert( tabHistorique, historique)
+ 		print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+	--################### Fin sauvegarde du context , type de la question et la question  ##################
 
  		seq:dump()
+
+ 	else
+ 		print("icici")
 
 	end
 
