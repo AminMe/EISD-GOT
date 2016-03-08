@@ -2,8 +2,6 @@ dark = require("dark")
 
 
 
-
-
 function gettag(seq, tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -43,19 +41,25 @@ function getMultiple(seq,tag)
 	return tab
 end
 
-
-function estDans( tab, string )
+function transform(str,lseq)
+	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#family","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed"}
 	
-	for key =1,  #tab do
-		if(tab[key]==string)then
-			return true
+
+	for key,val in pairs(bdTags) do
+		--print("-----> "..key.." -> " .. val)
+		--print("lseq = "..lseq:tostring(ltags))
+		print("bdTags[key] = "..bdTags[key])
+		tab=getMultiple(lseq,bdTags[key])
+
+		if(tab~=nil)then
+			for key2 in #tab  do
+				if(string.find(tab[key2],str)~=nil)then
+					return string.gsub(val,"#","") 
+				end
+			end
 		end
 	end
-	return false
 end
-
-
-
 
 local main = dark.pipeline()
 
@@ -126,7 +130,7 @@ main:lexicon("#people" , {"people","part"})
 main:lexicon("#culture", {"culture","ceremonie"})
 
 main:lexicon("#first", { "first time", "first seen", "first apparition", "first appearance","first"})
-main:lexicon("#die",{"die", "died", "kill", "killed","death"})
+main:lexicon("#death",{"die", "died", "kill", "killed","death"})
 main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
 main:lexicon("#titles",{"titles","appellation","privilege"})
 main:lexicon("#place",{"place","area","location","locus","point","position","site","station"})
@@ -150,9 +154,6 @@ main:lexicon("#words", {"words","word", "lyrics", "text"})
 main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
 
 
-
-
-
 --chargement du lexicon : maison, lieu, et perso
 
 listHouseLexique = {}
@@ -168,7 +169,7 @@ main:lexicon("#maison", lexiconHouseLexique)
 
 -- tester si nil
 
-print(serialize(lexiconHouseLexique))
+--print(serialize(lexiconHouseLexique))
 
 
 function sizegmatch(line)
@@ -204,7 +205,8 @@ for line in io.lines("lexiques/lexique_character.txt") do
 end
 main:lexicon("#perso", lexiconCharacterLexique)
 
-print(serialize(listCharacterLexique))
+--estDans(listCharacterLexique,"")
+--print(serialize(listCharacterLexique))
 
 
 listLocationLexique = {}
@@ -257,8 +259,8 @@ main:pattern([[
 
 main:pattern([[
 	[#attributeBD 
-		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#age|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
-		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#die|#first
+		#seat|#age|#vrbLieu|#actor|#family|#allegiance|#army|#type|#founder|#sovereign|#lord|#people|#serie|#culture|#actorSyno|#aka|#first
+		|#region |#military |#heir |#weapon |#vassals |#words |#prononciation|#visit|#bastard|#night|#place|#titles|#last|#death
 
 	]
 	]])
@@ -312,7 +314,7 @@ main:pattern([[
 		|(#vrbLieu ) >(#sujet)
 		|#actor
 		|#first
-		|#die
+		|#death
 
 	]
 	]])
@@ -406,12 +408,13 @@ for line in io.lines("quMiniHouse.txt") do
  --######################### Connexion avec la bd ############################
 
 
- 		if(qNormal~="")then-- gestion des questions normaux
+ 		if(qNormal~="")then-- gestion des questions normales
  			
 
 
  			--########### recherche de sujet ##################
  			sujet = gettag(seq,"#sujet")
+
  			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
  				sujet=gettag(seq,"#sujetYN")
  				boolFindSujet =false
