@@ -85,7 +85,7 @@ end
 
 function rep2param(sujetV, aRepVar)
 
-	local db2Var = dofile("db-1.txt")
+	local db2Var = dofile("db.txt")
 	res =""
 	if( db2Var[sujetV]~=nil)then
 		--print("sujet : "..sujetV.." et arep = "..aRepVar)
