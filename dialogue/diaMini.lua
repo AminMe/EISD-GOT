@@ -196,6 +196,153 @@ end
 
 
 
+
+
+
+--######################################################### Génération des réponses #################################################################################
+
+
+
+-- Si 0,1 ou plusieurs 
+-- type : quantite, who, location, is, what is 
+-- Is toto a member of
+-- questionType ==>  1 : YesNo 2 : YesNoAnswer 3 : Normal
+function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, reponse, verif)
+    if verif == 0 and questionType == 1 then 
+        generateYesNoResponse(verif)  
+    else if  verif == 1 and questionType == 1 then 
+        generateYesNoResponse(verif)       
+    else if numberResponse == 0 then
+        generateNoResponse(sujet,tag)
+    else if numberResponse == 1 then
+        -- Test questionType 
+        if questionType == 3 then 
+            generateNormalResponse(sujet,tag,reponse)  
+        else if quesionType == 2
+            generateYesNoAnswerResponse(sujet,tag,reponse)
+        end    
+    else if numberResponse > 1 then 
+        if questionType == 3 
+             generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)  
+        end
+    end  
+end
+
+function generateYesNoResponse(val)
+    if val == 0 then
+        local response =
+        {
+            [1] = "No it's not correct",
+            [2] = "Sorry for you but your answer is wrong",
+            [3] = "No your information is not correct",
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    else 
+        local response =
+        {
+            [1] = "Yes it is",
+            [2] = "Of course",
+            [3] = "It's correct",
+            [3] = "You are right",
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    end    
+end    
+
+function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
+    
+    local resultVar
+    local tmp
+    for key,val in pairs(reponse) do     
+        tmp = resultVar.." ".. val .. " "
+        resultVar =tmp
+        tmp=""  
+    end
+
+    local response = 
+    {
+        [1] = "There are " .. numberResponse .. " : " .. resultVar, 
+        [2] = "All answer are : " ..resultVar,
+    }
+    local idex = math.random(#response)
+    print(response[index])
+end    
+
+function generateNoResponse(sujet,tag)
+    if sujet == "" then 
+        local response =
+        {
+            [1] = "I am sorry i don't know the answer" 
+            [2] = "Sorry, i don't have an answer to your question",
+            [3] = "Please excuse me, but I don't know the response,",
+            [4] = "So sorry, but i don't know " ,
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    else if tag == "" then
+        local response =
+        {
+            [1] = "I am sorry i don't know what you are searching" 
+            [2] = "I don't know what you are looking for",
+            [3] = "I am sorry but i can't give you an answer to your request",
+            [4] = "I don't understand what you are talking about",
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+    end
+end
+
+function generateNormalResponse(sujet,tag,reponse) 
+    local response =
+        {
+            [1] = response .. " is the " .. tag .. " of " .. reponse,
+            [3] = "the answer is " .. response,
+            [4] = "It's " .. reponse,
+            [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse,
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+end    
+
+
+function generateYesNoAnswerResponse(sujet,tag,reponse) 
+    local response =
+        {
+            [1] = "Yes" .. response .. " is the " .. tag .. " of " .. reponse,
+            [3] = "You are right " .. "the answer is " .. response,
+            [4] = "It's " .. reponse .. ", well done",
+            [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse .."it's correct",
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+end 
+
+
+
+
+
+--######################################################### FIN Génération des réponses #################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+--######################################################### Début des pattern #################################################################################
+
+
+
+
+
 local main = dark.pipeline()
 
 main:basic()
@@ -423,7 +570,7 @@ main:pattern([[
 
  main:pattern([[
  	[#sujet
- 		 (#perso | #maison | #lieu | #pronom|#actorSyno)
+ 		  (#perso | #maison | #lieu | #pronom|#actorSyno | #POS=NNC? #POS=NNP? | #POS=NNP? #POS=NNC? )
 	]
  	]])
 
@@ -495,12 +642,20 @@ local tags = {
 
 
 
+--######################################################### FIN des pattern #################################################################################
+
+
+
+
+
+
+
+
 
 
 
 -- todo fct qui permet de choisir entre deux aRepondre , avec des lexicon ayant certain priorité, et renvoye le premier si il y en a un seul
--- todo fct army
--- faire synonyme
+
  
 result =""
 context ="" 
@@ -575,7 +730,13 @@ for line in io.lines("quMini.txt") do
  	--###################### recherche du context ###########################################################################
  			if(context=="")then
 				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
- 				
+					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+ 						io.write("\n> ") 
+						tmpSujet = io.read()
+						sujet=tmpSujet
+					end
+					context=sujet
+ 					boolContextVide=true
  				else
  					context=sujet
  					boolContextVide=true
@@ -662,6 +823,9 @@ for line in io.lines("quMini.txt") do
 
 
 
+ --############################################################# Question Yes No ##################################################################################
+ --###########################################################################################################################################################
+
 
  		else if (qYN ~="") then -- gestion des question yes no  
  			 
@@ -678,12 +842,53 @@ for line in io.lines("quMini.txt") do
  	--#################### fin recherche de sujet ##################
 
 
+
+
+
+ 	--###################### recherche du context ###########################################################################
+ 			if(context=="")then
+				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
+					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+ 						io.write("\n> ") 
+						tmpSujet = io.read()
+						sujet=tmpSujet
+					end
+					context=sujet
+ 					boolContextVide=true
+ 				else
+ 					context=sujet
+ 					boolContextVide=true
+ 				end
+ 			else
+
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
+ 					sujet =context
+ 				else if (context~=sujet)then
+ 					context =sujet
+ 				end
+
+ 			end
+
+ 			end
+
+ 			print("context = "..context)
+ 	--###################### recherche du context ###########################################################################
+
+
+
+
+
  	--################### recherche de aRepondre ##################
  			aRep = gettag(seq, "#aVerifier")
  			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
  				aRep=gettag(seq,"#aRepondre")
  				boolFindArep=false
  			end
+
+ 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 			aRep=ret
+ 			print("tag de aRepondre est : "..aRep)
+
  	--################### fin recherche de aRepondre ##################
 
 
@@ -749,11 +954,18 @@ for line in io.lines("quMini.txt") do
  	--	print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
 	--################### Fin sauvegarde du context , type de la question et la question  ##################
 
- 		--seq:dump()
+ 		seq:dump()
 
  	else
  		print("icici")
 
 	end
+
+
+
+ --############################################################# FIN Question Yes No ##################################################################################
+ --###########################################################################################################################################################
+
+
 
 end
