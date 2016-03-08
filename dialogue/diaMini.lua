@@ -574,12 +574,15 @@ for line in io.lines("debug.txt") do
 
  	--###################### recherche du context ###########################################################################
  			if(context=="")then
-
- 				context=sujet
- 				boolContextVide=true
+				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
+ 				
+ 				else
+ 					context=sujet
+ 					boolContextVide=true
+ 				end
  			else
 
- 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it") )then
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
  					sujet =context
  				else if (context~=sujet)then
  					context =sujet
