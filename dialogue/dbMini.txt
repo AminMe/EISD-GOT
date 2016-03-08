@@ -1,5 +1,19 @@
 return {
-  stark = {
+
+
+
+ winterfell = {
+    religion = "the old gods of the forest",
+    militarySize = 0,
+    age = "8000 years ( according to myth )",
+    rulers = "house boltonhouse greyjoy ( formerly ) house stark ( formerly )",
+    visit = {
+      [1] = "Robert",
+    },
+  },
+
+
+  ["house stark"] = {
     allegiance = "sovereign",
     lord = "sansa stark",
     sigil = "a grey direwolf on a white field.",
@@ -36,10 +50,8 @@ return {
           [3]="king crow",
         },
 
-        allegiance={
-          [1]="the night's watch",
-          [2]="house stark",
-        },
+        allegiance="the night's watch",
+         
         family = {
           parent = {
             [1] = "eddard stark",
@@ -256,7 +268,7 @@ return {
     },
   },
   
-  lannister = {
+  ["house lannister"]= {
       allegiance = "house baratheon of king ' s landing  ",
       lord = "queen mother cersei lannister  ",
       sigil = " a golden lion rampant on a crimson field .",
@@ -288,10 +300,8 @@ return {
             [3]="man without honor",
           },
         
-          allegiance={
-            [1]= "kingsguard",
-            [2]= "house lannister",
-          },
+          allegiance= "house lannister",
+          
 
       },
       },
