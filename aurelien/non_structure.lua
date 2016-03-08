@@ -113,6 +113,7 @@ main:pattern([[
 	]
 ]])
 
+
 main:pattern([[
 		[#relationName 
 			#title? 
@@ -180,7 +181,7 @@ function getFamily(str)
 			tableFini[val][i] = tableName[key]
 		end
 		
-		print("____________________")
+		--print("____________________")
 	end
 	return tableFini
 end
@@ -717,6 +718,10 @@ for fichier in os.dir("corpus/Characters/") do
 				family = remplirTabStructure(tabCharacter, seq, "#Family", family, title, "[Ff]amily = ")
 			end
 			if #seq["#Actor"] ~= 0 then
+
+				if(fichier=="Jon_Snow.txt") then
+					print("actor "..actor)
+				end
 				actor = remplirTabStructure(tabCharacter, seq, "#Actor", actor, title, "[Aa]ctor = ")
 			end
 			if #seq["#Culture"] ~= 0 then
