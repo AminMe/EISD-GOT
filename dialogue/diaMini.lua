@@ -201,6 +201,123 @@ end
 
 --######################################################### Génération des réponses #################################################################################
 
+-- Si 0,1 ou plusieurs 
+-- type : quantite, who, location, is, what is 
+-- Is toto a member of
+-- questionType ==>  1 : YesNo 2 : YesNoAnswer 3 : Normal
+function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, reponse, verif)
+    if (verif == 0 and questionType == 1) then 
+        generateYesNoResponse(verif)  
+    elseif (verif == 1 and questionType == 1) then 
+        generateYesNoResponse(verif)       
+    elseif (numberResponse == 0) then
+        generateNoResponse(sujet,tag)
+    elseif (numberResponse == 1) then
+        -- Test questionType 
+        if (questionType == 3) then 
+            generateNormalResponse(sujet,tag,reponse) 
+
+        elseif (quesionType == 2) then
+            generateYesNoAnswerResponse(sujet,tag,reponse)
+        end        
+    elseif(numberResponse ~= 1) then 
+        if (questionType == 3 ) then
+             generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)  
+        end
+    end  
+end
+
+function generateYesNoResponse(val)
+    if val == 0 then
+        local response =
+        {
+            [1] = "No it's not correct",
+            [2] = "Sorry for you but your answer is wrong",
+            [3] = "No your information is not correct",
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    else 
+        local response =
+        {
+            [1] = "Yes it is",
+            [2] = "Of course",
+            [3] = "It's correct",
+            [3] = "You are right",
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    end    
+end    
+
+function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
+    
+    local resultVar
+    local tmp  
+    for key,val in pairs(reponse) do 
+        tmp = resultVar .. val .. ","
+        resultVar = tmp
+        tmp = ""
+    end
+
+    local response = 
+    {
+        [1] = "There are " .. numberResponse .. " : " .. resultVar, 
+        [2] = "All answer are : " ..resultVar,
+    }
+    local idex = math.random(#response)
+    print(response[index])
+end    
+
+function generateNoResponse(sujet,tag)
+    
+    if sujet == "" then 
+        local response =
+        {
+            [1] = "I am sorry i don't know the answer", 
+            [2] = "Sorry, i don't have an answer to your question",
+            [3] = "Please excuse me, but I don't know the response,",
+            [4] = "So sorry, but i don't know ",
+        }
+        local idex = math.random(#response)
+        print(response[index])
+    elseif tag == "" then
+        local response =
+        {
+            [1] = "I am sorry i don't know what you are searching", 
+            [2] = "I don't know what you are looking for",
+            [3] = "I am sorry but i can't give you an answer to your request",
+            [4] = "I don't understand what you are talking about",
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+    end
+end
+
+function generateNormalResponse(sujet,tag,reponse) 
+    local response =
+        {
+            [1] = response .. " is the " .. tag .. " of " .. reponse,
+            [3] = "the answer is " .. response,
+            [4] = "It's " .. reponse,
+            [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse,
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+end    
+
+
+function generateYesNoAnswerResponse(sujet,tag,reponse) 
+    local response =
+        {
+            [1] = "Yes" .. response .. " is the " .. tag .. " of " .. reponse,
+            [3] = "You are right " .. "the answer is " .. response,
+            [4] = "It's " .. reponse .. ", well done",
+            [5] = "The " .. tag .. "of" .. sujet .."is" .. reponse .."it's correct",
+        }
+        local idex = math.random(#response)
+        print(response[index]) 
+end 
 
 
 --######################################################### FIN Génération des réponses #################################################################################
@@ -509,6 +626,7 @@ local tags = {
 		["#valeurBd"] ="blue",
 		["#qYesNoAnswer"] ="blue",
 		["#qYesNo"] ="blue",
+		["#qNormal"] ="blue",
 		["#aRepondre"] ="white",
 		["#sujet"]= "red",
 		["#lieu"] ="red",
@@ -587,13 +705,173 @@ for line in io.lines("quMini.txt") do
  			 boolYNAnswer= true
  		end
 
+ 		print("qNormal = "..qNormal)
+ 		print("qYN "..qYN)
+
+
+
+
+
+
+
+ --############################################################# Question Yes No ##################################################################################
+ --###########################################################################################################################################################
+
+
+ 		if (qYN ~="") then -- gestion des question yes no  
+ 			 
+ 		
+ 	--###################### recherche de sujet #####################
+ 			tabSujet = getMultiple(seq,"#sujetYN")
+ 			sujet =dernier(tabSujet)
+ 			--sujet = gettag(seq,"#sujet")
+
+ 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
+ 				sujet=gettag(seq,"#sujet")
+ 				boolFindSujet =false
+ 			end
+ 	--#################### fin recherche de sujet ##################
+
+
+
+print("oyuuuuu")
+
+ 	--###################### recherche du context ###########################################################################
+ 			if(context=="")then
+				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
+					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+ 						io.write("\n> ") 
+						tmpSujet = io.read()
+						sujet=tmpSujet
+					end
+					context=sujet
+ 					boolContextVide=true
+ 				else
+ 					context=sujet
+ 					boolContextVide=true
+ 				end
+ 			else
+
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
+ 					sujet =context
+ 				elseif (context~=sujet)then
+ 					context =sujet
+ 				end
+
+ 			end
+
+ 			
+
+ 			print("context = "..context)
+ 	--###################### recherche du context ###########################################################################
+
+
+
+
+
+ 	--################### recherche de aRepondre ##################
+ 			aRep = gettag(seq, "#aVerifier")
+ 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 				aRep=gettag(seq,"#aRepondre")
+ 				boolFindArep=false
+ 			end
+
+ 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 			aRep=ret
+ 			print("tag de aRepondre est : "..aRep)
+
+ 	--################### fin recherche de aRepondre ##################
+
+
+ 	--################### recherche de valeur du BD proposé par l'utilisateur ##################
+			valBD = gettag(seq, "#valeurBd")
+ 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 				aRep=gettag(seq,"#aRepondre")-- le cas ou la valeur du bd est identique que le aRepondre
+ 				boolFindArep=false
+ 			end
+
+
+ 	--################### fin recherche de valeur du BD proposé par l'utilisateur ##################
+
+
+
+ 	--################## accès bd ##################
+ 			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
+ 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
+ 			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
+ 			-- result = rep2param(sujet,aRep)
+
+ 			 if(result==nil)then 			 
+ 			 	print("result est null")
+ 			 else
+	 			if(result=="")then
+	 			 		print("Non")
+
+	 				
+	 			else
+
+	 				--print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
+	 				if(string.find(result, valBD)~=nil)then
+
+	 					print("Oui")
+
+	 				elseif(string.find(valBD,result)~=nil)then
+	 					print("Oui")
+
+	 				else
+	 					print("Non")
+	 				end
+
+	 			end
+	 		 
+ 			 end
+ 	--################### fin accès bd ##################
+ 
+ 		
+ 
+
+ 	 
+ 
+ 	--######################### fin Connexion avec la bd ############################
+
+
+
+
+	--################### sauvegarde du context , type de la question et la question  ##################
+		historique.motAdemander=motNotFind
+ 		historique.contextHis =context
+ 		historique.type="YN"
+ 		historique.question =line
+ 		table.insert( tabHistorique, historique)
+ 	--	print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+	--################### Fin sauvegarde du context , type de la question et la question  ##################
+
+ 		
+
+
+ --############################################################# FIN Question Yes No ##################################################################################
+ --###########################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  --############################################################# Question normal ##################################################################################
  --###########################################################################################################################################################
 
 
- 		if(qNormal~="" or qYesNoAnswer~="")then
+ 		elseif(qNormal~="" or qYesNoAnswer~="")then
 
+ 			print("sooooo")
  	--###################### recherche de sujet ###########################################################################
  			tabSujet = getMultiple(seq,"#sujet")
  			sujet =dernier(tabSujet)
@@ -692,160 +970,15 @@ for line in io.lines("quMini.txt") do
  --############################################################# FIN Question normal ####################################################################################################
  --###########################################################################################################################################################
 
+		seq:dump()
 
-
-
-
-
-
-
-
-
-
-
- --############################################################# Question Yes No ##################################################################################
- --###########################################################################################################################################################
-
-
- 		elseif (qYN ~="") then -- gestion des question yes no  
- 			 
- 		
- 	--###################### recherche de sujet #####################
- 			tabSujet = getMultiple(seq,"#sujetYN")
- 			sujet =dernier(tabSujet)
- 			--sujet = gettag(seq,"#sujet")
-
- 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
- 				sujet=gettag(seq,"#sujet")
- 				boolFindSujet =false
- 			end
- 	--#################### fin recherche de sujet ##################
-
-
-
-
-
- 	--###################### recherche du context ###########################################################################
- 			if(context=="")then
-				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
-					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
- 						io.write("\n> ") 
-						tmpSujet = io.read()
-						sujet=tmpSujet
-					end
-					context=sujet
- 					boolContextVide=true
- 				else
- 					context=sujet
- 					boolContextVide=true
- 				end
- 			else
-
- 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
- 					sujet =context
- 				elseif (context~=sujet)then
- 					context =sujet
- 				end
-
- 			end
-
- 			
-
- 			print("context = "..context)
- 	--###################### recherche du context ###########################################################################
-
-
-
-
-
- 	--################### recherche de aRepondre ##################
- 			aRep = gettag(seq, "#aVerifier")
- 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
- 				aRep=gettag(seq,"#aRepondre")
- 				boolFindArep=false
- 			end
-
- 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
- 			aRep=ret
- 			print("tag de aRepondre est : "..aRep)
-
- 	--################### fin recherche de aRepondre ##################
-
-
- 	--################### recherche de valeur du BD proposé par l'utilisateur ##################
-			valBD = gettag(seq, "#valeurBd")
- 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
- 				aRep=gettag(seq,"#aRepondre")-- le cas ou la valeur du bd est identique que le aRepondre
- 				boolFindArep=false
- 			end
-
-
- 	--################### fin recherche de valeur du BD proposé par l'utilisateur ##################
-
-
-
- 	--################## accès bd ##################
- 			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
- 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
- 			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
- 			-- result = rep2param(sujet,aRep)
-
- 			 if(result==nil)then 			 
- 			 	print("result est null")
- 			 else
-	 			if(result=="")then
-	 			 		print("Non")
-	 				
-	 			else
-
-	 				print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
-	 				if(string.find(result, valBD)~=nil)then
-
-	 					print("Oui")
-
-	 				elseif(string.find(valBD,result)~=nil)then
-	 					print("Oui")
-
-	 				else
-	 					print("Non")
-	 				end
-
-	 			end
-	 		 
- 			 end
- 	--################### fin accès bd ##################
- 
- 		end
- 
-
- 	 
- 
- 	--######################### fin Connexion avec la bd ############################
-
-
-
-
-	--################### sauvegarde du context , type de la question et la question  ##################
-		historique.motAdemander=motNotFind
- 		historique.contextHis =context
- 		historique.type="YN"
- 		historique.question =line
- 		table.insert( tabHistorique, historique)
- 	--	print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
-	--################### Fin sauvegarde du context , type de la question et la question  ##################
-
- 		seq:dump()
-
- 	else
+ 		else
  		print("icici")
 
-	end 
- 
+	
+ end
+end
 
-
-
- --############################################################# FIN Question Yes No ##################################################################################
- --###########################################################################################################################################################
 
 
 
