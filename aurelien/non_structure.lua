@@ -81,7 +81,7 @@ main:pattern("[#Status /^[Ss]tatus/ '=' .*(\n)]")
 main:pattern("[#Death /^[Dd]eath/ '=' .*(\n)]")
 main:pattern("[#Place /^[Pp]lace/ '=' .*(\n)]")
 main:pattern("[#Family /^[Ff]amily/ '=' .*(\n)]")
-main:pattern("[#Actor /^[Aa]ctor/ '=' .*(\n)]")
+--main:pattern("[#Actor /^[Aa]ctor/ '=' .*(\n)]")
 main:pattern("[#Culture /^[Cc]ulture/ '=' .*(\n)]")
 
 -- Pour Perso non structure
@@ -718,7 +718,6 @@ for fichier in os.dir("corpus/Characters/") do
 				family = remplirTabStructure(tabCharacter, seq, "#Family", family, title, "[Ff]amily = ")
 			end
 			if #seq["#Actor"] ~= 0 then
-
 				if(fichier=="Jon_Snow.txt") then
 					print("actor "..actor)
 				end
