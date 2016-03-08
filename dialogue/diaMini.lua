@@ -102,7 +102,7 @@ end
 
 function rechercheBD(sujetV, aRepVar, tabHouse)
 
-	local db2Var = dofile("db-1.txt")
+	local db2Var = dofile("db.txt")
 	tmp=""
 	resultVar=""
 	maison =""
@@ -509,9 +509,9 @@ historique ={
 }
 tabHistorique={}
 
-local db2 = dofile("db-1.txt")
+local db2 = dofile("db.txt")
 
-for line in io.lines("debug.txt") do
+for line in io.lines("quMini.txt") do
 	line=line:gsub("‘s","'s")			
 	line=line:gsub("’s","'s")
 	line =line:gsub("([\',?!:;.()])", " %1 ")
