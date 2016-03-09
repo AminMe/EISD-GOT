@@ -702,7 +702,7 @@ while finBoucle ==1 do
 		line =line:gsub("do you know the information that","is")
 		line =line:gsub("do you know which","what is")
  		local seq = main(line)
- 		--print(seq:tostring(tags))
+ 		print(seq:tostring(tags))
 
 
  		qYN = gettag(seq,"#qYesNo")
