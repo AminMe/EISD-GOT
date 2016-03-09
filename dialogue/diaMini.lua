@@ -1,5 +1,6 @@
 dark = require("dark")
 
+math.randomseed(os.time())
 
 
 
@@ -124,8 +125,7 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 					  --print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
 
 				if( db2Var[maison]['characters'][sujetV]~=nil)then
-					print("maison : "..maison)
-			   		--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
+ 			   		--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
 
 
 					if( db2Var[maison]['characters'][sujetV]['family'] ~=nil)then
@@ -206,6 +206,7 @@ end
 -- Is toto a member of
 -- questionType ==>  1 : YesNo 2 : YesNoAnswer 3 : Normal
 function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, reponse, verif)
+	--print("verif = "..verif.." et type : "..questionType)
     if (verif == 0 and questionType == 1) then 
         generateYesNoResponse(verif)  
     elseif (verif == 1 and questionType == 1) then 
@@ -216,13 +217,10 @@ function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, r
         -- Test questionType 
         if (questionType == 3) then 
             generateNormalResponse(sujet,aRepondre,reponse) 
-        	print("eeeee")
 
         elseif (questionType == 2) then
         	
-        	print("ggggg" .. sujet)
-        	print(aRepondre)
-        	print(reponse)
+        	
             generateYesNoAnswerResponse(sujet,aRepondre,reponse)
         end        
     elseif(numberResponse ~= 1) then 
@@ -233,7 +231,6 @@ function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, r
 end
 
 function generateYesNoResponse(val)
-	math.randomseed(os.time())
     if val == 0 then
 
         local response =
@@ -243,8 +240,7 @@ function generateYesNoResponse(val)
             [3] = "No your information is not correct",
         }
         local index = math.random(#response)
-        print(index)
-        print(response[index])
+         print(response[index])
     else 
         local response =
         {
@@ -259,7 +255,6 @@ function generateYesNoResponse(val)
 end    
 
 function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
-    math.randomseed(os.time())
     local resultVar
     local tmp  
     for key,val in pairs(reponse) do 
@@ -278,7 +273,6 @@ function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
 end    
 
 function generateNoResponse(sujet,tag)
-    math.randomseed(os.time())
     if sujet == "" then 
         local response =
         {
@@ -304,9 +298,7 @@ function generateNoResponse(sujet,tag)
 end
 
 function generateNormalResponse(sujet,tag,reponse) 
-	math.randomseed(os.time())
-
-	print(tag)
+	
     local response =
         {
             [1] = reponse .. " is the " .. tag .. " of " .. sujet,
@@ -320,7 +312,7 @@ end
 
 
 function generateYesNoAnswerResponse(sujet,tag,reponse) 
-	math.randomseed(os.time())
+	
     local response =
         {
             [1] = "Yes " .. reponse .. " is the " .. tag .. " of " .. sujet,
@@ -365,7 +357,7 @@ main:basic()
 
 --lexicon sur les pronoms 
 
-main:lexicon("#he", {"he", "his", "hiself"})
+main:lexicon("#he", {"he", "his", "hiself","him"})
 main:lexicon("#she",{"she", "her","hers", "herself"})
 main:lexicon("#it", {"it", "its","itself"})
 
@@ -402,10 +394,10 @@ main:lexicon("#founder",{"founder", "creator","leader"})
 main:lexicon("#enTeteYN",{ "do you know the information that","is" , "do you know if","do you know " ,"do you think"})
 
 --lexicon seat :
-main:lexicon("#seat", {"base", "seat","throne","centre"})
+main:lexicon("#seat", {"base", "seat","throne","centre", "location", "located" })
 main:lexicon("#allegiance", {"allegiance","adherence","constancy","fidelity","obedience","obligation","loyalty"})
 main:lexicon("#sovereign" ,{"sovereign","chief","emperor","empress","king","monarch"})
-main:lexicon("#aka", {"aka", "as known as","nickname"})
+main:lexicon("#aka", {"aka", "as known as","nickname","pseudo"})
 
 
 --lexicon verbe :
@@ -430,7 +422,7 @@ main:lexicon("#first", { "first time", "first seen", "first apparition", "first 
 main:lexicon("#die",{"die", "died", "kill", "killed","death"})
 main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
 main:lexicon("#titles",{"titles","appellation","privilege"})
-main:lexicon("#place",{"place","area","location","locus","point","position","site","station"})
+main:lexicon("#place",{"place","area","locus","point","position","site","station"})
 main:lexicon("#night",{"night watches","night guardian","guardian","night","darkness"})
 main:lexicon("#bastard",{"bastard","by-blow","illegitimate child","whoreson"})
 main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"})
@@ -672,7 +664,8 @@ local tags = {
 
 -- todo fct qui permet de choisir entre deux aRepondre , avec des lexicon ayant certain priorité, et renvoye le premier si il y en a un seul
 
- 
+ finBoucle =1
+
 result =""
 context ="" 
 motNotFind=""
@@ -688,7 +681,15 @@ tabHistorique={}
 
 local db2 = dofile("db.txt")
 
-for line in io.lines("quMini.txt") do
+
+--for line in io.lines("debug.txt") do
+print("Hello . Can I help you ? \n\n")
+
+while finBoucle ==1 do
+	--os.execute("clear")
+	io.write("\n> ") 
+	line = io.read()
+
 	line=line:gsub("‘s","'s")			
 	line=line:gsub("’s","'s")
 	line =line:gsub("([\',?!:;.()])", " %1 ")
@@ -699,7 +700,7 @@ for line in io.lines("quMini.txt") do
 		line =line:gsub("do you know the information that","is")
 		line =line:gsub("do you know which","what is")
  		local seq = main(line)
- 		print(seq:tostring(tags))
+ 		--print(seq:tostring(tags))
 
 
  		qYN = gettag(seq,"#qYesNo")
@@ -728,15 +729,15 @@ for line in io.lines("quMini.txt") do
 
 
 
-
-
-
+ 		sizeYN =string.len(qYN)
+ 		sizeNormal=string.len(qNormal)
+ 		sizeYNAnswer = string.len(qYesNoAnswer)
 
  --############################################################# Question Yes No ##################################################################################
  --###########################################################################################################################################################
 
 
- 		if (qYN ~="" and qYesNoAnswer=="" and qNormal=="") then -- gestion des question yes no  
+ 		if (qYN ~="" and (qYesNoAnswer=="" and qNormal=="") ) then -- gestion des question yes no  
  			 
  		
  	--###################### recherche de sujet #####################
@@ -757,9 +758,11 @@ for line in io.lines("quMini.txt") do
  			if(context=="")then
 				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
 					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+ 						print("about who ?")
  						io.write("\n> ") 
 						tmpSujet = io.read()
 						sujet=tmpSujet
+
 					end
 					context=sujet
  					boolContextVide=true
@@ -823,7 +826,7 @@ for line in io.lines("quMini.txt") do
  			 else
 
 	 			if(result=="")then
-	 			 		print("Non result est vide")
+	 			 		--print("Non result est vide")
 	 			 		generation(compt,1,sujet,aRep,valBD,result,0)	
 	 				
 	 			else
@@ -832,16 +835,16 @@ for line in io.lines("quMini.txt") do
 	 				--print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
 	 				if(string.find(result, valBD)~=nil)then
 
-	 					print("Oui")
+	 					--print("Oui")
 	 					generation(compt,1,sujet,aRep,valBD,result,1)	
 
 	 				elseif(string.find(valBD,result)~=nil)then
-	 					print("Oui")
+	 					--print("Oui")
 	 					generation(compt,1,valBD,aRep,sujet,result,1)	
 
 
 	 				else
-	 					print("Non")
+	 					--print("Non")
 	 					generation(compt,1,sujet,aRep,valBD,result,0)	
 
 	 				end
@@ -895,7 +898,7 @@ for line in io.lines("quMini.txt") do
 
  		elseif(qNormal~="" or qYesNoAnswer~="")then
 
- 			print("sooooo")
+ 			--print("sooooo")
  	--###################### recherche de sujet ###########################################################################
  			tabSujet = getMultiple(seq,"#sujet")
  			sujet =dernier(tabSujet)
@@ -913,6 +916,7 @@ for line in io.lines("quMini.txt") do
  			if(context=="")then
 				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
 					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+ 						print("about who ?")
  						io.write("\n> ") 
 						tmpSujet = io.read()
 						sujet=tmpSujet
@@ -935,7 +939,7 @@ for line in io.lines("quMini.txt") do
 
  			end
 
- 			print("context = "..context)
+ 			--print("context = "..context)
  	--###################### recherche du context ###########################################################################
 
 
@@ -949,7 +953,7 @@ for line in io.lines("quMini.txt") do
 
  			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
  			aRep=ret
- 			print("tag de aRepondre est : "..aRep)
+ 			--print("tag de aRepondre est : "..aRep)
  	--################### fin recherche de aRepondre ########################################################################
 
 
@@ -974,8 +978,7 @@ for line in io.lines("quMini.txt") do
 	 			 	end
 	 			else
 	 				if(boolYNAnswer==true)then
-	 					print(result)
-	 					print(compt)
+	 					 
 	 					--print("Oui je sais et la response est : "..result.." et compteur = "..compt)
 	 					generation(compt,2,sujet,aRep,"",result,1)	
 
@@ -1006,14 +1009,17 @@ for line in io.lines("quMini.txt") do
 		
 
  		else
- 		print("icici")
+ 		--print("icici")
 
 	
  end
- seq:dump()
+--seq:dump()
 end
 
-
+ if(line=="bye") then
+	finBoucle =0
+	print("Bye, see you.")
+	end
 
 
 end
