@@ -239,6 +239,38 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 				end
 			end
 		end
+	elseif tag=="#Age" then
+		if #seq[tag] ~= 0 then
+			if (variable == nil) then
+				variable = gettag(seq,tag)
+
+				local lmain = dark.pipeline()
+				lmain:basic()
+				lmain:model("mdl/postag-en")
+				--print("phrase age = " .. variable)
+
+				lmain:pattern([[
+					[#age 
+					   #d >(('years' | #POS=ADP )) | 'thousand' | #d
+					]   
+				]])
+
+				variable = cleantext(variable)
+				variable = cleannumber(variable)
+
+				lseq = lmain(variable)
+				ageP = gettag(lseq,"#age")
+				--print("age = "..ageP)
+				variable = ageP
+				local case = tag:gsub("#","")
+				case = case:lower()
+				if (variable:lower() ~= case:lower() .. " =") then
+					variable = variable:gsub(expression,"")
+					
+					db[title][case] = variable
+				end
+			end
+		end
 	else
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
