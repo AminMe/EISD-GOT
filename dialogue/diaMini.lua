@@ -46,13 +46,11 @@ end
 
 
 function transform(str,lseq)
-	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#family","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed","#religion"}
+	local bdTags = {"#visit","#prononciation","#words","#vassals","#weapon","#heir","#lord","#founder","#seat","#titles","#type_house","#allegiance","#region","#rulers","#population","#castle","#military","#religion","#sigil","#characters","#titles","#actor","#night","#place","#season","#wife","#husband","#father","#mother","#son","#daughter","#brother","#sister","#child","#parent","#type","#status","#appearances","#first","#house","#words","#culture","#bastard","#hellhot","#death","#aka","#last","#age","#institutions","#killed","#religion"}
 	
 
 	for key,val in pairs(bdTags) do
-		--print("-----> "..key.." -> " .. val)
-		--print("lseq = "..lseq:tostring(ltags))
-		--print("bdTags[key] = "..bdTags[key])
+	
 		tab=getMultiple(lseq,bdTags[key])
 
 		if(tab~="")then
@@ -61,7 +59,7 @@ function transform(str,lseq)
 				if(string.find(tab[key2],str)~=nil)then
 					
 					resTran = string.gsub(val,"#","") 
-					if(resTran=="military")then
+					if(resTran=="military")then -- faire pareil pour wife car il y a plusieur de nom attribut pour wife
 						return "militarySize"
 					else
 						return resTran
@@ -74,6 +72,24 @@ function transform(str,lseq)
 end
 
 
+-- return  0= 0 str non null ,   1= 1 str non null, 2 = 2 str non null, 3 = 3 str non null
+
+function isPresence(str1, str2, st3)
+	local compt =0
+
+	if(str1~="")then
+		compt=compt+1
+	end
+	if(str2~="")then
+		compt=compt+1
+	end
+	if(str3~="")then
+		compt=compt+1
+	end
+	
+
+	return compt
+ end
 
 
 
@@ -114,6 +130,7 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 	resultVar=""
 	maison =""
 	compt=0
+	tab={}
 
 	for key =1, #tabHouse do
 
@@ -125,7 +142,7 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 					  --print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
 
 				if( db2Var[maison]['characters'][sujetV]~=nil)then
- 			   		--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
+ 			   		print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
 
 
 					if( db2Var[maison]['characters'][sujetV]['family'] ~=nil)then
@@ -152,18 +169,27 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 
 					   				 
 				 	 						tmp = resultVar.." "..db2Var[maison]['characters'][sujetV]['family'][aRepVar][i].."  "
-				 	 						resultVar =tmp
-				 	 						tmp=""
+				 	 						--resultVar =tmp
+				 	 						--tmp=""
+				 	 						table.insert(tab,tmp)
 				 	 						compt=compt+1
 
 			 							
 			 							i=i+1
 									end
-									return resultVar,compt
+								--	print("compt BD = "..compt)
+									return tab,compt
+
+								else
+									return "",0
 								end
 							end
 						else
-							return db2Var[maison]['characters'][sujetV][aRepVar],1
+							if(db2Var[maison]['characters'][sujetV][aRepVar]~=nil)then
+								return db2Var[maison]['characters'][sujetV][aRepVar],1
+							else
+								return "",0
+							end
 						end
 
 					end
@@ -206,16 +232,25 @@ end
 -- Is toto a member of
 -- questionType ==>  1 : YesNo 2 : YesNoAnswer 3 : Normal
 function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, reponse, verif)
-	--print("verif = "..verif.." et type : "..questionType)
+
+	--[[if(reponse=="")then
+			print("vide")
+	else
+		print(" non vide")
+	end]]--
+
+	--print("verif = "..verif.." et type : "..questionType.. " et nb = "..numberResponse.. " et sujet = "..sujet.." et reponse = "..reponse)
+    
     if (verif == 0 and questionType == 1) then 
         generateYesNoResponse(verif)  
     elseif (verif == 1 and questionType == 1) then 
-        generateYesNoResponse(verif)       
+        generateYesNoResponse(verif)          
     elseif (numberResponse == 0) then
         generateNoResponse(sujet,aRepondre)
     elseif (numberResponse == 1) then
         -- Test questionType 
         if (questionType == 3) then 
+
             generateNormalResponse(sujet,aRepondre,reponse) 
 
         elseif (questionType == 2) then
@@ -255,7 +290,7 @@ function generateYesNoResponse(val)
 end    
 
 function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
-    local resultVar
+    local resultVar=""
     local tmp  
     for key,val in pairs(reponse) do 
         tmp = resultVar .. val .. ","
@@ -273,6 +308,8 @@ function generateNormalMultipleResponse(sujet,tag,reponse,numberResponse)
 end    
 
 function generateNoResponse(sujet,tag)
+   -- print("DANS NO RESPONSE " .. "Suejt " .. sujet .. "tag" .. tag)
+
     if sujet == "" then 
         local response =
         {
@@ -294,11 +331,21 @@ function generateNoResponse(sujet,tag)
         }
         local index = math.random(#response)
         print(response[index]) 
-    end
+    else 
+    	local response =
+        {
+            [1] = tag .. " is not a valid attribute for " .. sujet, 
+            [2] = "I can't give you an answer for " .. tag .." of " ..sujet,
+            [3] = sujet .. " does not have a " ..tag .." information",
+        }
+        local index = math.random(#response)
+        print(response[index]) 
+    end	
 end
 
 function generateNormalResponse(sujet,tag,reponse) 
-	
+	 
+	--print("sujet : "..sujet.." et tag = "..tag.." et reponse : "..reponse[1])
     local response =
         {
             [1] = reponse .. " is the " .. tag .. " of " .. sujet,
@@ -367,6 +414,10 @@ main:lexicon("#it", {"it", "its","itself"})
 --lexicon famille:
 main:lexicon("#family", {"parent", "daughter", "sister", "wife", "husband", "father","mother","son","marry","married", "wedded", "couple","grandfather","grandmother","brother"})
 
+main:lexicon("#daughter", {"daughters", "daughter"})
+
+
+
 --lexicon actor :
 main:lexicon("#actor", {"comedian","actor","performed", "performs","perform","performing","play","plays", "played", "playing","represent","represents","representing","represented", "interpret", "interpreted", "interpreteding", "interprets"})
 main:lexicon("#serie",{"season", "episode"})
@@ -409,6 +460,7 @@ main:lexicon("#apparaitre",{"appears", "appear","appeared","arise","arised","sho
 main:lexicon("#prepoOf",{"of","from"})
 main:lexicon("#prepo",{"the","a","an", "in"})
 
+main:lexicon("#shortQ",{"and also for", "and for", "and"})
 
 --lexicon de lord :
 main:lexicon("#lord", {"lord","commander","governor","king","leader"})
@@ -427,7 +479,7 @@ main:lexicon("#night",{"night watches","night guardian","guardian","night","dark
 main:lexicon("#bastard",{"bastard","by-blow","illegitimate child","whoreson"})
 main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"})
 
-
+main:lexicon("#wife", {"wife unborn child - to be named","daughter - wife","wife"})
 
 -- apartenance
 main:lexicon("#apartenance", {" ' s"," ‘ s", " ’ s","‘s"})
@@ -442,6 +494,8 @@ main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman"
 main:lexicon("#words", {"words","word", "lyrics", "text"})
 main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
 main:lexicon("#religion",{"beliefs","belief","religions","religion"})
+main:lexicon("#bye",{"bye","bye bye","ciao","good bye","see you"})
+
 
 
 
@@ -546,7 +600,7 @@ main:pattern([[
 --patterne question normal
 main:pattern([[
 	[#qNormal
-		(#qNumerique | #qLieu |#qInfoP |#qInfoS |#qTemp) .*
+		^(#qNumerique | #qLieu |#qInfoP |#qInfoS |#qTemp) .*
 	]
 ]])
 
@@ -554,7 +608,7 @@ main:pattern([[
 --patterne question Y/N 
 main:pattern([[
 	[#qYesNo 
-		^(#Auxiliaire |#be | #POS=VRB) .*
+		^(#be ) .*
 	]
 	]])
 
@@ -593,6 +647,8 @@ main:pattern([[
 		|#actor
 		|#first
 		|#die
+		|#aka
+		|#attributeBD
 
 	]
 	]])
@@ -628,6 +684,11 @@ main:pattern([[
 
 
 
+ main:pattern([[
+	[#qShort 
+		^(#shortQ) #POS=DET? (#sujet | #aRepondre |#aVerifier | #sujetYN) 
+	]
+	]])
 
 
 
@@ -676,18 +737,19 @@ historique ={
 	contextHis="",
 	type="",
 	question,
+	aRep=""
 }
 tabHistorique={}
 
 local db2 = dofile("db-1.txt")
 
---for line in io.lines("debug.txt") do
-print("Hello . Can I help you ? \n\n")
+for line in io.lines("debug.txt") do
+--print("Hello . Can I help you ? \n\n")
 
-while finBoucle ==1 do
+--while finBoucle ==1 do
 	--os.execute("clear")
-	io.write("\n> ") 
-	line = io.read()
+--	io.write("\n> ") 
+--	line = io.read()
 
 
 
@@ -702,8 +764,8 @@ while finBoucle ==1 do
 		line =line:gsub("do you know the information that","is")
 		line =line:gsub("do you know which","what is")
  		local seq = main(line)
- 		print(seq:tostring(tags))
-
+ 		print(line)
+	print(seq:tostring(tags))
 
  		qYN = gettag(seq,"#qYesNo")
  		qYesNoAnswer = gettag(seq,"#qYesNoAnswer")
@@ -735,12 +797,40 @@ while finBoucle ==1 do
  		sizeNormal=string.len(qNormal)
  		sizeYNAnswer = string.len(qYesNoAnswer)
 
+
+		aRep = gettag(seq, "#aRepondre")
+ 		if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
+ 			aRep=gettag(seq,"#aVerifier")
+ 			boolFindArep=false
+ 		end
+
+ 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 			aRep=ret
+
+
+			aVer = gettag(seq, "#aVerifier")
+ 			ret = transform(aVer,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 			aVer=ret
+
+
+ 			sujetTest = gettag(seq,"#sujet")
+  			if(sujetTest=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
+ 				sujetTest=gettag(seq,"#sujetYN")
+ 			end
+
+
+ 		--	print(" qyn = "..qYN.." et qNormal = "..qNormal.." rt qYesNoAnswer "..qYesNoAnswer)
+
+
+
+
+ 
  --############################################################# Question Yes No ##################################################################################
  --###########################################################################################################################################################
 
 
  		if (qYN ~="" and (qYesNoAnswer=="" and qNormal=="") ) then -- gestion des question yes no  
- 			 
+ 			 print("rrrrrrrr")
  		
  	--###################### recherche de sujet #####################
  			tabSujet = getMultiple(seq,"#sujetYN")
@@ -801,7 +891,6 @@ while finBoucle ==1 do
  			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
  			aRep=ret
  		--	print("tag de aRepondre est : "..aRep)
-
  	--################### fin recherche de aRepondre ##################
 
 
@@ -811,8 +900,6 @@ while finBoucle ==1 do
  				aRep=gettag(seq,"#aRepondre")-- le cas ou la valeur du bd est identique que le aRepondre
  				boolFindArep=false
  			end
-
-
  	--################### fin recherche de valeur du BD proposé par l'utilisateur ##################
 
 
@@ -824,26 +911,22 @@ while finBoucle ==1 do
  			-- result = rep2param(sujet,aRep)
 
  			 if(result==nil)then 			 
- 			 	print("result est null")
+	 			 		generation(compt,1,sujet,aRep,valBD,"",0)	
  			 else
 
 	 			if(result=="")then
 	 			 		--print("Non result est vide")
 	 			 		generation(compt,1,sujet,aRep,valBD,result,0)	
-	 				
 	 			else
-
 	 				--print("valbd = "..valBD.." et result de la bd : "..result)
 	 				--print("la valeur proposer par l'utilisateur est : "..valBD.."  et la valeur du BD est : "..result)
 	 				if(string.find(result, valBD)~=nil)then
-
 	 					--print("Oui")
 	 					generation(compt,1,sujet,aRep,valBD,result,1)	
 
 	 				elseif(string.find(valBD,result)~=nil)then
 	 					--print("Oui")
 	 					generation(compt,1,valBD,aRep,sujet,result,1)	
-
 
 	 				else
 	 					--print("Non")
@@ -871,8 +954,12 @@ while finBoucle ==1 do
  		historique.contextHis =context
  		historique.type="YN"
  		historique.question =line
+ 		 		historique.aRep = aRep
+
  		table.insert( tabHistorique, historique)
- 	--	print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
+
+
+ 		print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
 	--################### Fin sauvegarde du context , type de la question et la question  ##################
 
  		
@@ -894,13 +981,102 @@ while finBoucle ==1 do
 
 
 
+
+ --############################################################# Question short ##################################################################################
+ --###########################################################################################################################################################
+ 		elseif(  qShort~="" and (isPresence(aRep,aVer,sujetTest)==1) and qYN=="" and qNormal=="" )then
+
+ 			historiqueVide =true
+
+ 			if(sujetTest~="")then
+
+ 	--################## accès bd ##############################################################################################################################
+ 			taille = #tabHistorique
+--print("taille "..taille)
+
+			if(tabHistorique[taille]~=null)then
+				aRep = tabHistorique[taille].aRep
+			end
+
+			while (historiqueVide == true) do
+ 						
+ 			--print("question short ")
+
+
+
+
+		 		if(aRep~="")then
+ 		 			print("sujet = "..sujetTest.." et arep = "..aRep)
+		 				result,compt = rechercheBD(sujetTest,aRep,lexiconHouseLexique)
+		 				 			print("compt = "..compt)
+
+		 			 --print("resultat = "..result)
+		 			-- result = rep2param(sujet,aRep)
+		 			 if(result==nil)then 		
+ 			 			 		generation(compt,3,sujetTest,aRep,"","",0)	
+		 			 else
+
+			 			if(result=="")then
+			 			 	
+			 			 	--	print(" nous n'avons pas trouvé la réponse à votre question. ")
+			 			 		generation(compt,3,sujetTest,aRep,"",result,0)			 	
+			 			else	 				
+			 			 		--print("la response est : "..result.." et compteur = "..compt)
+			 			 		generation(compt,3,sujetTest,aRep,"",result,1)	
+			 			end
+		 			 end
+		 			 historiqueVide = false
+
+		 			else
+
+								print("about what ?")
+		 						io.write("\n> ") 
+								line2 = io.read()
+								line2 = string.lower(line2)
+ 								local seq2 = main(line2)
+ 								seq2:dump()
+								aRep = gettag(seq2, "#aRepondre")
+								print("arepondre : "..aRep)
+ 								ret = transform(aRep,seq2)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
+ 								aRep=ret
+
+								 
+		 			end
+
+				end
+
+
+ 	--################### fin accès bd ##############################################################################################################################
+
+
+
+
+ 			end
+
+ --############################################################# Fin Question short ##################################################################################
+ --###########################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  --############################################################# Question normal ##################################################################################
  --###########################################################################################################################################################
 
 
- 		elseif(qNormal~="" or qYesNoAnswer~="")then
+ 		elseif((qNormal~="" or qYesNoAnswer~="" or (aRep ~="" and sujetTest~="")) and qYN=="" )then
 
- 			--print("sooooo")
  	--###################### recherche de sujet ###########################################################################
  			tabSujet = getMultiple(seq,"#sujet")
  			sujet =dernier(tabSujet)
@@ -916,8 +1092,9 @@ while finBoucle ==1 do
 
  	--###################### recherche du context ###########################################################################
  			if(context=="")then
-				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its")then
-					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") do
+				if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its" or sujet=="his")then
+					 				--print("ici")
+					while (sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its" or sujet=="his") do
  						print("about who ?")
  						io.write("\n> ") 
 						tmpSujet = io.read()
@@ -930,15 +1107,11 @@ while finBoucle ==1 do
  					boolContextVide=true
  				end
  			else
-
- 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its") )then
+ 				if(context~="" and( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its" or sujet=="his") )then
  					sujet =context
  				elseif (context~=sujet)then
  					context =sujet
  				end
-
- 			
-
  			end
 
  			--print("context = "..context)
@@ -952,9 +1125,10 @@ while finBoucle ==1 do
  				aRep=gettag(seq,"#aVerifier")
  				boolFindArep=false
  			end
-
  			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
  			aRep=ret
+ 			 			print(" ici arep = "..aRep)
+
  			--print("tag de aRepondre est : "..aRep)
  	--################### fin recherche de aRepondre ########################################################################
 
@@ -962,32 +1136,33 @@ while finBoucle ==1 do
 
  	--################## accès bd ##############################################################################################################################
  			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
- 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
+ 			print("sujet : "..sujet.." , aRepondre = "..aRep)
  			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
  			-- result = rep2param(sujet,aRep)
- 			 if(result==nil)then 			 
+ 			--print("result : "..result)
+ 			if(result=="")then
+ 				print("vide")
+ 			end
+
+ 			 if(result==nil)then 		
  			 	print("result est null")
+ 			 	generation(compt,3,sujet,aRep,"","",0)	
  			 else
 	 			if(result=="")then
 	 				if(boolYNAnswer==true)then
 	 			 		--print("Non, nous n'avons pas trouvé la réponse à votre question. ")
 	 			 		generation(compt,2,sujet,aRep,"",result,0)	
-
 	 				else
 	 			 	--	print(" nous n'avons pas trouvé la réponse à votre question. ")
 	 			 		generation(compt,3,sujet,aRep,"",result,0)	
-
 	 			 	end
 	 			else
-	 				if(boolYNAnswer==true)then
-	 					 
+	 				if(boolYNAnswer==true)then 
 	 					--print("Oui je sais et la response est : "..result.." et compteur = "..compt)
 	 					generation(compt,2,sujet,aRep,"",result,1)	
-
 	 				else
 	 			 		--print("la response est : "..result.." et compteur = "..compt)
 	 			 		generation(compt,3,sujet,aRep,"",result,1)	
-
 	 			 	end
 
 	 			end
@@ -995,11 +1170,13 @@ while finBoucle ==1 do
  	--################### fin accès bd ##############################################################################################################################
 
 
+
  	--################### sauvegarde du context , type de la question et la question  ########################################################################
  		historique.motAdemander=motNotFind
  		historique.contextHis =context
  		historique.type="Normal"
  		historique.question =line
+ 		historique.aRep = aRep
  		table.insert( tabHistorique, historique)
  		--print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
  	--################### Fin sauvegarde du context , type de la question et la question  ########################################################################
@@ -1011,17 +1188,25 @@ while finBoucle ==1 do
 		
 
  		else
- 		--print("icici")
+ 			local response =
+        	{
+	            [1] = "I am sorry i don't understand", 
+	            [2] = "Ok :) but can you reformulate please ? ",
+	            [3] = "I don't really get what you mean ",
+	            [4] = "Excuse me, but i don't understand",
+        	}
 
-	
- end
---seq:dump()
+        	local index = math.random(#response)
+        	print(response[index])	
+ 		end
+ if gettag(seq,"#bye") ~= "" then 
+	print("Bye, see you soon : ) ")
+	finBoucle =0
+end
+seq:dump()
 end
 
- if(line=="bye") then
-	finBoucle =0
-	print("Bye, see you.")
-	end
+
 
 
 end
