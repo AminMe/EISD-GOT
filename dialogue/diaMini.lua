@@ -19,7 +19,7 @@ end
  
 
 
-
+-- return tout les string dans un phrase appartenant à un tag 
 function getMultiple(seq,tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -41,16 +41,19 @@ end
 
 
 
+-- return true si un des deux mot contient l'autre , et false sinon
 function findVal( tab , valUser)
-	--st ="minisa toto"
-	bol =false
-	print("valUser = "..valUser)
+ 	bol =false
+	--print("valUser = "..valUser)
+ 
 	for key,val in pairs(tab)  do
 		str =string.lower(val)
-		print("table = "..val)
 		if(str~="")then
+
 			if(string.find(valUser,str)~=nil)then
 				bol =true
+					--	print("aaaaaaaaaaaaaa table = "..val)
+
 			elseif(string.find(str,valUser)~=nil)then
 				bol =true
 
@@ -62,7 +65,7 @@ end
 
 
 
-
+-- renvoye le nom du tag d'un string 
 function transform(str,lseq)
 	--a complèter avec tout les nom des attributs , et mettre les mots composé en premiers
 	local bdTags = {"#paternal-grandfather","#father-in-law-and-uncle","#son-half-brother-half-uncle","#great-uncle","#maternal-great-uncle","#uncle-by-marriage",
@@ -76,7 +79,7 @@ function transform(str,lseq)
 		"#father-in-law","#grandmother-in-law","#maternal-grandmother","#paternal-grandmother",
 		"#daughter","#maternal","#mother","#father","#aunt","#oncle","#grandfather","#grandmother","#sister","#brother",
  		"#maternal-aunt","#paternal-aunt","#brother-in-law","#first","#second","#third","#fourth",
-		"#cousin","#cousins ","#niece","#descendant","#nephew","#actor","#season","#vrbLieu","#type","#age",
+		"#cousin","#cousins ","#niece","#descendant","#nephew","#actor","#season","#type","#age",
 		"#founder","#seat","#allegiance","#sovereign","#aka","#lord","#people","#culture","#firstSeen","#die",
 		"#last","#titles","#place","#night","#bastard","#visit","#wife","#region","#founder","#military","#heir","#weapon","#vassals","#words","#prononciation","#religion"}
 	
@@ -106,8 +109,7 @@ function transform(str,lseq)
 end
 
 
--- return  0= 0 str non null ,   1= 1 str non null, 2 = 2 str non null, 3 = 3 str non null
-
+-- return  0= 0 tout les str sont null ,   1= un str non null, 2 = deux str non null, 3 = trois str non null
 function isPresence(str1, str2, st3)
 	local compt =0
 
@@ -127,7 +129,7 @@ function isPresence(str1, str2, st3)
 
 
 
-
+-- return la dernière valeur du tableau qui est passé en param
 function dernier( tab ) --tab = un tableau de 1 dimension 
 	res2 =""
 	for key =1,  #tab do
@@ -140,21 +142,9 @@ end
 
 
 
-function rep2param(sujetV, aRepVar)
-
-	local db2Var = dofile("db.txt")
-	res =""
-	if( db2Var[sujetV]~=nil)then
-		--print("sujet : "..sujetV.." et arep = "..aRepVar)
-		if( db2Var[sujetV][aRepVar]~=nil)then
- 			res=db2Var[sujetV][aRepVar]
-		end
-	end
-	return res
-end
 
 
-
+-- elle renvoye la valeur dand la base de donnée, prend en param le sujet(sujetV), l'objet à repondre ou le nom de l'attribut (aRepVar), et les nom des maison
 function rechercheBD(sujetV, aRepVar, tabHouse)
 
 	local db2Var = dofile("db.txt")
@@ -163,6 +153,7 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 	maison =""
 	compt=0
 	tab={}
+
 
 	--[[
 	for key,val in pairs(db2Var["house stark"]['characters']["arya stark"]['family']) do
@@ -182,15 +173,33 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 		if( db2Var[maison]~=nil)then
 
 			if( db2Var[maison]["characters"]~=nil)then
-					  --print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
 
 				if(db2Var[maison]['characters'][sujetV]~=nil)then
  			   		--print("##############le sujet : "..sujetV.." et a repoondre "..aRepVar)
                     
 
-					if(db2Var[maison]['characters'][sujetV]['family'] ~=nil) then
-						-- a améliorer 
-						if( aRepVar=="husband" or aRepVar == "daughter" or aRepVar == "son" or aRepVar == "wife" or aRepVar == "father"or aRepVar == "mother"or aRepVar == "brother"or aRepVar =="sister" or aRepVar == "uncle by marriage" 
+					if(db2Var[maison]['characters'][sujetV][aRepVar]~=nil) then
+						
+								 
+								local size = #db2Var[maison]['characters'][sujetV][aRepVar]
+								if(aRepVar == "season") then 
+
+									for key,val in pairs(db2Var[maison]['characters'][sujetV][aRepVar]) do 
+										--print("val : "..val)
+										table.insert(tab, val)
+		 							end
+									return tab,size,1
+								else
+
+									--print("val : "..db2Var[maison]['characters'][sujetV][aRepVar])
+									table.insert(tab, db2Var[maison]['characters'][sujetV][aRepVar])
+									return tab,1,1
+								end	
+							 
+
+						else
+
+ 						if( aRepVar=="husband" or aRepVar == "daughter" or aRepVar == "son" or aRepVar == "wife" or aRepVar == "father"or aRepVar == "mother"or aRepVar == "brother"or aRepVar =="sister" or aRepVar == "uncle by marriage" 
 							or aRepVar =="paternal aunt" or aRepVar == "bastard" or aRepVar =="paternal uncle" or aRepVar =="maternal grandfather" or aRepVar =="maternal grandmother" or aRepVar =="maternal uncle" 
 							or aRepVar =="maternal aunt" or aRepVar =="maternal great - uncle" or aRepVar =="maternal great - aunt" or aRepVar == "brother - in - law" or aRepVar =="maternal")  then
 					 		
@@ -227,27 +236,7 @@ function rechercheBD(sujetV, aRepVar, tabHouse)
 								end
 								return tab,compt,cmptMatch
 							end
-						else
-
-
-							if(db2Var[maison]['characters'][sujetV][aRepVar]~=nil)then
-								local size = #db2Var[maison]['characters'][sujetV][aRepVar]
-								if(aRepVar == "season") then 
-
-									for key,val in pairs(db2Var[maison]['characters'][sujetV][aRepVar]) do 
-										--print("val : "..val)
-										table.insert(tab, val)
-		 							end
-									return tab,size,1
-								else
-
-									--print("val : "..db2Var[maison]['characters'][sujetV][aRepVar])
-									table.insert(tab, db2Var[maison]['characters'][sujetV][aRepVar])
-									return tab,1,1
-								end	
-							else
-								return tab,0,1
-							end
+						
 
 
 
@@ -515,23 +504,45 @@ local main = dark.pipeline()
 main:basic()
 
 
---main:lexicon("#lieu",{"winterfell"})
---main:lexicon("#perso",{"john snow"})
---main:lexicon("#maison",{"stark"})
-
-
 --lexicon sur les pronoms 
-
 main:lexicon("#he", {"he", "his", "hiself","him"})
 main:lexicon("#she",{"she", "her","hers", "herself"})
 main:lexicon("#it", {"it", "its","itself"})
 
 
-
+--lexicon attribut de la bd :
+main:lexicon("#seat", {"base", "seat","throne","centre" })
+main:lexicon("#allegiance", {"allegiance","adherence","constancy","fidelity","obedience","obligation","loyalty"})
+main:lexicon("#sovereign" ,{"sovereign","chief","emperor","empress","king","monarch"})
+main:lexicon("#aka", {"aka", "as known as","nickname","pseudo"})
+main:lexicon("#type", {"type"})
+main:lexicon("#age",{"age", "old"})
+main:lexicon("#founder",{"founder", "creator","leader"})
+main:lexicon("#culture", {"culture","ceremonie"})
+main:lexicon("#firstSeen", { "first time", "first seen", "first apparition", "first appearance"})
+main:lexicon("#die",{"die", "died", "kill", "killed","death"})
+main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
+main:lexicon("#titles",{"titles","appellation","privilege"})
+main:lexicon("#place",{"place","area","locus","point","position","site","station"})
+main:lexicon("#night",{"night watches","night guardian","guardian","night","darkness"})
+main:lexicon("#bastard",{"bastard","by-blow","illegitimate child","whoreson"})
+main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"})
+main:lexicon("#region", {"region", "country", "district", "division", "expanse", "land", "locality", "part", "patch", "location","location","live", "lived", "lives", "shack", "living", "shackes", "shacking", "shacked","dwell", "inhabit", "inhabited", "inhabits","lodge","lodges","lodged", "tenant", "tenants", "tenanted","located", "located","locating"})
+main:lexicon("#founder", {"founder","beginner","initiator"})
+main:lexicon("#military", {"military", "armed forces", "army", "forces", "services"})
+main:lexicon("#heir", {"heir","beneficiary","heiress","next in line", "scion", "successor"})
+main:lexicon("#weapon", {"secret weapon","weapon"})
+main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
+main:lexicon("#words", {"words","word", "lyrics", "text"})
+main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
+main:lexicon("#religion",{"beliefs","belief","religions","religion"})
+main:lexicon("#actor", {"comedian","actor","performed", "performs","perform","performing","play","plays", "played", "playing","represent","represents","representing","represented", "interpret", "interpreted", "interpreteding", "interprets"})
+main:lexicon("#actorSyno" , {"actor","comedian"})
+main:lexicon("#season", {"season","seasons"})
+main:lexicon("#lord", {"lord","commander","governor","king","leader"})
 
 --lexicon famille:
 main:lexicon("#family", {"parent", "daughter", "sister", "wife", "husband", "father","mother","son","marry","married", "wedded", "couple","grandfather","grandmother","brother"})
-
 main:lexicon("#daughter", {"daughters", "daughter"})
 main:lexicon("#maternal", {"maternal"})
 main:lexicon("#mother", {"mothers","mother", "mom"})
@@ -542,9 +553,6 @@ main:lexicon("#grandfather",{"grandfathers","grandfather"})
 main:lexicon("#grandmother",{"grandmothers","grandmother"})
 main:lexicon("#sister", {"sister"})
 main:lexicon("#brother", {"brother"})
-
-
-
 main:lexicon("#maternal-aunt",{"maternal aunt"})
 main:lexicon("#aunt-and-mother-in-law",{"aunt and mother in law"})
 main:lexicon("#aunt-sister",{"aunt sister"})
@@ -598,48 +606,16 @@ main:lexicon("#grandmother-in-law",{"grandmother-in-law","grandmother in law"})
 main:lexicon("#double-grandmother-first-cousin",{"double grandmother first cousin","double-grandmother-first-cousin"})
 main:lexicon("#maternal-grandmother",{"maternal-grandmother","maternal grandmother"})
 main:lexicon("#paternal-grandmother",{"paternal-grandmother","paternal grandmother"})
- 
-
-
-
-
-
-
-
-
-
---lexicon actor :
-main:lexicon("#actor", {"comedian","actor","performed", "performs","perform","performing","play","plays", "played", "playing","represent","represents","representing","represented", "interpret", "interpreted", "interpreteding", "interprets"})
-main:lexicon("#actorSyno" , {"actor","comedian"})
-main:lexicon("#season", {"season","seasons"})
-
-main:lexicon("#vrbLieu", {"location","live", "lived", "lives", "shack", "living", "shackes", "shacking", "shacked","dwell", "inhabit", "inhabited", "inhabits","lodge","lodges","lodged", "tenant", "tenants", "tenanted","located", "located","locating"})
-
-main:lexicon("#type", {"type"})
+main:lexicon("#wife", {"wife unborn child - to be named","daughter - wife","wife"})
 
 --lexicon type de question : 
-
 main:lexicon("#qNumerique", { "how many", "how much", "how often"})
 main:lexicon("#qInfoS", { "what's"  , "what is",   "who", "who's" , "give me one","give me","give me a", "give me an", "how", "which's", "which is","which","what"})
 main:lexicon("#qInfoP", { "what're" , "what are", "who", "who're", "who are","give me all","give me", "give me some" ,"which are", "which're", "in which"})
 main:lexicon("#qLieu",{"where", "where's", "where're", "where are", "where is"})
 main:lexicon("#qTemp",{ "when do you see","when's", "when're", "when are", "when is","when"})
-
-
-
-
-main:lexicon("#age",{"age", "old"})
-main:lexicon("#founder",{"founder", "creator","leader"})
-
-
 main:lexicon("#enTeteYN",{ "do you know the information that","is" , "do you know if","do you know " ,"do you think"})
-
---lexicon seat :
-main:lexicon("#seat", {"base", "seat","throne","centre", "location", "located" })
-main:lexicon("#allegiance", {"allegiance","adherence","constancy","fidelity","obedience","obligation","loyalty"})
-main:lexicon("#sovereign" ,{"sovereign","chief","emperor","empress","king","monarch"})
-main:lexicon("#aka", {"aka", "as known as","nickname","pseudo"})
-
+main:lexicon("#shortQ",{"and also for", "and for", "and"})
 
 --lexicon verbe :
 main:lexicon("#Auxiliaire",{"do", "does", "could", "would", "should"})
@@ -649,50 +625,28 @@ main:lexicon("#apparaitre",{"appears", "appear","appeared","arise","arised","sho
 --lexicon de preposition :
 main:lexicon("#prepoOf",{"of","from"})
 main:lexicon("#prepo",{"the","a","an", "in"})
-
-main:lexicon("#shortQ",{"and also for", "and for", "and"})
-
---lexicon de lord :
-main:lexicon("#lord", {"lord","commander","governor","king","leader"})
-
+ 
 --lexicon de personnage: 
 main:lexicon("#people" , {"part"})
 
-main:lexicon("#culture", {"culture","ceremonie"})
-
-main:lexicon("#firstSeen", { "first time", "first seen", "first apparition", "first appearance"})
-main:lexicon("#die",{"die", "died", "kill", "killed","death"})
-main:lexicon("#last",{"last","at the end", "the end","end","lastest","final"})
-main:lexicon("#titles",{"titles","appellation","privilege"})
-main:lexicon("#place",{"place","area","locus","point","position","site","station"})
-main:lexicon("#night",{"night watches","night guardian","guardian","night","darkness"})
-main:lexicon("#bastard",{"bastard","by-blow","illegitimate child","whoreson"})
-main:lexicon("#visit",{"go to see","went to see","goes to see","visit","visited"})
-
-main:lexicon("#wife", {"wife unborn child - to be named","daughter - wife","wife"})
-
--- apartenance
+ -- apartenance
 main:lexicon("#apartenance", {" ' s"," ‘ s", " ’ s","‘s"})
-
  
-main:lexicon("#region", {"region", "country", "district", "division", "expanse", "land", "locality", "part", "patch"})
-main:lexicon("#founder", {"founder","beginner","initiator"})
-main:lexicon("#military", {"military", "armed forces", "army", "forces", "services"})
-main:lexicon("#heir", {"heir","beneficiary","heiress","next in line", "scion", "successor"})
-main:lexicon("#weapon", {"secret weapon","weapon"})
-main:lexicon("#vassals",{"vassals","vassal","bondman", "bondservant", "bondsman", "liegeman", "retainer", "serf", "slave", "subject", "thrall", "varlet"})
-main:lexicon("#words", {"words","word", "lyrics", "text"})
-main:lexicon("#prononciation",{"pronounciation", "pronounce", "accent", "accentuation", "articulate", "articulation", "diction", "elocution", "enunciation", "enunciate"})
-main:lexicon("#religion",{"beliefs","belief","religions","religion"})
+ --lexicon aurevoir
 main:lexicon("#bye",{"bye","bye bye","ciao","good bye","see you"})
+
+-- lexicon chiffre
 main:lexicon("#first",{"first","one","1"})
 main:lexicon("#second",{"secon","two","2"})
 main:lexicon("#third",{"third","three","3"})
 main:lexicon("#fourth",{"fourth","four","4"})
 
+--lexicon yes
+main:lexicon("#yes",{ "yes please","please","yes of course","yes i want that","yes i want","of course", "ok", "alright", "let's go", "come on", "yeah", " why not","yes"})
+main:lexicon("#no",{"no thanks" ,"i don't want it","nop", "no"})
 
---chargement du lexicon : maison, lieu, et perso
 
+--######################################################chargement du lexicon : maison, lieu, et perso######################################################
 listHouseLexique = {}
 lexiconHouseLexique = {}
 for line in io.lines("lexiques/lexique_houses.txt") do
@@ -703,11 +657,7 @@ for line in io.lines("lexiques/lexique_houses.txt") do
 	lexiconHouseLexique[#lexiconHouseLexique+1] = string.gsub(line,".-%s","")
 
 end
-
 main:lexicon("#maison", lexiconHouseLexique)
-
--- tester si nil
-
 --print(serialize(lexiconHouseLexique))
 
 
@@ -746,22 +696,15 @@ main:lexicon("#perso", lexiconCharacterLexique)
 
 --print(serialize(listCharacterLexique))
 
-
 listLocationLexique = {}
 lexiconLocationLexique = {}
 for line in io.lines("lexiques/lexique_locations.txt") do
 	listLocationLexique[line] = line
 	lexiconLocationLexique[#lexiconLocationLexique+1] = line
 end
-
 --print(serialize(listLocationLexique))
-
-
 main:lexicon("#lieu", lexiconLocationLexique)
-
-
-
---fin du chargement du lexicon lieu, maison , perso
+--######################################################fin du chargement du lexicon lieu, maison , perso######################################################
 
 
 
@@ -791,7 +734,7 @@ main:pattern([[
 		|#father-in-law|#grandmother-in-law|#maternal-grandmother|#paternal-grandmother
 		|#daughter | #maternal |#mother|#father|#aunt|#oncle|#grandfather|#grandmother|#sister|#brother
  		|#maternal-aunt|#paternal-aunt|#brother-in-law
-		|#cousin|#cousins |#niece|#descendant|#nephew|#actor|#season|#vrbLieu|#type|#age
+		|#cousin|#cousins |#niece|#descendant|#nephew|#actor|#season|#type|#age
 		|#founder|#seat|#allegiance|#sovereign|#aka|#lord|#people|#culture|#firstSeen|#die
 		|#last|#titles|#place|#night|#bastard|#visit|#wife|#region|#founder|#military|#heir|#weapon|#vassals|#words|#prononciation|#religion
 		
@@ -813,7 +756,7 @@ main:pattern([[
 		|#father-in-law|#grandmother-in-law|#maternal-grandmother|#paternal-grandmother
 		|#daughter | #maternal |#mother|#father|#aunt|#oncle|#grandfather|#grandmother|#sister|#brother
  		|#maternal-aunt|#paternal-aunt|#brother-in-law
-		|#cousin|#cousins |#niece|#descendant|#nephew|#actor|#season|#vrbLieu|#type|#age
+		|#cousin|#cousins |#niece|#descendant|#nephew|#actor|#season|#type|#age
 		|#founder|#seat|#allegiance|#aka|#lord|#people|#culture|#firstSeen|#die
 		|#last|#titles|#place|#night|#bastard|#visit|#wife|#region|#founder|#military|#heir|#weapon|#vassals|#words|#prononciation|#religion
 		
@@ -825,14 +768,6 @@ main:pattern([[
 	[#qNormal
 		^(#qNumerique | #qLieu |#qInfoP |#qInfoS |#qTemp) .*
 
-	]
-]])
-
-
---patterne question Y/N 
-main:pattern([[
-	[#qYesNo 
-		^(#be ) .*
 	]
 ]])
 
@@ -872,7 +807,7 @@ main:pattern([[
 
 main:pattern([[
 	[#aVerifier
-		 <( #enTeteYN ) ( [#valeurBd (#sujet|(#w |#d)*) ] (#POS=VRB |#actor | #vrbLieu)) >(#POS=ADP*   (#perso  |#sujet |#pronom))
+		 <( #enTeteYN ) ( [#valeurBd (#sujet|(#w|#d)*) ] (#POS=VRB |#actor | #region)) >(#POS=ADP*   (#perso  |#sujet |#pronom))
 		|<( #enTeteYN )  <( #sujet | #pronom) ([#valeurBd (#sujet|(#w |#d)*) ] #prepo? #aRepondre)
 		|<(  #sujet #apartenance)  ((#POS=NNC |#attributeBD)* ([#valeurBd (#sujet|(#w |#d)+) ]))
 		|<( #enTeteYN ) ((#w)* #aRepondre #prepoOf #sujet #POS=VRB [#valeurBd (#sujet|(#w |#d)+) ])
@@ -897,6 +832,15 @@ main:pattern([[
 		|(#sujet) >(#apartenance #aVerifier)
 	]
 ]])
+
+
+--patterne question Y/N 
+main:pattern([[
+	[#qYesNo 
+		^(#be | (#Auxiliaire #sujet)).*
+	]
+]])
+
 
  main:pattern([[
 	[#qShort 
@@ -935,14 +879,15 @@ local tags = {
 
 -- todo fct qui permet de choisir entre deux aRepondre , avec des lexicon ayant certain priorité, et renvoye le premier si il y en a un seul
 
+sujetRegex =""
 finBoucle =1
-
 result = {}
 tabArep={}
 context ="" 
 motNotFind=""
 test=""
 ret=""
+
 historique ={
 	motAdemander="",
 	contextHis="",
@@ -950,22 +895,45 @@ historique ={
 	question,
 	aRep=""
 }
+line=""
 tabHistorique={}
-
-resurse = true
-
+boolTostring = false
+recurse = true
 local db2 = dofile("db.txt")
+boolR =false
 
-recurse = true
 
-for line in io.lines("debug.txt") do
---print("Hello . Can I help you ? \n\n")
---while finBoucle ==1 do
+--for line in io.lines("debug.txt") do
+
+while(boolR==false)do
+	print("do you want active the toString(tag) ? (yes / no) ")
+	io.write("\n> ") 
+	line = io.read()
+	line = string.lower(line)
+	local res = main(line)
+	yes = gettag(res,"#yes")
+	no = gettag(res,"#no")
+
+	if(yes~="")then
+		boolTostring=true
+		boolR=true
+	elseif(no~="")then
+		boolR=true
+	end
+
+end
+
+
+
+
+
+print("Hello . Can I help you ? \n\n")
+
+while finBoucle ==1 do
 	--os.execute("clear")
---	io.write("\n> ") 
---	line = io.read()
---recurse = true
-recurse = true
+ 	io.write("\n> ") 
+	line = io.read()
+	recurse = true
 
 	while(recurse ==true) do
 
@@ -980,9 +948,12 @@ recurse = true
 			line = string.lower(line)
 			line =line:gsub("do you know the information that","is")
 			line =line:gsub("do you know which","what is")
+
 	 		local seq = main(line)
 	 		print(line)
-		 print(seq:tostring(tags))
+	 		if(boolTostring==true)then
+		    	print(seq:tostring(tags))
+			end
 	 		qYN = gettag(seq,"#qYesNo")
 	 		qYesNoAnswer = gettag(seq,"#qYesNoAnswer")
 	 		qNormal =gettag(seq,"#qNormal")
@@ -1041,8 +1012,8 @@ recurse = true
 
 
 	 
-			 --############################################################# Question Yes No ##################################################################################
-			 --###########################################################################################################################################################
+		--############################################################# Question Yes No ##################################################################################
+		--###########################################################################################################################################################
 
 
 	 		if (qYN ~="" and (qYesNoAnswer=="" and qNormal=="") ) then -- gestion des question yes no   		
@@ -1056,9 +1027,6 @@ recurse = true
 	 				boolFindSujet =false
 	 			end
 	 		--#################### fin recherche de sujet ##################
-
-
-
 	 
 	 		--###################### recherche du context ###########################################################################
 	 			if(context=="")then
@@ -1085,18 +1053,14 @@ recurse = true
 	 			end
 	 		--###################### recherche du context ###########################################################################
 
-
-
-
-
 	 		--################### recherche de aRepondre ##################
 	 			tabArep = getMultiple(seq, "#aRepondre")
 	 			aRep =dernier(tabArep)
 	 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
-	 				aRep=gettag(seq,"#aRepondre")
+	 				aRep=gettag(seq,"#aVerifier")
 	 				boolFindArep=false
 	 			end
-	 			print("tag de aRepondre est : "..aRep)
+	 			--print("tag de aRepondre est : "..aRep)
 
 	 			ret = transform(aRep,seq)-- on recherche le tag des synonymes , afin qu'on puisse accèder dans la bd
 	 			aRep=ret
@@ -1118,7 +1082,6 @@ recurse = true
 	 			-- result = rechercheBD("catelyn stark","husband",lexiconHouseLexique)
 	 			--print("sujet : "..sujet.." , aRepondre = "..aRep)
 	 			result,compt = rechercheBD(sujet,aRep,lexiconHouseLexique)
-	 			-- result = rep2param(sujet,aRep)
 
 	 			 if(result==nil)then 			 
 		 			 		generation(compt,1,sujet,aRep,valBD,"",0)	
@@ -1167,34 +1130,22 @@ recurse = true
 	 		--print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
 			--################### Fin sauvegarde du context , type de la question et la question  ##################
 
-	 		
-
-
-		 --############################################################# FIN Question Yes No ##################################################################################
-		 --###########################################################################################################################################################
+		--############################################################# FIN Question Yes No ##################################################################################
+		--###########################################################################################################################################################
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-		 --############################################################# Question short ##################################################################################
-		 --###########################################################################################################################################################
+		--############################################################# Question short ##################################################################################
+		--###########################################################################################################################################################
 		 		elseif(qShort~="" and (isPresence(aRep,aVer,sujetTest)==1) and qYN=="" and qNormal=="" )then
 
 	 			historiqueVide =true
 	 			if(sujetTest~="")then
 
-	 		--################## accès bd ##############################################################################################################################
+	 		 --################## accès bd ##############################################################################################################################
 	 			taille = #tabHistorique
 				if(tabHistorique[taille]~=null)then
 					aRep = tabHistorique[taille].aRep
@@ -1206,7 +1157,6 @@ recurse = true
 			 				result,compt = rechercheBD(sujetTest,aRep,lexiconHouseLexique)
 			 				print("compt = "..compt)
 			 			 --print("resultat = "..result)
-			 			-- result = rep2param(sujet,aRep)
 			 			 if(result==nil)then 		
 	 			 			 		generation(compt,3,sujetTest,aRep,"","",0)	
 			 			 else
@@ -1234,11 +1184,11 @@ recurse = true
 	 								aRep=ret 
 			 			end
 					end
-	 	--################### fin accès bd ##############################################################################################################################
+	 		 --################### fin accès bd ##############################################################################################################################
 	 			end
 
-		 --############################################################# Fin Question short ##################################################################################
-		 --###########################################################################################################################################################
+		--############################################################# Fin Question short ##################################################################################
+		--###########################################################################################################################################################
 
 
 
@@ -1249,13 +1199,13 @@ recurse = true
 
 
 
-		 --############################################################# Question normal ##################################################################################
-		 --###########################################################################################################################################################
+		--############################################################# Question normal ##################################################################################
+		--###########################################################################################################################################################
 
 
 	 		elseif((qNormal~="" or qYesNoAnswer~="" or (aRep ~="" and sujetTest~="")) and qYN=="" )then
 
-	 	--###################### recherche de sujet ###########################################################################
+	 		--###################### recherche de sujet ###########################################################################
 	 			tabSujet = getMultiple(seq,"#sujet")
 	 			sujet =dernier(tabSujet)
 	 			--sujet = gettag(seq,"#sujet")
@@ -1264,10 +1214,10 @@ recurse = true
 	 				sujet=gettag(seq,"#sujetYN")
 	 				boolFindSujet =false
 	 			end
-	 	--#################### fin recherche de sujet ########################################################################
+	 		--#################### fin recherche de sujet ########################################################################
 	 		
 
-	 	--###################### recherche du context ###########################################################################
+	 		--###################### recherche du context ###########################################################################
 	 			if(context=="")then
 					if( sujet=="he" or sujet=="she" or sujet=="it" or sujet=="him" or sujet=="her" or sujet=="its" or sujet=="his")then
 						 				--print("ici")
@@ -1290,11 +1240,11 @@ recurse = true
 	 					context =sujet
 	 				end
 	 			end
-	 	--###################### recherche du context ###########################################################################
+	 		--###################### recherche du context ###########################################################################
 
 
 
-	 	--################### recherche de aRepondre ########################################################################
+	 		--################### recherche de aRepondre ########################################################################
 	 			aRep = gettag(seq, "#aRepondre")
 	 			if(aRep=="")then --on ne trouve pas de aRepondre du coup on cherche aVerifier dans le pire des cas
 	 				aRep=gettag(seq,"#aVerifier")
@@ -1304,16 +1254,15 @@ recurse = true
 	 			aRep=ret
 	 				 			--print("arep = "..aRep)
 
-	 	--################### fin recherche de aRepondre ########################################################################
+	 		--################### fin recherche de aRepondre ########################################################################
 
 
 
-	 	--################## accès bd ##############################################################################################################################
+	 		--################## accès bd ##############################################################################################################################
 	 			--print("sujet = "..sujet.." , arep = "..aRep)
 	 			result,compt,comptMatch = rechercheBD(sujet,aRep,lexiconHouseLexique)
 
-	 			-- result = rep2param(sujet,aRep)
-	 			--print("result : "..result)
+ 	 			--print("result : "..result)
 	 			--print("JE SUIS LA " .. comptMatch .. " result ".. result)
 	 		
 
@@ -1370,9 +1319,9 @@ recurse = true
 		 			 	end
 		 			end
 	 			end
-	 	--################### fin accès bd ##############################################################################################################################
+	 		--################### fin accès bd ##############################################################################################################################
 
-	 	--################### sauvegarde du context , type de la question et la question  ########################################################################
+	 		--################### sauvegarde du context , type de la question et la question  ########################################################################
 	 		historique.motAdemander=motNotFind
 	 		historique.contextHis =context
 	 		historique.type="Normal"
@@ -1380,10 +1329,10 @@ recurse = true
 	 		historique.aRep = aRep
 	 		table.insert( tabHistorique, historique)
 	 		--print("historique : mot à revérifier à l'utilisateur = "..tabHistorique[1].motAdemander.." |context = "..tabHistorique[1].contextHis.." | type = "..tabHistorique[1].type.." | question = "..tabHistorique[1].question )
-	 	--################### Fin sauvegarde du context , type de la question et la question  ########################################################################
+	 		--################### Fin sauvegarde du context , type de la question et la question  ########################################################################
 
-		 --############################################################# FIN Question normal ####################################################################################################
-		 --###########################################################################################################################################################
+		--############################################################# FIN Question normal ####################################################################################################
+		--###########################################################################################################################################################
 		else
 		 			local response =
 		        	{
