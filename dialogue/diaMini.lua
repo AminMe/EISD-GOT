@@ -108,7 +108,7 @@ end
 
 function rep2param(sujetV, aRepVar)
 
-	local db2Var = dofile("db-1.txt")
+	local db2Var = dofile("db.txt")
 	res =""
 	if( db2Var[sujetV]~=nil)then
 		--print("sujet : "..sujetV.." et arep = "..aRepVar)
@@ -125,7 +125,7 @@ end
 
 function rechercheBD(sujetV, aRepVar, tabHouse)
 
-	local db2Var = dofile("db-1.txt")
+	local db2Var = dofile("db.txt")
 	tmp=""
 	resultVar=""
 	maison =""
@@ -741,7 +741,8 @@ historique ={
 }
 tabHistorique={}
 
-local db2 = dofile("db-1.txt")
+local db2 = dofile("db.txt")
+
 
 for line in io.lines("debug.txt") do
 --print("Hello . Can I help you ? \n\n")
@@ -750,9 +751,6 @@ for line in io.lines("debug.txt") do
 	--os.execute("clear")
 --	io.write("\n> ") 
 --	line = io.read()
-
-
-
 
 	line=line:gsub("‘s","'s")			
 	line=line:gsub("’s","'s")

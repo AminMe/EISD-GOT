@@ -106,13 +106,6 @@ main:pattern([[
 			(',' #POS=CON | ',' | #POS=CON)?)+ >('seasons' | 'season'))?
 	]		
 ]])
-
-main:pattern([[
-	[#Actor
-		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
-	]
-]])
-
 main:pattern([[
 		[#relationName 
 			#title? 
@@ -123,6 +116,14 @@ main:pattern([[
 ]])
 
 main:pattern([[
+	[#Actor
+		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
+	]
+]])
+
+
+
+main:pattern([[
 	[#firstSeen
 		#debut (#POS=ADP #POS=DET|#POS=ADP) 
 		[#episodeName
@@ -131,6 +132,24 @@ main:pattern([[
 	]
 ]])
 
+function getMultiple(seq,tag)
+	local pos = seq[tag]
+	if #pos == 0 then
+		return ""
+	end
+	local number = #pos
+	local tab = {}
+	for j=1, number do
+		local res = {}
+		local deb = pos[j][1]
+		local fin = pos[j][2]
+		for i = deb, fin do
+			res[#res + 1] = seq[i].token
+		end
+		tab[#tab + 1] = table.concat(res, " ")
+	end
+	return tab
+end
 
 function gettag(seq, tag)
 	local pos = seq[tag]
@@ -146,18 +165,92 @@ function gettag(seq, tag)
 	return table.concat(res, " ")
 end
 
+function getFamily(str) 
+	local tableName = getMultiple(str,"#nomPersonne")
+	local tableLien = getMultiple(str,"#lienFamille")
+	local tableFini = {}
+	if(tableName ~= "") then
+		for key,val in pairs(tableLien) do 
+			if not tableFini[val] then 
+				tableFini[val] = {}
+			end
+			i = #tableFini[val] + 1
+			if not tableFini[val][i] then 
+				tableFini[val][i] = {}
+			end 
+			tableFini[val][i] = tableName[key]
+		end
+		
+		print("____________________")
+	end
+	return tableFini
+end
 --[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
 function remplirTabStructure(db, seq, tag, variable, title, expression)
-	if #seq[tag] ~= 0 then
-		if (variable == nil) then
-			variable = gettag(seq,tag)
-			local case = tag:gsub("#","")
-			case = case:lower()
-			if (variable:lower() ~= case:lower() .. " =") then
+	if tag=="#Family" then
+		if #seq[tag] ~= 0 then
+			if (variable == nil) then
+				variable = gettag(seq,tag)
+				--print(variable)
+
+				--print("..... "..expression)
+
+
 				variable = variable:gsub(expression,"")
-				variable = cleantext(variable)
-				variable = cleannumber(variable)
-				db[title][case] = variable
+				local lmain = dark.pipeline()
+				lmain:basic()
+				lmain:model("mdl/postag-en")
+
+				lmain:pattern([[
+					[#familleRelation
+						([#nomPersonne
+							(#w)+
+						]
+						'-'
+						[#lienFamille
+							(#w|'-')+
+						]
+						('[' ']')?)*
+						]
+				]])
+
+				variable = variable:gsub("(%p)", " %1 ")
+				variable = variable:gsub("[%\\%/]","")
+
+		
+
+
+				res = string.gsub(variable,"%-%s+(.-)([A-Z])","- %1 [ ] %2")
+				lseq = lmain(res)
+
+				--print("lseq ................... ")
+				tabFamily = getFamily(lseq)
+
+				--print("new")
+				--print(variable)
+
+				local case = tag:gsub("#","")
+				case = case:lower()
+				if (variable:lower() ~= case:lower() .. " =") then
+					-- variable = variable:gsub(expression,"")
+					variable = cleantext(variable)
+					variable = cleannumber(variable)
+					db[title][case] = tabFamily
+				end
+			end
+		end
+	else
+		if #seq[tag] ~= 0 then
+			if (variable == nil) then
+				variable = gettag(seq,tag)
+				local case = tag:gsub("#","")
+				case = case:lower()
+				if (variable:lower() ~= case:lower() .. " =") then
+					variable = variable:gsub(expression,"")
+					variable = cleantext(variable)
+					variable = cleannumber(variable)
+					db[title][case] = variable
+				end
 			end
 		end
 	end
@@ -338,6 +431,8 @@ local tags = {
 }
 
 local db = {}
+
+
 
 for fichier in os.dir("corpus/Noble_houses/") do	
 	local title = nil
