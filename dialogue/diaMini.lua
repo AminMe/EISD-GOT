@@ -679,7 +679,7 @@ for line in io.lines("lexiques/lexique_character.txt") do
 	size, matches = sizegmatch(line)
 	if(size==2) then
 		prenom = matches[1]
-		listCharacterLexique[line][prenom] = prenom
+		--listCharacterLexique[line][prenom] = prenom
 		nom = matches[2]
 		pNom = prenom:sub(1,1).." "..nom
 		listCharacterLexique[line][pNom] = pNom
@@ -699,7 +699,8 @@ main:lexicon("#perso", lexiconCharacterLexique)
 listLocationLexique = {}
 lexiconLocationLexique = {}
 for line in io.lines("lexiques/lexique_locations.txt") do
-	listLocationLexique[line] = line
+	listLocationLexique[line] = {}
+	listLocationLexique[line][line] = line
 	lexiconLocationLexique[#lexiconLocationLexique+1] = line
 end
 --print(serialize(listLocationLexique))
@@ -790,7 +791,7 @@ main:pattern([[
 
  main:pattern([[
  	[#sujet
- 		  (#perso | #maison | #lieu | #pronom|#actorSyno |  #POS=NNP* )
+ 		  (#perso | #maison | #lieu | #pronom|#actorSyno)
 	]
  ]])
 
@@ -870,6 +871,108 @@ local tags = {
 
 
 
+function levenshtein(chercher, dans, tolerance)
+
+	verif = chercher:gsub("%s+","")
+	if(verif=="") then return false end
+	verif = dans:gsub("%s+","")
+	if(verif=="") then return false end
+	if(tolerance<0) then return false end
+
+    local str1  = dans:lower()
+    local str2 = chercher:lower()
+    local len1, len2 = #str1, #str2
+    local char1, char2, distance = {}, {}, {}
+    str1:gsub('.', function (c) table.insert(char1, c) end)
+    str2:gsub('.', function (c) table.insert(char2, c) end)
+    for i = 0, len1 do distance[i] = {} end
+    for i = 0, len1 do distance[i][0] = i end
+    for i = 0, len2 do distance[0][i] = i end
+    for i = 1, len1 do
+        for j = 1, len2 do
+            distance[i][j] = math.min(
+                distance[i-1][j] + 1,
+                distance[i][j-1] + 1,
+                distance[i-1][j-1] + (char1[i] == char2[j] and 0 or 1)
+            )
+        end
+    end
+   
+	diff = #str1-#str2
+	if diff>0 then diff = -diff end
+    return distance[len1][len2] - (diff) <= tolerance*#str2, distance[len1][len2]
+end
+
+function searchEquivalence(chercher, tab)
+
+	res = {}
+	continue = true
+	for key,val in pairs(tab) do
+		continue = true
+		for sKey, sVal in pairs(val) do
+			match = false
+			tolerance = 0.35
+			while match==false and tolerance<=0.42 do
+				match,lev = levenshtein(chercher,sVal,tolerance)
+				tolerance=tolerance+0.01
+			end
+			if(match==true and continue==true) then 
+				size = #res+1
+				res[size]={}
+				res[size]["key"] = key
+				res[size]["lev"] = lev
+				continue = false
+			end
+		end
+	end
+
+	return res;
+end
+
+function minKey(tab)
+	--print(serialize(tab))
+	if tab~=nil and #tab>0 then
+		min = 999
+		keyMin = ""
+		for key,val in pairs(tab) do 
+			if val["lev"]<min then
+				min = val["lev"]
+				keyMin = val["key"]
+			end
+		end
+		return min,keyMin
+	end
+end
+
+function chooseBestEquivalence(resCharacter, resHouse, resLocation)
+	
+	minC, keyMinC = minKey(resCharacter)
+	if keyMinC~=nil then 
+		--print("Best match resCharacter = {min = " .. minC .. " key = " .. keyMinC .. "}") 
+	end
+	
+	minH, keyMinH = minKey(resHouse)
+	if keyMinH~=nil then 
+		--print("Best match resHouse = {min = " .. minH .. " key = " .. keyMinH .. "}") 
+	end
+	minL, keyMinL = minKey(resLocation)
+	if keyMinL~=nil then 
+		--print("Best match resLocation = {min = " .. minL .. " key = " .. keyMinL .. "}") 
+	end
+
+	if(minC==nill and minH==nil and minL==nil) then return nil end
+	if minC==nil then minC=999 end
+	if minH==nil then minH=999 end
+	if minL==nil then minL=999 end
+
+	min = math.min(minC,minH,minL)
+
+	
+	if min==minH then return keyMinH end
+	if min==minC then return keyMinC end
+	if min==minL then return keyMinL end
+
+end
 
 
 
@@ -902,13 +1005,16 @@ recurse = true
 local db2 = dofile("db.txt")
 boolR =false
 
-
---for line in io.lines("debug.txt") do
+local vmain = dark.pipeline() -- pile d'execution
+vmain:basic();
+vmain:model("mdl/postag-en")
+vmain:pattern("[#NAME ((#W ('-' | '.' | /^d['eu]/)?)) {1,}]")
 
 while(boolR==false)do
 	print("do you want active the toString(tag) ? (yes / no) ")
 	io.write("\n> ") 
 	line = io.read()
+
 	line = string.lower(line)
 	local res = main(line)
 	yes = gettag(res,"#yes")
@@ -925,7 +1031,7 @@ end
 
 
 
-
+local sujetBest = ""
 
 print("Hello . Can I help you ? \n\n")
 
@@ -933,6 +1039,41 @@ while finBoucle ==1 do
 	--os.execute("clear")
  	io.write("\n> ") 
 	line = io.read()
+
+	chercher = line
+	-- [ DEBUT LEVEINSHTEIN ] --
+	vseq = vmain(chercher)
+	 local vtags = {
+		["#NAME"] = "green",
+	}
+   	--vseq:dump()
+	--print(vseq:tostring(vtags))
+	chercher = gettag(vseq,"#NAME")
+
+   	resCharacter = searchEquivalence(chercher,listCharacterLexique)
+   if(resCharacter~=nil and #resCharacter>0) then
+		--print("Trouve Personnage : "..serialize(resCharacter))
+		find = true
+   end
+
+   resHouse = searchEquivalence(chercher,listHouseLexique)
+   if(resHouse~=nil and #resHouse>0) then
+		--print("Trouve House : "..serialize(resHouse))
+		find = true
+   end
+
+   resLocation = searchEquivalence(chercher,listLocationLexique)
+   if(resLocation~=nil and #resLocation>0) then
+		--print("Trouve Location : "..serialize(resLocation))
+		find = true
+   end
+
+   sujetBest = chooseBestEquivalence(resCharacter,resHouse,resLocation)
+   if sujetBest~=nil then print("I did not found "..chercher.." but here is something for "..sujetBest)
+   else
+   		sujetBest = chercher
+   end
+	-- [ FIN LEVEINSHTEIN ] --
 	recurse = true
 
 	while(recurse ==true) do
@@ -1025,6 +1166,11 @@ while finBoucle ==1 do
 	 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
 	 				sujet=gettag(seq,"#sujet")
 	 				boolFindSujet =false
+	 				if(sujet=="")then
+	 					sujet = sujetBest
+	 				end
+
+
 	 			end
 	 		--#################### fin recherche de sujet ##################
 	 
@@ -1213,6 +1359,9 @@ while finBoucle ==1 do
 	 			if(sujet=="")then-- on ne trouve pas de sujet normal alors on cherche un sujet YN dans le pire des cas
 	 				sujet=gettag(seq,"#sujetYN")
 	 				boolFindSujet =false
+	 				if(sujet=="")then
+	 					sujet = sujetBest
+	 				end
 	 			end
 	 		--#################### fin recherche de sujet ########################################################################
 	 		
@@ -1351,7 +1500,7 @@ while finBoucle ==1 do
 			recurse = false
 		end
 
-		seq:dump()
+		--seq:dump()
 		end
 
 	end
