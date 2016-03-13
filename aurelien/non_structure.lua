@@ -47,15 +47,12 @@ main:pattern("[#Cadets_NS (#Pronom)?/^[Cc]adet[s]/ #Be .*?('.')]")
 main:pattern("[#Age_NS (#Pronom)?/^[Aa]ge[s]/ #Be .*?('.')]")
 main:pattern("[#Founder_NS ((#Pronom)(Founder|founder|Founders|founders) #Be| #House (#w)+ #Be founded by) .*?('.')]")
 main:pattern("[#Weapon_NS (#Pronom)/^[Ww]eapon[s]/ #Be .*?('.')]")
-
 main:lexicon("#typeHouse",{"noble","Noble","vassal","Vassal","great","Great","minor","Minor","ruling","Ruling","knightly","Knightly","reach","Reach","loyalist","Loyalist","ancient","Ancient","lesser","Lesser","major","Major"})
 --main:pattern("[#GreatHouse_NS #House (#w)+ #Be (#w)+ /^[Gg]reat/ #House .*?('.')]")
 --main:pattern("[#VassalHouse_NS #House (#w)+ #Be (#w)+ vassal #House .*?('.')]")
 --main:pattern("[#MinorHouse_NS #House (#w)+ #Be (#w)+ minor #House .*?('.')]")
-
+-- amelioration des 3 patterns
 main:pattern("[#TypeHouse_NS #House (#w)+ #Be (#w*?) #typeHouse (#w*?) #House .*?('.')]")
--- TODO (data\s*-\s*rte.-'.')
-
 main:pattern("[#Castle_NS /^[Tt]heir/ castle #Be .*?('.')]")
 main:pattern("[#Heir_NS (#Pronom)/^[Hh]eir/ #Be .*?('.')]")
 
@@ -97,6 +94,7 @@ main:pattern("[#Prononciation #Be pronounced .*?('.')]")
 main:pattern("[#Bastard #Be (#Pronom)? bastard #Child of .*?('.')]")
 main:pattern("[#Killed #Be killed by .*?('.')]")
 
+-- type de personnages Major/Unseen/Recurring/Only/Minor/Background/Mentioned/Unnamed
 main:pattern([[
 	[#infoCharacter
 		'is' ('a'|'an') 
@@ -112,6 +110,8 @@ main:pattern([[
 			(',' #POS=CON | ',' | #POS=CON)?)+ >('seasons' | 'season'))?
 	]		
 ]])
+
+-- nom du personnage
 main:pattern([[
 		[#relationName 
 			#title? 
@@ -121,21 +121,21 @@ main:pattern([[
 		]
 ]])
 
+-- nom de l'acteur
 main:pattern([[
 	[#Actor
-		<([#Sexe #POS=PRO] #POS=VRB #POS=VRB #POS=ADP #w+) #name
+		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
 	]
 ]])
 
-
+-- sexe de l'acteur detectable au debut du corpus grace a played
 main:pattern([[
 	[#SexeActor
 		([#Sexe #POS=PRO] #POS=VRB played #POS=ADP #w+) #name
 	]
 ]])
 
-
-
+-- premier episode du personnage
 main:pattern([[
 	[#firstSeen
 		#debut (#POS=ADP #POS=DET|#POS=ADP) 
@@ -145,6 +145,7 @@ main:pattern([[
 	]
 ]])
 
+--[[ retourne tout les indicie d'un tag ]]--
 function getMultiple(seq,tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -164,6 +165,7 @@ function getMultiple(seq,tag)
 	return tab
 end
 
+--[[ retourne le premier indice du tag ]]--
 function gettag(seq, tag)
 	local pos = seq[tag]
 	if #pos == 0 then
@@ -178,6 +180,7 @@ function gettag(seq, tag)
 	return table.concat(res, " ")
 end
 
+--[[ retourne l'arborescence des relations familiales ]]--
 function getFamily(str) 
 	local tableName = getMultiple(str,"#nomPersonne")
 	local tableLien = getMultiple(str,"#lienFamille")
@@ -201,8 +204,10 @@ function getFamily(str)
 	end
 	return tableFini
 end
+
 --[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
 function remplirTabStructure(db, seq, tag, variable, title, expression)
+	-- cas special pour famille
 	if tag=="#Family" then
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
@@ -239,6 +244,7 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 				end
 			end
 		end
+	-- cas special pour age
 	elseif tag=="#Age" then
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
@@ -271,6 +277,7 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 				end
 			end
 		end
+	-- cas special pour Vassals
 	elseif tag=="#Vassals" then
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
@@ -304,6 +311,7 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 				end
 			end
 		end
+	-- cas general
 	else
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
@@ -315,9 +323,6 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 					variable = variable:gsub(expression,"")
 					variable = cleantext(variable)
 					variable = cleannumber(variable)
-					--[[if tag=="#Appearances" then
-						print("v = "..variable)
-					end]]--
 					db[title][case] = variable
 				end
 			end
@@ -327,7 +332,9 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 	return variable
 end
 
---[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
+--[[ Fonction qui ajoute des infos non structurée dans le tableau nottament pour les informations 
+militaire qui sont de 2 types tailles et contenu de l'armee
+]]--
 function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 
 	local result = {}
@@ -353,7 +360,8 @@ function remplirTabStructure_military(db, seq, tag, variable, title, expression)
 	return variable
 end
 
---[[ Fonction qui ajoute des infos non structurée dans le tableau ]]--
+--[[ Fonction qui ajoute des infos non structurée dans le tableau 
+- les personnes ayant visite un lieu donne ]]--
 function getVisit(db, location, variable)
 
 	if not db[location]["visit"] then
@@ -450,6 +458,7 @@ function splitvirgule(texte)
 	return result,somme
 end
 
+--[[ Fonction qui nettoie le texte ]]--
 function cleantext(string)
 	
 	string = string:gsub(";%s+(.-)%s+;","%1")
@@ -495,6 +504,7 @@ function cleantext(string)
 	return string
 end
 
+--[[ Fonction qui recupere la saison d'un personnage ]]--
 function getSeason(seq)
 	local pos = seq["#infoCharacter"]
 	if #pos == 0 then
@@ -578,7 +588,30 @@ for fichier in os.dir("corpus/Noble_houses/") do
 			end
 			if #seq["#Seat_NS"] ~= 0 then
 				local seat_ns = gettag(seq,"#Seat_NS")
-				db[title]["seat_NS"] = seat_ns
+				
+				local vmain = dark.pipeline() -- pile d'execution
+				vmain:basic();
+				vmain:model("mdl/postag-en")
+
+				vmain:pattern([[
+								[#house 
+									[#nameHouse (/^[H|h]ouse/(.*?)#w)|other(.*?)houses]
+								]
+							]])
+				vmain:pattern("[#Pronom (/^[Tt]he/|/^[Tt]heir/|/^[Hh]is/|/^[Hh]er/)]")
+				vmain:pattern("[#Be (is|are|was|were|will be)]")
+
+				vmain:pattern([[
+								(#Pronom) (#w|#W)* /^[Ss]eat/ #Be 
+								[#Seat 
+								('at'|'a'|'the'|'of'|'known' 'as'|'called') [#seat #W+] |
+								<(#w*) [#seat #W+] |
+								#w* [#seat #W+]
+						 		]  
+				]])
+				vseq = vmain(seat_ns)
+
+				db[title]["seat_NS"] = gettag(vseq,"#seat")
 			end
 			if #seq["#Region"] ~= 0 then
 				region = remplirTabStructure(db, seq, "#Region", region, title, "[Rr]egion = ")
@@ -909,6 +942,7 @@ for fichier in os.dir("corpus/Characters/") do
 	
 end
 
+-- enregistrement de la BDD
 local out = io.open("db.txt", "w")
 out:write("return ")
 out:write(serialize(db))
