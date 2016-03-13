@@ -47,9 +47,15 @@ main:pattern("[#Cadets_NS (#Pronom)?/^[Cc]adet[s]/ #Be .*?('.')]")
 main:pattern("[#Age_NS (#Pronom)?/^[Aa]ge[s]/ #Be .*?('.')]")
 main:pattern("[#Founder_NS ((#Pronom)(Founder|founder|Founders|founders) #Be| #House (#w)+ #Be founded by) .*?('.')]")
 main:pattern("[#Weapon_NS (#Pronom)/^[Ww]eapon[s]/ #Be .*?('.')]")
-main:pattern("[#GreatHouse_NS #House (#w)+ #Be (#w)+ /^[Gg]reat/ #House .*?('.')]")
-main:pattern("[#VassalHouse_NS #House (#w)+ #Be (#w)+ vassal #House .*?('.')]")
-main:pattern("[#MinorHouse_NS #House (#w)+ #Be (#w)+ minor #House .*?('.')]")
+
+main:lexicon("#typeHouse",{"noble","Noble","vassal","Vassal","great","Great","minor","Minor","ruling","Ruling","knightly","Knightly","reach","Reach","loyalist","Loyalist","ancient","Ancient","lesser","Lesser","major","Major"})
+--main:pattern("[#GreatHouse_NS #House (#w)+ #Be (#w)+ /^[Gg]reat/ #House .*?('.')]")
+--main:pattern("[#VassalHouse_NS #House (#w)+ #Be (#w)+ vassal #House .*?('.')]")
+--main:pattern("[#MinorHouse_NS #House (#w)+ #Be (#w)+ minor #House .*?('.')]")
+
+main:pattern("[#TypeHouse_NS #House (#w)+ #Be (#w*?) #typeHouse (#w*?) #House .*?('.')]")
+-- TODO (data\s*-\s*rte.-'.')
+
 main:pattern("[#Castle_NS /^[Tt]heir/ castle #Be .*?('.')]")
 main:pattern("[#Heir_NS (#Pronom)/^[Hh]eir/ #Be .*?('.')]")
 
@@ -416,6 +422,9 @@ end
 function cleantext(string)
 	
 	string = string:gsub("%[ %[ File : (.-) ] ]","")
+	string = string:gsub("%(.-%)","")
+	string = string:gsub('=%s+(".-=)%s+','= "')
+
 	string = string:gsub("]","")
 	string = string:gsub("%[ ","")
 	string = string:gsub("' ' '","")
@@ -564,7 +573,13 @@ for fichier in os.dir("corpus/Noble_houses/") do
 			if #seq["#Weapon"] ~= 0 then
 				weapon = remplirTabStructure(db, seq, "#Weapon", weapon, title, "[Ww]eapon = ")
 			end
-			if #seq["#GreatHouse_NS"] ~= 0 then
+			if #seq["#TypeHouse_NS"] ~= 0 then
+				if gettag(seq,"#typeHouse")~="to" or gettag(seq,"#typeHouse")~="of" then
+					db[title]["type_house"] = gettag(seq,"#typeHouse")
+				end
+				--print(gettag(seq["#TypeHouse_NS"],"#typeHouseT"))
+			end
+			--[[if #seq["#GreatHouse_NS"] ~= 0 then
 				if (typeHouse == nil) then
 					typeHouse = gettag(seq,"#GreatHouse_NS")
 					db[title]["type_house"] = typeHouse
@@ -581,7 +596,7 @@ for fichier in os.dir("corpus/Noble_houses/") do
 					typeHouse = gettag(seq,"#MinorHouse_NS")
 					db[title]["type_house"] = typeHouse
 				end
-			end
+			end]]--
 			if #seq["#Castle_NS"] ~= 0 then
 				local castle_ns = gettag(seq,"#Castle_NS")
 				db[title]["castle_NS"] = castle_ns
