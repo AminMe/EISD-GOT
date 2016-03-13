@@ -123,7 +123,14 @@ main:pattern([[
 
 main:pattern([[
 	[#Actor
-		<(#POS=PRO #POS=VRB #POS=VRB #POS=ADP #w+) #name
+		<([#Sexe #POS=PRO] #POS=VRB #POS=VRB #POS=ADP #w+) #name
+	]
+]])
+
+
+main:pattern([[
+	[#SexeActor
+		([#Sexe #POS=PRO] #POS=VRB played #POS=ADP #w+) #name
 	]
 ]])
 
@@ -176,7 +183,10 @@ function getFamily(str)
 	local tableLien = getMultiple(str,"#lienFamille")
 	local tableFini = {}
 	if(tableName ~= "") then
-		for key,val in pairs(tableLien) do 
+		for key,val in pairs(tableLien) do
+			val = val:gsub("%s+once%s+removed","")
+			val = val:gsub("%s+twice%s+removed","")
+			val = val:gsub("%s%-","")
 			if not tableFini[val] then 
 				tableFini[val] = {}
 			end
@@ -187,7 +197,7 @@ function getFamily(str)
 			tableFini[val][i] = tableName[key]
 		end
 		
-		print("____________________")
+		--print("____________________")
 	end
 	return tableFini
 end
@@ -197,11 +207,6 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
 				variable = gettag(seq,tag)
-				--print(variable)
-
-				--print("..... "..expression)
-
-
 				variable = variable:gsub(expression,"")
 				local lmain = dark.pipeline()
 				lmain:basic()
@@ -219,26 +224,15 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 						('[' ']')?)*
 						]
 				]])
-
 				variable = variable:gsub("(%p)", " %1 ")
 				variable = variable:gsub("[%\\%/]","")
-
-		
-
-
+				
 				res = string.gsub(variable,"%-%s+(.-)([A-Z])","- %1 [ ] %2")
 				lseq = lmain(res)
-
-				--print("lseq ................... ")
 				tabFamily = getFamily(lseq)
-
-				--print("new")
-				--print(variable)
-
 				local case = tag:gsub("#","")
 				case = case:lower()
 				if (variable:lower() ~= case:lower() .. " =") then
-					-- variable = variable:gsub(expression,"")
 					variable = cleantext(variable)
 					variable = cleannumber(variable)
 					db[title][case] = tabFamily
@@ -277,16 +271,53 @@ function remplirTabStructure(db, seq, tag, variable, title, expression)
 				end
 			end
 		end
+	elseif tag=="#Vassals" then
+		if #seq[tag] ~= 0 then
+			if (variable == nil) then
+				variable = gettag(seq,tag)
+				variable = variable:gsub("(.-)[h|H]ouse","%1 house")
+				variable = variable:gsub(expression,"")
+				variable = cleantext(variable)
+				variable = cleannumber(variable)
+				local vmain = dark.pipeline() -- pile d'execution
+				vmain:basic();
+				vmain:model("mdl/postag-en")
+
+				vmain:pattern([[
+								[#house 
+									[#nameHouse (/^[H|h]ouse/(.*?)#w)|other(.*?)houses]
+								]
+							]])
+
+				vseq = vmain(variable)
+				tabVassal = getMultiple(vseq,"#nameHouse")
+				if tabVassal~=nil and tabVassal~="" then
+					--[[print("_________DEBUT___________")
+					print(serialize(tabVassal))
+					print("_________FIN___________")]]--
+					local case = tag:gsub("#","")
+					case = case:lower()
+					if (variable:lower() ~= case:lower() .. " =") then
+						--if(variable~="") then print("vassals = "..variable) end
+						db[title][case] = tabVassal
+					end
+				end
+			end
+		end
 	else
 		if #seq[tag] ~= 0 then
 			if (variable == nil) then
 				variable = gettag(seq,tag)
 				local case = tag:gsub("#","")
+				
 				case = case:lower()
 				if (variable:lower() ~= case:lower() .. " =") then
 					variable = variable:gsub(expression,"")
 					variable = cleantext(variable)
 					variable = cleannumber(variable)
+					--[[if tag=="#Appearances" then
+						print("v = "..variable)
+					end]]--
 					db[title][case] = variable
 				end
 			end
@@ -421,24 +452,44 @@ end
 
 function cleantext(string)
 	
+	string = string:gsub(";%s+(.-)%s+;","%1")
+	string = string:gsub("(%d+%s+episodes)%s+;%s+small","%1")
+	string = string:gsub("%u"," %1")
 	string = string:gsub("%[ %[ File : (.-) ] ]","")
-	string = string:gsub("%(.-%)","")
-	string = string:gsub('=%s+(".-=)%s+','= "')
+	string = string:gsub("%((.-)%)","")
+	string = string:gsub('(.-)=%s+','')
+	string = string:gsub("%d+px%s+%|%s+left%s+(.-)%s+%d+px%s+%|%s+right","%1")
+	string = string:gsub("left%s+%|%s+%d+px%s+(.-)%s+right%s+%|%s+%d+px","%1")
+	string = string:gsub("%s,%s+%d+[%s+%-%s+%d+]+%s+,","")
+	
 
 	string = string:gsub("]","")
 	string = string:gsub("%[ ","")
+
 	string = string:gsub("' ' '","")
+
 	--string = string:gsub(" ' ' '","")
 	string = string:gsub("' ","")
+
 	string = string:gsub("< br / >", ",")
 	string = string:gsub("/", "")
+
 	string = string:gsub(" < br >",";")
 	string = string:gsub("  < small >","")
 	string = string:gsub(" < / small >","")
 	string = string:gsub("}","")
 	string = string:gsub("<ref>","")
 	string = string:gsub("\\ u2022",";")
+
 	string = string:gsub("\\",";")
+
+	
+	string = string:gsub("(%d+%s+episodes)%s+;%s+small","%1")
+	string = string:gsub(";%s+(.-)%s+;","%1")
+
+	string = string:gsub("%s+"," ")
+	
+	string = string:gsub("^%s(.*)","%1")
 	string = string:lower()
 
 	return string
@@ -473,8 +524,7 @@ local tags = {
 
 local db = {}
 
-
-
+print("Parcours des maisons")
 for fichier in os.dir("corpus/Noble_houses/") do	
 	local title = nil
 	local sigil = nil	
@@ -610,6 +660,7 @@ for fichier in os.dir("corpus/Noble_houses/") do
 	end
 end
 
+print("Parcours des lieux")
 for fichier in os.dir("corpus/Locations/") do	
 	local title = nil
 	local population = nil	
@@ -684,6 +735,8 @@ for fichier in os.dir("corpus/Locations/") do
 	end
 end
 
+
+print("Parcours des personnages")
 for fichier in os.dir("corpus/Characters/") do
 
 	local tabCharacter = {}
@@ -767,6 +820,18 @@ for fichier in os.dir("corpus/Characters/") do
 			if #seq["#Actor"] ~= 0 then
 				actor = remplirTabStructure(tabCharacter, seq, "#Actor", actor, title, "[Aa]ctor = ")
 			end
+			if #seq["#SexeActor"] ~= 0 then
+				sexeC = ""
+				if gettag(seq,"#Sexe") ~= 0 and gettag(seq,"#Sexe")=="He" then
+					sexeC="M"
+				elseif gettag(seq,"#Sexe") ~= 0 and gettag(seq,"#Sexe")=="She" then
+					sexeC="F"
+				end
+				tabCharacter[title]["sexe"] = sexeC
+				--print(title.." -> ")
+				--print(serialize(tabCharacter[title]))
+				--actor = remplirTabStructure(tabCharacter, seq, "#Actor", actor, title, "[Aa]ctor = ")
+			end
 			if #seq["#Culture"] ~= 0 then
 				culture = remplirTabStructure(tabCharacter, seq, "#Culture", culture, title, "[Cc]ulture = ")
 			end
@@ -813,7 +878,7 @@ for fichier in os.dir("corpus/Characters/") do
 			end
 			if #seq["#firstSeen"] ~= 0 then
 				if (firstSeen == nil) then
-					firstSeen = gettag(seq,"#firstSeen")
+					firstSeen = gettag(seq,"#episodeName")
 					firstSeen = firstSeen:lower()
 					tabCharacter[title]["firstSeen"] = firstSeen
 				end
