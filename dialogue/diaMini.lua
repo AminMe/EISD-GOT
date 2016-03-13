@@ -277,10 +277,8 @@ end
 
 
 --######################################################### Génération des réponses #################################################################################
-
--- Si 0,1 ou plusieurs 
--- type : quantite, who, location, is, what is 
--- Is toto a member of
+-- verif : 0 si la reponse est fausse, 1 sinon pour les question YesNo
+-- comptMatch : dans le cas ou il y a plusieurs maniere de dire un mot  
 -- questionType ==>  1 : YesNo 2 : YesNoAnswer 3 : Normal
 function generation(numberResponse, questionType, sujet, aRepondre, aVerifier, reponse, verif, comptMatch)
 
